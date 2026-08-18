@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>파스텔 테트리스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <header class="topbar">
+    <h1 class="logo">🍬 파스텔 테트리스</h1>
+    <div class="topbar-actions">
+      <button id="btn-sound" class="icon-btn" title="소리 켜기/끄기 (M)">🔊</button>
+      <button id="btn-pause" class="icon-btn" title="일시정지 (P)">⏸️</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- 좌측: 홀드 + 조작 안내 -->
+    <section class="side side-left">
+      <div class="panel hold-panel">
+        <h2>HOLD <span class="key-hint">C</span></h2>
+        <canvas id="hold-canvas" width="108" height="108"></canvas>
+      </div>
+
+      <div class="panel help-panel desktop-only">
+        <h2>조작법</h2>
+        <ul class="help-list">
+          <li><span class="kbd">←</span><span class="kbd">→</span> 이동</li>
+          <li><span class="kbd">↑</span>/<span class="kbd">X</span> 회전</li>
+          <li><span class="kbd">Z</span> 역시계 회전</li>
+          <li><span class="kbd">↓</span> 소프트 드롭</li>
+          <li><span class="kbd">Space</span> 하드 드롭</li>
+          <li><span class="kbd">C</span>/<span class="kbd">Shift</span> 홀드</li>
+          <li><span class="kbd">P</span> 일시정지 · <span class="kbd">R</span> 재시작</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 중앙: 보드 -->
+    <section class="board-wrap panel" id="board-wrap">
+      <canvas id="board-canvas"></canvas>
+      <div id="overlay" class="overlay hidden">
+        <div class="overlay-card" id="overlay-card"><!-- JS가 채움 --></div>
+      </div>
+    </section>
+
+    <!-- 우측: 다음 + 점수 -->
+    <section class="side side-right">
+      <div class="panel next-panel">
+        <h2>NEXT</h2>
+        <canvas id="next-canvas" width="108" height="324"></canvas>
+      </div>
+
+      <div class="panel stats-panel">
+        <div class="stat">
+          <span class="stat-label">점수</span>
+          <span class="stat-value" id="score">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">레벨</span>
+          <span class="stat-value" id="level">1</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">라인</span>
+          <span class="stat-value" id="lines">0</span>
+        </div>
+        <div class="stat stat-best">
+          <span class="stat-label">최고 기록</span>
+          <span class="stat-value" id="best">0</span>
+        </div>
+      </div>
+
+      <button id="btn-restart" class="ghost-btn desktop-only">🔄 다시 시작 (R)</button>
+    </section>
+  </main>
+
+  <!-- 모바일 터치 컨트롤 -->
+  <nav id="touch-controls" class="touch" aria-label="터치 조작">
+    <div class="touch-row">
+      <button data-act="hold" class="tbtn tbtn-round">⇄</button>
+      <button data-act="left"  class="tbtn tbtn-big">◀</button>
+      <button data-act="down"  class="tbtn tbtn-big">▼</button>
+      <button data-act="right" class="tbtn tbtn-big">▶</button>
+    </div>
+    <div class="touch-row">
+      <button data-act="rotateccw" class="tbtn tbtn-round">↺</button>
+      <button data-act="drop"  class="tbtn tbtn-wide">⤓ 하드드롭</button>
+      <button data-act="rotate" class="tbtn tbtn-round">↻</button>
+    </div>
+  </nav>
+
+  <footer class="foot desktop-only">파스텔 테트리스 · 키보드 또는 터치로 플레이하세요 🎀</footer>
+
+  <!-- BGM: airrouter suno 생성물 (없으면 JS가 조용히 무시) -->
+  <audio id="bgm" loop preload="auto" src="assets/bgm.mp3"></audio>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
