@@ -54,6 +54,23 @@ body {
   padding: 0 4px;
 }
 
+.left-actions { flex-shrink: 0; }
+
+.reset-btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 999px;
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  color: var(--text-strong);
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 8px 14px;
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+.reset-btn:active { transform: scale(0.98); filter: brightness(0.98); }
+
 .logo {
   font-size: clamp(16px, 3vw, 22px);
   color: var(--text-strong);
@@ -94,6 +111,11 @@ body {
   transition: transform 0.1s ease;
 }
 .icon-btn:active { transform: scale(0.9); }
+
+.icon-btn.active {
+  background: linear-gradient(135deg, rgba(255,183,201,0.95), rgba(232,125,153,0.95));
+  color: #fff;
+}
 
 /* ── 게임 영역: HOLD — 보드 — NEXT 가로 배치 ─────────────────── */
 .game-area {

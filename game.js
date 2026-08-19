@@ -15,6 +15,7 @@
   const CLEAR_ANIM_MS = 260;        // 라인 클리어 플래시 시간
 
   const LS_KEY = "pastel-tetris-best";
+  const LS_GHOST = "pastel-tetris-ghost";
 
   // ── 효과음 시스템 (Web Audio API 합성) ──────────────────────────
   const SFX = (() => {
@@ -237,6 +238,7 @@
   const scoreEl = $("score"), levelEl = $("level"), linesEl = $("lines"), bestEl = $("best");
   const btnSound = $("btn-sound"), btnPause = $("btn-pause"), btnRestart = $("btn-restart");
   const btnRestartTouch = $("btn-restart-touch");
+  const btnGuide = $("btn-guide");
   const bgm = $("bgm");
   const boardWrap = $("board-wrap");
 
@@ -293,6 +295,24 @@
   let state = "start";              // start | playing | clearing | paused | over
   let score = 0, lines = 0, level = 1;
   let best = Number(storage.getItem(LS_KEY) || 0);
+
+  let showGhost = storage.getItem(LS_GHOST);
+  showGhost = showGhost === null ? true : showGhost !== "0";
+
+  function syncGuideBtn() {
+    if (!btnGuide) return;
+    btnGuide.classList.toggle("active", !!showGhost);
+  }
+  if (btnGuide) {
+    syncGuideBtn();
+    btnGuide.addEventListener("click", () => {
+      showGhost = !showGhost;
+      storage.setItem(LS_GHOST, showGhost ? "1" : "0");
+      syncGuideBtn();
+      draw();
+      btnGuide.blur();
+    });
+  }
 
   let gravTimer = 0, softAccum = 0, lockTimer = 0, grounded = false, lockResets = 0;
   let clearRows = [], clearTimer = 0;
@@ -934,11 +954,13 @@
 
     // 고스트 + 현재 조각
     if (piece && (state === "playing" || state === "paused")) {
-      const gy = ghostY();
-      if (gy > piece.y) {
-        for (const [gx, gyy] of cellsOf({ ...piece, y: gy })) {
-          if (gyy < HIDDEN) continue;
-          drawBlock(bctx, gx * cell, (gyy - HIDDEN) * cell, cell, piece.type, 0.22);
+      if (showGhost) {
+        const gy = ghostY();
+        if (gy > piece.y) {
+          for (const [gx, gyy] of cellsOf({ ...piece, y: gy })) {
+            if (gyy < HIDDEN) continue;
+            drawBlock(bctx, gx * cell, (gyy - HIDDEN) * cell, cell, piece.type, 0.22);
+          }
         }
       }
       for (const [x, y] of cellsOf(piece)) {
