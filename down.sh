@@ -1,5 +1,5 @@
 #!/bin/bash
-PORT=8765
+PORT=58765
 PIDS=$(lsof -ti:$PORT)
 if [ -z "$PIDS" ]; then
   echo "이미 꺼져있음 (포트 $PORT)"

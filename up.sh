@@ -1,6 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-PORT=8765
+PORT=58765
 # 이미 실행 중이면 종료 후 재시작
 lsof -ti:$PORT | xargs kill -9 2>/dev/null
 sleep 0.3

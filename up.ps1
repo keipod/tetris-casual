@@ -1,5 +1,5 @@
 # up.ps1 — 파스텔 테트리스 서버 시작 (Windows PowerShell)
-$Port = 8765
+$Port = 58765
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $ScriptDir
 
