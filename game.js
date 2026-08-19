@@ -16,6 +16,129 @@
 
   const LS_KEY = "pastel-tetris-best";
 
+  // ── 효과음 시스템 (Web Audio API 합성) ──────────────────────────
+  const SFX = (() => {
+    let actx;
+    const init = () => { if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); return actx; };
+
+    function tone(freq, dur, type = "sine", vol = 0.15) {
+      try {
+        const ctx = init();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(vol, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime + dur);
+      } catch (_) {}
+    }
+
+    function chord(freqs, dur, type = "sine", vol = 0.1) {
+      freqs.forEach(f => tone(f, dur, type, vol));
+    }
+
+    return {
+      move()    { tone(880, 0.06, "sine", 0.08); },
+      rotate()  { tone(1200, 0.08, "sine", 0.1); },
+      hold()    { tone(660, 0.1, "triangle", 0.1); },
+      drop()    { tone(220, 0.15, "square", 0.12); tone(110, 0.2, "sine", 0.08); },
+      softDrop(){ tone(440, 0.04, "sine", 0.05); },
+      lock()    { tone(330, 0.12, "triangle", 0.08); },
+      clear(n)  {
+        if (n === 4) {
+          chord([523, 659, 784, 1047], 0.5, "sine", 0.12);
+          setTimeout(() => chord([1047, 1319, 1568], 0.4, "sine", 0.1), 150);
+        } else if (n >= 2) {
+          chord([523, 659, 784], 0.35, "sine", 0.1);
+        } else {
+          chord([523, 659], 0.25, "sine", 0.08);
+        }
+      },
+      levelUp() { chord([523, 659, 784], 0.15, "sine", 0.1); setTimeout(() => chord([784, 988, 1175], 0.3, "sine", 0.12), 120); },
+      gameOver(){ tone(330, 0.3, "sawtooth", 0.08); setTimeout(() => tone(220, 0.5, "sawtooth", 0.06), 200); },
+      combo(n)  { tone(880 + n * 110, 0.12, "sine", 0.1); },
+    };
+  })();
+
+  // ── 햅틱 피드백 ──────────────────────────────────────────────────
+  const haptic = (ms = 10) => { try { navigator.vibrate(ms); } catch (_) {} };
+
+  // ── 파티클 시스템 ────────────────────────────────────────────────
+  const particles = [];
+  function spawnParticles(x, y, color, count = 8) {
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+      const speed = 1.5 + Math.random() * 3;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 1.5,
+        life: 1,
+        decay: 0.015 + Math.random() * 0.02,
+        size: 3 + Math.random() * 5,
+        color,
+      });
+    }
+  }
+
+  function updateParticles(dt) {
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      p.vy += 0.08;
+      p.life -= p.decay;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+  }
+
+  function drawParticles(ctx) {
+    for (const p of particles) {
+      ctx.globalAlpha = p.life * 0.8;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // ── 점수 팝업 ────────────────────────────────────────────────────
+  const scorePopups = [];
+  function spawnScorePopup(text, x, y, color = "#e87d99") {
+    scorePopups.push({ text, x, y, vy: -1.5, life: 1, decay: 0.012, color });
+  }
+
+  function updateScorePopups() {
+    for (let i = scorePopups.length - 1; i >= 0; i--) {
+      const p = scorePopups[i];
+      p.y += p.vy;
+      p.life -= p.decay;
+      if (p.life <= 0) scorePopups.splice(i, 1);
+    }
+  }
+
+  function drawScorePopups(ctx) {
+    for (const p of scorePopups) {
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = p.color;
+      ctx.font = `bold ${14 + (1 - p.life) * 8}px Jua, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText(p.text, p.x, p.y);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // ── 화면 흔들림 ──────────────────────────────────────────────────
+  let shakeAmount = 0, shakeDuration = 0;
+  function triggerShake(amount = 4, duration = 200) {
+    shakeAmount = amount; shakeDuration = duration;
+  }
+
+  // ── 콤보 추적 ────────────────────────────────────────────────────
+  let combo = 0;
+
   // Safari 개인화 모드 등에서 localStorage 접근 예외 방지
   const storage = (() => {
     try {
@@ -263,6 +386,12 @@
     let d = 0;
     while (tryMove(0, 1)) d++;
     score += d * 2;
+    SFX.drop(); haptic(25);
+    triggerShake(3 + Math.min(d * 0.3, 4), 150);
+    const cells = cellsOf(piece);
+    for (const [cx, cy] of cells) {
+      if (cy >= HIDDEN) spawnParticles(cx * cell + cell / 2, (cy - HIDDEN) * cell + cell, COLORS[piece.type], 3);
+    }
     lockPiece();
   }
 
@@ -296,12 +425,38 @@
   }
 
   const LINE_SCORES = [0, 100, 300, 500, 800];
+  const LINE_LABELS = ["", "Single", "Double!", "Triple!!", "TETRIS!!!"];
   function afterClear() {
     const n = clearRows.length;
+    const prevLevel = level;
     if (n) {
-      score += LINE_SCORES[n] * level;
+      combo++;
+      const pts = LINE_SCORES[n] * level + (combo > 1 ? 50 * combo * level : 0);
+      score += pts;
       lines += n;
       level = Math.floor(lines / 10) + 1;
+
+      SFX.clear(n); haptic(n === 4 ? [30, 50, 30, 50, 50] : n >= 2 ? [20, 30, 20] : 20);
+      bounceMascots();
+      triggerShake(n * 2.5, 100 + n * 60);
+      if (combo > 1) SFX.combo(combo);
+
+      for (const r of clearRows) {
+        if (r < HIDDEN) continue;
+        for (let x = 0; x < COLS; x++) {
+          spawnParticles(x * cell + cell / 2, (r - HIDDEN) * cell + cell / 2,
+            ["#ff9eb5", "#ffb7c9", "#ffc94d", "#5fc9d8", "#b18ae0", "#6fd39a"][Math.floor(Math.random() * 6)],
+            n >= 4 ? 6 : 3);
+        }
+      }
+
+      let label = LINE_LABELS[n];
+      if (combo > 1) label += ` ${combo}x`;
+      spawnScorePopup(`${label} +${pts}`, (COLS * cell) / 2, (clearRows[0] - HIDDEN) * cell, n >= 4 ? "#e87d99" : "#b18ae0");
+
+      if (level > prevLevel) SFX.levelUp();
+    } else {
+      combo = 0;
     }
     clearRows = [];
     state = "playing";
@@ -315,6 +470,7 @@
     lastGameOverReason = reason;
     state = "over";
     resetInput();
+    SFX.gameOver(); haptic([50, 100, 50]);
     if (score > best) { best = score; storage.setItem(LS_KEY, String(best)); }
     btnPause.textContent = "⏸️";
     showOverlay("over");
@@ -357,9 +513,11 @@
     score = 0; lines = 0; level = 1;
     resetInput();
     state = "playing";
+    combo = 0;
     hideOverlay();
     btnPause.textContent = "⏸️";
     ensureBgm();
+    randomizeMascots();
     spawnPiece();
     updateStats(); draw();
   }
@@ -439,22 +597,22 @@
     switch (act) {
       case "left":
         leftDown.v = true;
-        pressDir(-1);
+        pressDir(-1); SFX.move(); haptic(8);
         break;
       case "right":
         rightDown.v = true;
-        pressDir(1);
+        pressDir(1); SFX.move(); haptic(8);
         break;
       case "down":
         downHeld = true;
         softAccum = 0;
-        if (tryMove(0, 1)) score++;
+        if (tryMove(0, 1)) { score++; SFX.softDrop(); }
         updateStats();
         break;
-      case "rotate": tryRotate(1); onGroundedAction(); break;
-      case "rotateccw": tryRotate(-1); onGroundedAction(); break;
+      case "rotate": if (tryRotate(1)) { SFX.rotate(); haptic(12); } onGroundedAction(); break;
+      case "rotateccw": if (tryRotate(-1)) { SFX.rotate(); haptic(12); } onGroundedAction(); break;
       case "drop": hardDrop(); break;
-      case "hold": holdAction(); break;
+      case "hold": holdAction(); SFX.hold(); haptic(15); break;
     }
   }
 
@@ -732,7 +890,14 @@
   function draw() {
     if (!grid) return;
     const W = COLS * cell, H = ROWS_VISIBLE * cell;
-    bctx.clearRect(0, 0, W, H);
+
+    bctx.save();
+    if (shakeAmount > 0) {
+      const sx = (Math.random() - 0.5) * shakeAmount * 2;
+      const sy = (Math.random() - 0.5) * shakeAmount * 2;
+      bctx.translate(sx, sy);
+    }
+    bctx.clearRect(-10, -10, W + 20, H + 20);
 
     // 배경 + 그리드
     bctx.fillStyle = "rgba(255,253,251,0.6)";
@@ -780,6 +945,10 @@
         drawBlock(bctx, x * cell, (y - HIDDEN) * cell, cell, piece.type);
       }
     }
+
+    drawParticles(bctx);
+    drawScorePopups(bctx);
+    bctx.restore();
   }
 
   // 미니 캔버스 (HOLD / NEXT) — 조각의 바운딩 박스 기준으로 중앙 배치
@@ -842,6 +1011,25 @@
     debugFill(rows) { rows.forEach((r) => this.fillRowExcept(r)); },
   };
 
+  // ── 마스코트 캐릭터 ───────────────────────────────────────────
+  const MASCOTS = ["puppy", "kitten", "bear", "sheep", "cow"];
+  const mascotL = document.querySelector(".mascot-left");
+  const mascotR = document.querySelector(".mascot-right");
+  function randomizeMascots() {
+    const shuffled = MASCOTS.slice().sort(() => Math.random() - 0.5);
+    if (mascotL) mascotL.src = `assets/characters/${shuffled[0]}.png`;
+    if (mascotR) mascotR.src = `assets/characters/${shuffled[1]}.png`;
+  }
+  function bounceMascots() {
+    [mascotL, mascotR].forEach(m => {
+      if (!m) return;
+      m.classList.remove("bounce");
+      void m.offsetWidth;
+      m.classList.add("bounce");
+    });
+  }
+  randomizeMascots();
+
   // ── 시작 ───────────────────────────────────────────────────────
   grid = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
   bag = newBag(); queue = []; refillQueue();
@@ -856,6 +1044,9 @@
     lastTs = ts;
     if (state === "paused") dt = 0;
     update(dt);
+    updateParticles(dt);
+    updateScorePopups();
+    if (shakeDuration > 0) { shakeDuration -= dt; if (shakeDuration <= 0) { shakeAmount = 0; shakeDuration = 0; } }
     draw();
     requestAnimationFrame(frame);
   }
