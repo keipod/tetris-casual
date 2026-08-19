@@ -506,9 +506,6 @@
     btn.addEventListener("pointerdown", onDown);
     btn.addEventListener("pointerup", onUp);
     btn.addEventListener("pointercancel", onUp);
-    btn.addEventListener("touchstart", onDown, { passive: false });
-    btn.addEventListener("touchend", onUp, { passive: false });
-    btn.addEventListener("touchcancel", onUp, { passive: false });
   }
 
   // ── 보드 스와이프·탭 (캔버스만) ───────────────────────────────
