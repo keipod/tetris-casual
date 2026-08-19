@@ -417,7 +417,8 @@
   }
 
   function finishClear() {
-    for (const r of clearRows.slice().sort((a, b) => a - b)) {
+    // splice는 인덱스를 당기므로, 여러 줄을 지울 때는 내림차순으로 제거해야 합니다.
+    for (const r of clearRows.slice().sort((a, b) => b - a)) {
       grid.splice(r, 1);
       grid.unshift(Array(COLS).fill(0));
     }
