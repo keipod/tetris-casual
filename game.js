@@ -1015,10 +1015,70 @@
   const MASCOTS = ["puppy", "kitten", "bear", "sheep", "cow"];
   const mascotL = document.querySelector(".mascot-left");
   const mascotR = document.querySelector(".mascot-right");
+
+  // 이미지 생성기가 흰 배경 PNG를 만들어도, 런타임에서 "거의 흰색" 배경만 투명 처리
+  // (캔버스에서 pixel alpha를 조절해서 만든 dataURL)
+  const mascotCache = {}; // key -> dataURL
+  function stripNearWhiteToTransparent(img) {
+    const c = document.createElement("canvas");
+    const w = img.naturalWidth || img.width;
+    const h = img.naturalHeight || img.height;
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d");
+    if (!ctx) return null;
+    ctx.drawImage(img, 0, 0, w, h);
+    const id = ctx.getImageData(0, 0, w, h);
+    const d = id.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i], g = d[i + 1], b = d[i + 2], a = d[i + 3];
+      if (a < 200) continue;
+
+      // 배경이 대체로 순백(#fff) 계열이라, 채널이 거의 같고 밝을 때 투명 처리
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      const nearWhite = r > 245 && g > 245 && b > 245;
+      const pastelEdge = (max > 240 && min > 200 && Math.abs(r - g) < 18 && Math.abs(r - b) < 18);
+
+      if (nearWhite) d[i + 3] = 0;
+      else if (pastelEdge) {
+        // 가장자리 anti-alias를 살리기 위해, 흰색에 가까울수록 alpha를 줄임
+        const t = (max - 200) / 55; // 0..1
+        d[i + 3] = Math.floor(a * (1 - t));
+      }
+    }
+    ctx.putImageData(id, 0, 0);
+    return c.toDataURL("image/png");
+  }
+
+  async function setMascotImg(imgEl, key) {
+    if (!imgEl) return;
+    const cached = mascotCache[key];
+    if (cached) { imgEl.src = cached; return; }
+
+    await new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = `assets/characters/${key}.png`;
+    });
+
+    // onload 이후 이미지를 못 들고 있게 되므로, 한 번 더 로드(단 5개라 비용은 제한적)
+    const img2 = new Image();
+    await new Promise((resolve) => {
+      img2.onload = () => resolve(true);
+      img2.onerror = () => resolve(false);
+      img2.src = `assets/characters/${key}.png`;
+    });
+    const processed = stripNearWhiteToTransparent(img2);
+    mascotCache[key] = processed || `assets/characters/${key}.png`;
+    imgEl.src = mascotCache[key];
+  }
+
   function randomizeMascots() {
     const shuffled = MASCOTS.slice().sort(() => Math.random() - 0.5);
-    if (mascotL) mascotL.src = `assets/characters/${shuffled[0]}.png`;
-    if (mascotR) mascotR.src = `assets/characters/${shuffled[1]}.png`;
+    setMascotImg(mascotL, shuffled[0]);
+    setMascotImg(mascotR, shuffled[1]);
   }
   function bounceMascots() {
     [mascotL, mascotR].forEach(m => {
