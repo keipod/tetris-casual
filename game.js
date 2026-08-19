@@ -150,11 +150,11 @@
     const touch = document.getElementById("touch-controls");
     const topH = topbar ? topbar.offsetHeight : 48;
     const ctrlH = touch ? touch.offsetHeight : 130;
-    const gaps = 8 * 3;
-    const sidebarW = Math.max(56, Math.min(90, window.innerWidth * 0.12)) * 2 + 8 * 2 + 12;
-    const availH = Math.max(200, window.innerHeight - topH - ctrlH - gaps - 16);
-    const availW = Math.max(160, window.innerWidth - sidebarW);
-    cell = Math.max(14, Math.min(40, Math.floor(Math.min(availH / ROWS_VISIBLE, availW / COLS))));
+    const pad = 8 * 4;
+    const availH = Math.max(200, window.innerHeight - topH - ctrlH - pad);
+    const sideW = Math.max(56, Math.min(90, window.innerWidth * 0.12));
+    const availW = Math.max(160, window.innerWidth - sideW * 2 - pad * 2);
+    cell = Math.max(14, Math.floor(Math.min(availH / ROWS_VISIBLE, availW / COLS)));
     boardCanvas.width = COLS * cell * dpr;
     boardCanvas.height = ROWS_VISIBLE * cell * dpr;
     boardCanvas.style.width = `${COLS * cell}px`;
