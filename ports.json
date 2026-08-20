@@ -1,0 +1,17 @@
+{
+  "base": 48888,
+  "games": [
+    { "id": "hub", "port": 48888, "entry": "/casual/", "name": "캐주얼 허브" },
+    { "id": "tetris", "port": 48889, "entry": "/casual/tetris/", "name": "파스텔 테트리스" },
+    { "id": "bubble", "port": 48890, "entry": "/casual/bubble/", "name": "버블슈터" },
+    { "id": "gemgem-animal", "port": 48891, "entry": "/casual/gemgem/games/animal-match.html", "name": "Animal Match" },
+    { "id": "gemgem-gem", "port": 48892, "entry": "/casual/gemgem/games/gem-crush.html", "name": "Gem Crush" },
+    { "id": "gemgem-fruit", "port": 48893, "entry": "/casual/gemgem/games/fruit-pop.html", "name": "Fruit Pop" },
+    { "id": "catch", "port": 48894, "entry": "/casual/catch/", "name": "포켓몬 잡기" },
+    { "id": "volleyball", "port": 48895, "entry": "/casual/volleyball/", "name": "피카츄 배구" },
+    { "id": "quiz", "port": 48896, "entry": "/casual/quiz/", "name": "도감 퀴즈" },
+    { "id": "puzzle", "port": 48897, "entry": "/casual/puzzle/", "name": "퍼즐 맞추기" },
+    { "id": "lanes", "port": 48898, "entry": "/casual/lanes/", "name": "기지 디펜스" },
+    { "id": "tower", "port": 48899, "entry": "/casual/tower/", "name": "타워 디펜스" }
+  ]
+}

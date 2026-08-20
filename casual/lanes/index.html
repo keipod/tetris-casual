@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#5aa0d4">
+<title>포켓몬 대전쟁</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <div class="score-bar">
+      <span class="chip chip-you">
+        <span class="chip-label">내 기지</span>
+        <span id="hp-you">3000</span>
+      </span>
+      <span class="chip chip-gold">
+        <span class="chip-label">골드</span>
+        <span id="gold">180</span>
+      </span>
+      <span class="chip chip-them">
+        <span class="chip-label">적 기지</span>
+        <span id="hp-them">5200</span>
+      </span>
+    </div>
+    <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+      <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <main class="stage-wrap">
+    <div class="meadow-bg" aria-hidden="true">
+      <div class="meadow-sky"></div>
+      <div class="meadow-cloud meadow-cloud-a"></div>
+      <div class="meadow-cloud meadow-cloud-b"></div>
+      <div class="meadow-hill meadow-hill-far"></div>
+      <div class="meadow-hill meadow-hill-near"></div>
+      <div class="dirt-lane"></div>
+      <div class="meadow-grass"></div>
+    </div>
+
+    <div class="fort fort-you" aria-hidden="true">
+      <img class="fort-art" src="assets/fort-you.png" alt="" width="96" height="96" />
+      <div class="fort-hp"><i id="bar-you"></i></div>
+    </div>
+    <div class="fort fort-them" aria-hidden="true">
+      <img class="fort-art" src="assets/fort-them.png" alt="" width="96" height="96" />
+      <div class="fort-hp"><i id="bar-them"></i></div>
+    </div>
+
+    <div id="field" class="field"></div>
+    <div id="fx" class="fx" aria-hidden="true"></div>
+
+    <div id="overlay" class="overlay">
+      <div class="overlay-card" id="overlay-card"></div>
+    </div>
+  </main>
+
+  <footer class="dock" id="dock" hidden>
+    <p class="wave-line"><span id="wave-label">초반 웨이브</span></p>
+    <div class="slots" id="slots"></div>
+  </footer>
+</div>
+<script src="combat.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

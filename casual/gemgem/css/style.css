@@ -1,0 +1,476 @@
+/* GemGem - Main Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    color: #fff;
+}
+
+/* Language Selector */
+.language-selector {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+}
+
+.lang-btn {
+    padding: 8px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}
+
+.lang-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.lang-btn.active {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: #fff;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding: 40px 0;
+}
+
+header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+header p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+/* Theme Selector */
+.theme-selector {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding: 40px 0;
+}
+
+.theme-card {
+    width: 280px;
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.theme-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.theme-card .emoji {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.theme-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.theme-card p {
+    opacity: 0.8;
+}
+
+/* Theme Colors */
+.theme-card.animals {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+}
+
+.theme-card.gems {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.theme-card.foods {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 40px 0;
+    opacity: 0.6;
+}
+
+/* Game Page Styles */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+.game-header h1 {
+    font-size: 1.8rem;
+}
+
+.game-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.timer-display {
+    font-size: 1.5rem;
+    background: rgba(255, 100, 100, 0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.score-display {
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.game-board {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+#gameCanvas {
+    display: block;
+    border-radius: 10px;
+}
+
+.game-controls {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.btn-sound {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.back-link:hover {
+    opacity: 1;
+}
+
+/* Combo Display */
+.combo-display {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ffdd00;
+    text-shadow: 0 0 20px rgba(255, 221, 0, 0.8);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.combo-display.show {
+    opacity: 1;
+    animation: combo-pop 0.5s ease-out;
+}
+
+@keyframes combo-pop {
+    0% { transform: translate(-50%, -50%) scale(0.5); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Responsive */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+    body {
+        padding-top: 60px; /* Space for language selector */
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    /* Language selector - move to top center on mobile */
+    .language-selector {
+        top: 10px;
+        right: 50%;
+        transform: translateX(50%);
+        gap: 8px;
+    }
+    
+    .lang-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    
+    /* Main page */
+    header {
+        padding: 20px 0;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    header p {
+        font-size: 1rem;
+    }
+    
+    .theme-selector {
+        padding: 20px 0;
+        gap: 20px;
+    }
+    
+    .theme-card {
+        width: 100%;
+        max-width: 300px;
+        padding: 30px 20px;
+    }
+    
+    .theme-card .emoji {
+        font-size: 3rem;
+    }
+    
+    .theme-card h2 {
+        font-size: 1.3rem;
+    }
+    
+    /* Game page */
+    .back-link {
+        top: 50px; /* Below language selector */
+        left: 10px;
+        font-size: 1rem;
+    }
+    
+    .game-container {
+        padding: 10px;
+    }
+    
+    .game-header {
+        flex-direction: column;
+        gap: 10px;
+        max-width: 100%;
+    }
+    
+    .game-header h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    
+    .game-info {
+        flex-direction: row;
+        gap: 10px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .timer-display,
+    .score-display {
+        font-size: 1rem;
+        padding: 8px 12px;
+    }
+    
+    .game-board {
+        padding: 10px;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    #gameCanvas {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    .game-controls {
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .btn {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        min-width: 120px;
+    }
+    
+    .btn-sound {
+        min-width: 50px;
+    }
+    
+    .combo-display {
+        font-size: 2rem;
+    }
+}
+
+/* Mobile small screens */
+@media (max-width: 480px) {
+    .language-selector {
+        gap: 5px;
+    }
+    
+    .lang-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .theme-card {
+        max-width: 280px;
+        padding: 25px 15px;
+    }
+    
+    .theme-card .emoji {
+        font-size: 2.5rem;
+    }
+    
+    .theme-card h2 {
+        font-size: 1.2rem;
+    }
+    
+    .game-header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .game-info {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .timer-display,
+    .score-display {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .game-board {
+        padding: 8px;
+    }
+    
+    .btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        min-width: 100px;
+    }
+    
+    .combo-display {
+        font-size: 1.5rem;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn,
+    .lang-btn,
+    .theme-card {
+        /* Larger touch targets */
+        min-height: 44px;
+    }
+    
+    .btn:active,
+    .lang-btn:active {
+        transform: scale(0.95);
+    }
+    
+    /* Remove hover effects on touch devices */
+    .btn:hover,
+    .lang-btn:hover,
+    .theme-card:hover {
+        transform: none;
+    }
+    
+    .theme-card:active {
+        transform: scale(0.98);
+    }
+}

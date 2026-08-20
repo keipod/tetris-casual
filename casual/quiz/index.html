@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#8B1E18">
+<title>도감 퀴즈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Noto+Sans+KR:wght@400;600;700&family=Song+Myung&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <div class="score-bar">
+      <span class="chip"><span class="chip-label">점수</span><span id="score">0</span></span>
+      <span class="chip"><span class="chip-label">최고</span><span id="best">0</span></span>
+      <span class="chip"><span class="chip-label">콤보</span><span id="combo">0</span></span>
+    </div>
+    <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+      <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <main class="stage">
+    <div class="progress-row">
+      <span id="q-index" class="q-index">—</span>
+      <div class="timer-track" aria-hidden="true"><div id="timer-bar" class="timer-fill"></div></div>
+      <span id="timer-num" class="timer-num">12</span>
+    </div>
+
+    <article id="dex" class="dex" aria-live="polite">
+      <div class="dex-hinge" aria-hidden="true"></div>
+      <img id="stamp" class="stamp" alt="" hidden>
+      <div class="dex-screen">
+        <div class="dex-lights" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="sprite-wrap">
+          <div id="sprite-spin" class="spinner" hidden></div>
+          <img id="sprite" class="sprite" alt="" />
+        </div>
+        <h1 id="name-ko" class="name-ko"></h1>
+        <p id="name-en" class="name-en"></p>
+        <p id="flavor" class="flavor"></p>
+      </div>
+    </article>
+
+    <div class="choices" role="group" aria-label="틀린 항목">
+      <button type="button" class="choice" data-axis="image">그림이 틀림</button>
+      <button type="button" class="choice" data-axis="name">이름이 틀림</button>
+      <button type="button" class="choice" data-axis="flavor">설명이 틀림</button>
+    </div>
+  </main>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>

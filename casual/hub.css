@@ -44,7 +44,7 @@ html, body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
-  width: min(560px, 100%);
+  width: min(860px, 100%);
 }
 
 .game-card {

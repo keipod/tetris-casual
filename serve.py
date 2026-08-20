@@ -11,12 +11,24 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 AIROUTER = os.environ.get("AIROUTER_BASE_URL", "http://192.168.223.101:20101")
 ROOT = os.path.dirname(os.path.abspath(__file__))
-PORT = int(os.environ.get("PORT", "8765"))
+PORT = int(os.environ.get("PORT", "48888"))
+GAME_ENTRY = os.environ.get("GAME_ENTRY", "/casual/")
 
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT, **kwargs)
+
+    def _maybe_redirect_root(self) -> bool:
+        if self.path not in ("/", "/index.html"):
+            return False
+        entry = GAME_ENTRY if GAME_ENTRY.startswith("/") else f"/{GAME_ENTRY}"
+        if self.path == entry or entry in ("", "/"):
+            return False
+        self.send_response(302)
+        self.send_header("Location", entry)
+        self.end_headers()
+        return True
 
     def _cors(self) -> None:
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -62,7 +74,14 @@ class Handler(SimpleHTTPRequestHandler):
             return
         super().do_POST()
 
+    def do_HEAD(self) -> None:
+        if self._maybe_redirect_root():
+            return
+        super().do_HEAD()
+
     def do_GET(self) -> None:
+        if self._maybe_redirect_root():
+            return
         if self.path.startswith("/api/airouter/v1/jobs/") and self.path.endswith("/artifact"):
             url = f"{AIROUTER}{self.path.removeprefix('/api/airouter')}"
             req = urllib.request.Request(url, method="GET")
@@ -90,7 +109,8 @@ class Handler(SimpleHTTPRequestHandler):
 def main() -> None:
     host = "0.0.0.0"
     server = ThreadingHTTPServer((host, PORT), Handler)
-    print(f"▶  http://{host}:{PORT}")
+    print(f"▶  http://{host}:{PORT}{GAME_ENTRY}")
+    print(f"   game entry → {GAME_ENTRY}")
     print(f"   airouter proxy → {AIROUTER}")
     server.serve_forever()
 
