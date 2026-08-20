@@ -1,5 +1,5 @@
 # down.ps1 — 파스텔 테트리스 서버 종료 (Windows PowerShell)
-$Port = 58765
+$Port = 8765
 
 $procs = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue |
          Select-Object -ExpandProperty OwningProcess | Sort-Object -Unique

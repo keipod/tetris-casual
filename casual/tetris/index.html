@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fdeff4">
+<title>파스텔 테트리스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 상단: 로고 + 점수 바 + 액션 -->
+  <header class="topbar">
+    <div class="left-actions">
+      <a class="back-link" href="../">← 목록</a>
+      <button id="btn-restart-touch" class="reset-btn" type="button">다시하기</button>
+    </div>
+    <h1 class="logo">🍬 파스텔 테트리스</h1>
+    <div class="score-bar">
+      <span class="score-chip"><span class="score-chip-label">점수</span><span class="score-chip-value" id="score">0</span></span>
+      <span class="score-chip"><span class="score-chip-label">레벨</span><span class="score-chip-value" id="level">1</span></span>
+      <span class="score-chip"><span class="score-chip-label">라인</span><span class="score-chip-value" id="lines">0</span></span>
+      <span class="score-chip score-chip-best"><span class="score-chip-label">최고</span><span class="score-chip-value" id="best">0</span></span>
+    </div>
+    <div class="topbar-actions">
+      <button id="btn-sound" class="icon-btn" title="소리 켜기/끄기">🔊</button>
+      <button id="btn-pause" class="icon-btn" title="일시정지">⏸️</button>
+      <button id="btn-guide" class="icon-btn" title="가이드(반투명) 표시/숨김">👁️</button>
+    </div>
+  </header>
+
+  <!-- 게임 영역: HOLD + 보드 + NEXT -->
+  <main class="game-area">
+    <aside class="sidebar sidebar-left">
+      <div class="panel mini-panel hold-panel">
+        <h2>HOLD</h2>
+        <canvas id="hold-canvas" width="108" height="108"></canvas>
+      </div>
+      <img class="mascot mascot-left" src="" alt="" aria-hidden="true">
+    </aside>
+
+    <section class="board-wrap panel" id="board-wrap">
+      <canvas id="board-canvas"></canvas>
+      <div id="overlay" class="overlay hidden">
+        <div class="overlay-card" id="overlay-card"></div>
+      </div>
+    </section>
+
+    <aside class="sidebar sidebar-right">
+      <div class="panel mini-panel next-panel">
+        <h2>NEXT</h2>
+        <canvas id="next-canvas" width="108" height="324"></canvas>
+      </div>
+      <img class="mascot mascot-right" src="" alt="" aria-hidden="true">
+    </aside>
+  </main>
+
+  <!-- 터치 컨트롤 -->
+  <nav id="touch-controls" class="touch" aria-label="터치 조작">
+    <div class="touch-row touch-row-top">
+      <button data-act="left"  class="tbtn tbtn-dir">◀</button>
+      <button data-act="down"  class="tbtn tbtn-dir">▼</button>
+      <button data-act="right" class="tbtn tbtn-dir">▶</button>
+      <button data-act="drop"  class="tbtn tbtn-drop">⤓</button>
+    </div>
+    <div class="touch-row touch-row-bottom">
+      <button data-act="rotateccw" class="tbtn tbtn-round">↺</button>
+      <button data-act="rotate" class="tbtn tbtn-round">↻</button>
+    </div>
+  </nav>
+
+  <!-- hidden: JS에서 참조하는 요소 -->
+  <button id="btn-restart" style="display:none"></button>
+
+  <audio id="bgm" loop preload="auto" src="assets/bgm.mp3"></audio>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
