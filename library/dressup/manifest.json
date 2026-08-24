@@ -1,0 +1,1021 @@
+{
+  "alignMode": "vector-landmarks-v3-sculpted",
+  "categories": [
+    {
+      "id": "underwear",
+      "label": "속옷"
+    },
+    {
+      "id": "socks",
+      "label": "양말"
+    },
+    {
+      "id": "shoes",
+      "label": "신발"
+    },
+    {
+      "id": "bottom",
+      "label": "하의"
+    },
+    {
+      "id": "top",
+      "label": "상의"
+    },
+    {
+      "id": "dress",
+      "label": "드레스"
+    },
+    {
+      "id": "wings",
+      "label": "날개·망토"
+    },
+    {
+      "id": "jewelry",
+      "label": "장신구"
+    },
+    {
+      "id": "hair",
+      "label": "머리"
+    },
+    {
+      "id": "hand",
+      "label": "손소품"
+    },
+    {
+      "id": "pet",
+      "label": "펫"
+    }
+  ],
+  "characters": [
+    {
+      "id": "princess1",
+      "name": "보라 공주",
+      "base": "assets/bases/princess1.png",
+      "portrait": "assets/portraits/princess1.jpg"
+    },
+    {
+      "id": "princess2",
+      "name": "요정 공주",
+      "base": "assets/bases/princess2.png",
+      "portrait": "assets/portraits/princess2.jpg"
+    }
+  ],
+  "backgrounds": [
+    "assets/bg/castle_purple.png",
+    "assets/bg/ballroom.png"
+  ],
+  "exclusive": {
+    "dress": [
+      "top",
+      "bottom"
+    ],
+    "top": [
+      "dress"
+    ],
+    "bottom": [
+      "dress"
+    ]
+  },
+  "items": [
+    {
+      "id": "uw_pearl",
+      "slot": "underwear",
+      "z": 10,
+      "label": "진주 속옷",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/uw_pearl.png",
+        "princess2": "assets/clothes/princess2/uw_pearl.png"
+      }
+    },
+    {
+      "id": "uw_rose",
+      "slot": "underwear",
+      "z": 10,
+      "label": "장미 속옷",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/uw_rose.png",
+        "princess2": "assets/clothes/princess2/uw_rose.png"
+      }
+    },
+    {
+      "id": "uw_mint",
+      "slot": "underwear",
+      "z": 10,
+      "label": "민트 속옷",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/uw_mint.png",
+        "princess2": "assets/clothes/princess2/uw_mint.png"
+      }
+    },
+    {
+      "id": "uw_lilac",
+      "slot": "underwear",
+      "z": 10,
+      "label": "라일락 속옷",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/uw_lilac.png",
+        "princess2": "assets/clothes/princess2/uw_lilac.png"
+      }
+    },
+    {
+      "id": "uw_sky",
+      "slot": "underwear",
+      "z": 10,
+      "label": "하늘 속옷",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/uw_sky.png",
+        "princess2": "assets/clothes/princess2/uw_sky.png"
+      }
+    },
+    {
+      "id": "uw_cream",
+      "slot": "underwear",
+      "z": 10,
+      "label": "크림 레이스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/uw_cream.png",
+        "princess2": "assets/clothes/princess2/uw_cream.png"
+      }
+    },
+    {
+      "id": "uw_heart",
+      "slot": "underwear",
+      "z": 10,
+      "label": "하트 속옷",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/uw_heart.png",
+        "princess2": "assets/clothes/princess2/uw_heart.png"
+      }
+    },
+    {
+      "id": "uw_gold",
+      "slot": "underwear",
+      "z": 10,
+      "label": "골드림 속옷",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/uw_gold.png",
+        "princess2": "assets/clothes/princess2/uw_gold.png"
+      }
+    },
+    {
+      "id": "sk_white",
+      "slot": "socks",
+      "z": 20,
+      "label": "흰 양말",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sk_white.png",
+        "princess2": "assets/clothes/princess2/sk_white.png"
+      }
+    },
+    {
+      "id": "sk_pink",
+      "slot": "socks",
+      "z": 20,
+      "label": "핑크 양말",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sk_pink.png",
+        "princess2": "assets/clothes/princess2/sk_pink.png"
+      }
+    },
+    {
+      "id": "sk_stripe",
+      "slot": "socks",
+      "z": 20,
+      "label": "줄무늬 양말",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sk_stripe.png",
+        "princess2": "assets/clothes/princess2/sk_stripe.png"
+      }
+    },
+    {
+      "id": "sk_sheer",
+      "slot": "socks",
+      "z": 20,
+      "label": "쉬어 스타킹",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sk_sheer.png",
+        "princess2": "assets/clothes/princess2/sk_sheer.png"
+      }
+    },
+    {
+      "id": "sk_lilac",
+      "slot": "socks",
+      "z": 20,
+      "label": "라일락 니삭스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sk_lilac.png",
+        "princess2": "assets/clothes/princess2/sk_lilac.png"
+      }
+    },
+    {
+      "id": "sk_dot",
+      "slot": "socks",
+      "z": 20,
+      "label": "도트 양말",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sk_dot.png",
+        "princess2": "assets/clothes/princess2/sk_dot.png"
+      }
+    },
+    {
+      "id": "sk_ribbon",
+      "slot": "socks",
+      "z": 20,
+      "label": "리본 니하이",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sk_ribbon.png",
+        "princess2": "assets/clothes/princess2/sk_ribbon.png"
+      }
+    },
+    {
+      "id": "sk_ballet",
+      "slot": "socks",
+      "z": 20,
+      "label": "발레 타이즈",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sk_ballet.png",
+        "princess2": "assets/clothes/princess2/sk_ballet.png"
+      }
+    },
+    {
+      "id": "sh_purple",
+      "slot": "shoes",
+      "z": 30,
+      "label": "보라 구두",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_purple.png",
+        "princess2": "assets/clothes/princess2/sh_purple.png"
+      }
+    },
+    {
+      "id": "sh_blue",
+      "slot": "shoes",
+      "z": 30,
+      "label": "하늘 펌프스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_blue.png",
+        "princess2": "assets/clothes/princess2/sh_blue.png"
+      }
+    },
+    {
+      "id": "sh_pink",
+      "slot": "shoes",
+      "z": 30,
+      "label": "핑크 힐",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_pink.png",
+        "princess2": "assets/clothes/princess2/sh_pink.png"
+      }
+    },
+    {
+      "id": "sh_gold",
+      "slot": "shoes",
+      "z": 30,
+      "label": "골드 샌들",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_gold.png",
+        "princess2": "assets/clothes/princess2/sh_gold.png"
+      }
+    },
+    {
+      "id": "sh_white",
+      "slot": "shoes",
+      "z": 30,
+      "label": "흰 부츠",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_white.png",
+        "princess2": "assets/clothes/princess2/sh_white.png"
+      }
+    },
+    {
+      "id": "sh_red",
+      "slot": "shoes",
+      "z": 30,
+      "label": "루비 구두",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_red.png",
+        "princess2": "assets/clothes/princess2/sh_red.png"
+      }
+    },
+    {
+      "id": "sh_silver",
+      "slot": "shoes",
+      "z": 30,
+      "label": "실버 슬립온",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_silver.png",
+        "princess2": "assets/clothes/princess2/sh_silver.png"
+      }
+    },
+    {
+      "id": "sh_flower",
+      "slot": "shoes",
+      "z": 30,
+      "label": "꽃 샌들",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_flower.png",
+        "princess2": "assets/clothes/princess2/sh_flower.png"
+      }
+    },
+    {
+      "id": "sh_ballet",
+      "slot": "shoes",
+      "z": 30,
+      "label": "발레 슈즈",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_ballet.png",
+        "princess2": "assets/clothes/princess2/sh_ballet.png"
+      }
+    },
+    {
+      "id": "sh_crystal",
+      "slot": "shoes",
+      "z": 30,
+      "label": "크리스탈 구두",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/sh_crystal.png",
+        "princess2": "assets/clothes/princess2/sh_crystal.png"
+      }
+    },
+    {
+      "id": "bt_tulle_p",
+      "slot": "bottom",
+      "z": 40,
+      "label": "핑크 튤 스커트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/bt_tulle_p.png",
+        "princess2": "assets/clothes/princess2/bt_tulle_p.png"
+      }
+    },
+    {
+      "id": "bt_tulle_l",
+      "slot": "bottom",
+      "z": 40,
+      "label": "라벤더 스커트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/bt_tulle_l.png",
+        "princess2": "assets/clothes/princess2/bt_tulle_l.png"
+      }
+    },
+    {
+      "id": "bt_pleat",
+      "slot": "bottom",
+      "z": 40,
+      "label": "플리츠 스커트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/bt_pleat.png",
+        "princess2": "assets/clothes/princess2/bt_pleat.png"
+      }
+    },
+    {
+      "id": "bt_jeans",
+      "slot": "bottom",
+      "z": 40,
+      "label": "데님 스커트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/bt_jeans.png",
+        "princess2": "assets/clothes/princess2/bt_jeans.png"
+      }
+    },
+    {
+      "id": "bt_pants",
+      "slot": "bottom",
+      "z": 40,
+      "label": "리본 팬츠",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/bt_pants.png",
+        "princess2": "assets/clothes/princess2/bt_pants.png"
+      }
+    },
+    {
+      "id": "bt_mermaid",
+      "slot": "bottom",
+      "z": 40,
+      "label": "인어 스커트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/bt_mermaid.png",
+        "princess2": "assets/clothes/princess2/bt_mermaid.png"
+      }
+    },
+    {
+      "id": "bt_layer",
+      "slot": "bottom",
+      "z": 40,
+      "label": "프릴 스커트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/bt_layer.png",
+        "princess2": "assets/clothes/princess2/bt_layer.png"
+      }
+    },
+    {
+      "id": "bt_gold",
+      "slot": "bottom",
+      "z": 40,
+      "label": "골드림 스커트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/bt_gold.png",
+        "princess2": "assets/clothes/princess2/bt_gold.png"
+      }
+    },
+    {
+      "id": "tp_puff",
+      "slot": "top",
+      "z": 50,
+      "label": "퍼프 블라우스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/tp_puff.png",
+        "princess2": "assets/clothes/princess2/tp_puff.png"
+      }
+    },
+    {
+      "id": "tp_purple",
+      "slot": "top",
+      "z": 50,
+      "label": "보라 보디스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/tp_purple.png",
+        "princess2": "assets/clothes/princess2/tp_purple.png"
+      }
+    },
+    {
+      "id": "tp_sailor",
+      "slot": "top",
+      "z": 50,
+      "label": "세일러 탑",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/tp_sailor.png",
+        "princess2": "assets/clothes/princess2/tp_sailor.png"
+      }
+    },
+    {
+      "id": "tp_knit",
+      "slot": "top",
+      "z": 50,
+      "label": "니트 가디건",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/tp_knit.png",
+        "princess2": "assets/clothes/princess2/tp_knit.png"
+      }
+    },
+    {
+      "id": "tp_corset",
+      "slot": "top",
+      "z": 50,
+      "label": "리본 보디스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/tp_corset.png",
+        "princess2": "assets/clothes/princess2/tp_corset.png"
+      }
+    },
+    {
+      "id": "tp_hoodie",
+      "slot": "top",
+      "z": 50,
+      "label": "별 후드",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/tp_hoodie.png",
+        "princess2": "assets/clothes/princess2/tp_hoodie.png"
+      }
+    },
+    {
+      "id": "tp_vest",
+      "slot": "top",
+      "z": 50,
+      "label": "금사 베스트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/tp_vest.png",
+        "princess2": "assets/clothes/princess2/tp_vest.png"
+      }
+    },
+    {
+      "id": "tp_heart",
+      "slot": "top",
+      "z": 50,
+      "label": "하트 탑",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/tp_heart.png",
+        "princess2": "assets/clothes/princess2/tp_heart.png"
+      }
+    },
+    {
+      "id": "dr_purple_ball",
+      "slot": "dress",
+      "z": 55,
+      "label": "보라 볼가운",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_purple_ball.png",
+        "princess2": "assets/clothes/princess2/dr_purple_ball.png"
+      }
+    },
+    {
+      "id": "dr_fairy_blue",
+      "slot": "dress",
+      "z": 55,
+      "label": "요정 블루드레스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_fairy_blue.png",
+        "princess2": "assets/clothes/princess2/dr_fairy_blue.png"
+      }
+    },
+    {
+      "id": "dr_rose",
+      "slot": "dress",
+      "z": 55,
+      "label": "장미 가운",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_rose.png",
+        "princess2": "assets/clothes/princess2/dr_rose.png"
+      }
+    },
+    {
+      "id": "dr_mint",
+      "slot": "dress",
+      "z": 55,
+      "label": "민트 파티",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_mint.png",
+        "princess2": "assets/clothes/princess2/dr_mint.png"
+      }
+    },
+    {
+      "id": "dr_gold",
+      "slot": "dress",
+      "z": 55,
+      "label": "골드 갈라",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_gold.png",
+        "princess2": "assets/clothes/princess2/dr_gold.png"
+      }
+    },
+    {
+      "id": "dr_snow",
+      "slot": "dress",
+      "z": 55,
+      "label": "스노우 드레스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_snow.png",
+        "princess2": "assets/clothes/princess2/dr_snow.png"
+      }
+    },
+    {
+      "id": "dr_rainbow",
+      "slot": "dress",
+      "z": 55,
+      "label": "레인보우",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_rainbow.png",
+        "princess2": "assets/clothes/princess2/dr_rainbow.png"
+      }
+    },
+    {
+      "id": "dr_star",
+      "slot": "dress",
+      "z": 55,
+      "label": "별빛 드레스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_star.png",
+        "princess2": "assets/clothes/princess2/dr_star.png"
+      }
+    },
+    {
+      "id": "dr_sakura",
+      "slot": "dress",
+      "z": 55,
+      "label": "벚꽃 기모노",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_sakura.png",
+        "princess2": "assets/clothes/princess2/dr_sakura.png"
+      }
+    },
+    {
+      "id": "dr_tea",
+      "slot": "dress",
+      "z": 55,
+      "label": "티타임 원피스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_tea.png",
+        "princess2": "assets/clothes/princess2/dr_tea.png"
+      }
+    },
+    {
+      "id": "dr_ocean",
+      "slot": "dress",
+      "z": 55,
+      "label": "바다 드레스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_ocean.png",
+        "princess2": "assets/clothes/princess2/dr_ocean.png"
+      }
+    },
+    {
+      "id": "dr_candy",
+      "slot": "dress",
+      "z": 55,
+      "label": "캔디 원피스",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/dr_candy.png",
+        "princess2": "assets/clothes/princess2/dr_candy.png"
+      }
+    },
+    {
+      "id": "wp_fairy",
+      "slot": "wings",
+      "z": 60,
+      "label": "요정 날개",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/wp_fairy.png",
+        "princess2": "assets/clothes/princess2/wp_fairy.png"
+      }
+    },
+    {
+      "id": "wp_butterfly",
+      "slot": "wings",
+      "z": 60,
+      "label": "나비 날개",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/wp_butterfly.png",
+        "princess2": "assets/clothes/princess2/wp_butterfly.png"
+      }
+    },
+    {
+      "id": "wp_angel",
+      "slot": "wings",
+      "z": 60,
+      "label": "천사 날개",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/wp_angel.png",
+        "princess2": "assets/clothes/princess2/wp_angel.png"
+      }
+    },
+    {
+      "id": "wp_cape_p",
+      "slot": "wings",
+      "z": 60,
+      "label": "핑크 망토",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/wp_cape_p.png",
+        "princess2": "assets/clothes/princess2/wp_cape_p.png"
+      }
+    },
+    {
+      "id": "wp_cape_r",
+      "slot": "wings",
+      "z": 60,
+      "label": "루비 망토",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/wp_cape_r.png",
+        "princess2": "assets/clothes/princess2/wp_cape_r.png"
+      }
+    },
+    {
+      "id": "wp_dragon",
+      "slot": "wings",
+      "z": 60,
+      "label": "드래곤 윙",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/wp_dragon.png",
+        "princess2": "assets/clothes/princess2/wp_dragon.png"
+      }
+    },
+    {
+      "id": "wp_cape_star",
+      "slot": "wings",
+      "z": 60,
+      "label": "별 망토",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/wp_cape_star.png",
+        "princess2": "assets/clothes/princess2/wp_cape_star.png"
+      }
+    },
+    {
+      "id": "wp_petal",
+      "slot": "wings",
+      "z": 60,
+      "label": "꽃잎 윙",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/wp_petal.png",
+        "princess2": "assets/clothes/princess2/wp_petal.png"
+      }
+    },
+    {
+      "id": "jw_heart_choker",
+      "slot": "jewelry",
+      "z": 70,
+      "label": "하트 초커",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/jw_heart_choker.png",
+        "princess2": "assets/clothes/princess2/jw_heart_choker.png"
+      }
+    },
+    {
+      "id": "jw_pearl",
+      "slot": "jewelry",
+      "z": 70,
+      "label": "진주 목걸이",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/jw_pearl.png",
+        "princess2": "assets/clothes/princess2/jw_pearl.png"
+      }
+    },
+    {
+      "id": "jw_gold_heart",
+      "slot": "jewelry",
+      "z": 70,
+      "label": "골드 하트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/jw_gold_heart.png",
+        "princess2": "assets/clothes/princess2/jw_gold_heart.png"
+      }
+    },
+    {
+      "id": "jw_ribbon",
+      "slot": "jewelry",
+      "z": 70,
+      "label": "리본 목걸이",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/jw_ribbon.png",
+        "princess2": "assets/clothes/princess2/jw_ribbon.png"
+      }
+    },
+    {
+      "id": "jw_star",
+      "slot": "jewelry",
+      "z": 70,
+      "label": "별 펜던트",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/jw_star.png",
+        "princess2": "assets/clothes/princess2/jw_star.png"
+      }
+    },
+    {
+      "id": "jw_flower",
+      "slot": "jewelry",
+      "z": 70,
+      "label": "꽃 목걸이",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/jw_flower.png",
+        "princess2": "assets/clothes/princess2/jw_flower.png"
+      }
+    },
+    {
+      "id": "jw_crystal",
+      "slot": "jewelry",
+      "z": 70,
+      "label": "크리스탈 초커",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/jw_crystal.png",
+        "princess2": "assets/clothes/princess2/jw_crystal.png"
+      }
+    },
+    {
+      "id": "jw_cameo",
+      "slot": "jewelry",
+      "z": 70,
+      "label": "카메오",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/jw_cameo.png",
+        "princess2": "assets/clothes/princess2/jw_cameo.png"
+      }
+    },
+    {
+      "id": "hr_tiara_p",
+      "slot": "hair",
+      "z": 80,
+      "label": "보라 티아라",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_tiara_p.png",
+        "princess2": "assets/clothes/princess2/hr_tiara_p.png"
+      }
+    },
+    {
+      "id": "hr_crown_b",
+      "slot": "hair",
+      "z": 80,
+      "label": "핑크 왕관",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_crown_b.png",
+        "princess2": "assets/clothes/princess2/hr_crown_b.png"
+      }
+    },
+    {
+      "id": "hr_bow_big",
+      "slot": "hair",
+      "z": 80,
+      "label": "큰 리본",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_bow_big.png",
+        "princess2": "assets/clothes/princess2/hr_bow_big.png"
+      }
+    },
+    {
+      "id": "hr_flower",
+      "slot": "hair",
+      "z": 80,
+      "label": "꽃 화관",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_flower.png",
+        "princess2": "assets/clothes/princess2/hr_flower.png"
+      }
+    },
+    {
+      "id": "hr_cat",
+      "slot": "hair",
+      "z": 80,
+      "label": "고양이 귀",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_cat.png",
+        "princess2": "assets/clothes/princess2/hr_cat.png"
+      }
+    },
+    {
+      "id": "hr_veil",
+      "slot": "hair",
+      "z": 80,
+      "label": "베일",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_veil.png",
+        "princess2": "assets/clothes/princess2/hr_veil.png"
+      }
+    },
+    {
+      "id": "hr_beret",
+      "slot": "hair",
+      "z": 80,
+      "label": "베레모",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_beret.png",
+        "princess2": "assets/clothes/princess2/hr_beret.png"
+      }
+    },
+    {
+      "id": "hr_halo",
+      "slot": "hair",
+      "z": 80,
+      "label": "헤일로",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_halo.png",
+        "princess2": "assets/clothes/princess2/hr_halo.png"
+      }
+    },
+    {
+      "id": "hr_clips",
+      "slot": "hair",
+      "z": 80,
+      "label": "별 핀",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_clips.png",
+        "princess2": "assets/clothes/princess2/hr_clips.png"
+      }
+    },
+    {
+      "id": "hr_witch",
+      "slot": "hair",
+      "z": 80,
+      "label": "마녀 모자",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hr_witch.png",
+        "princess2": "assets/clothes/princess2/hr_witch.png"
+      }
+    },
+    {
+      "id": "hd_wand",
+      "slot": "hand",
+      "z": 90,
+      "label": "별 지팡이",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hd_wand.png",
+        "princess2": "assets/clothes/princess2/hd_wand.png"
+      }
+    },
+    {
+      "id": "hd_mirror",
+      "slot": "hand",
+      "z": 90,
+      "label": "손거울",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hd_mirror.png",
+        "princess2": "assets/clothes/princess2/hd_mirror.png"
+      }
+    },
+    {
+      "id": "hd_fan",
+      "slot": "hand",
+      "z": 90,
+      "label": "부채",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hd_fan.png",
+        "princess2": "assets/clothes/princess2/hd_fan.png"
+      }
+    },
+    {
+      "id": "hd_bouquet",
+      "slot": "hand",
+      "z": 90,
+      "label": "꽃다발",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hd_bouquet.png",
+        "princess2": "assets/clothes/princess2/hd_bouquet.png"
+      }
+    },
+    {
+      "id": "hd_parasol",
+      "slot": "hand",
+      "z": 90,
+      "label": "양산",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hd_parasol.png",
+        "princess2": "assets/clothes/princess2/hd_parasol.png"
+      }
+    },
+    {
+      "id": "hd_teddy",
+      "slot": "hand",
+      "z": 90,
+      "label": "테디베어",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hd_teddy.png",
+        "princess2": "assets/clothes/princess2/hd_teddy.png"
+      }
+    },
+    {
+      "id": "hd_book",
+      "slot": "hand",
+      "z": 90,
+      "label": "마법책",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hd_book.png",
+        "princess2": "assets/clothes/princess2/hd_book.png"
+      }
+    },
+    {
+      "id": "hd_balloon",
+      "slot": "hand",
+      "z": 90,
+      "label": "하트 풍선",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/hd_balloon.png",
+        "princess2": "assets/clothes/princess2/hd_balloon.png"
+      }
+    },
+    {
+      "id": "pt_fairy_cat",
+      "slot": "pet",
+      "z": 95,
+      "label": "요정 고양이",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/pt_fairy_cat.png",
+        "princess2": "assets/clothes/princess2/pt_fairy_cat.png"
+      }
+    },
+    {
+      "id": "pt_bunny",
+      "slot": "pet",
+      "z": 95,
+      "label": "리본 토끼",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/pt_bunny.png",
+        "princess2": "assets/clothes/princess2/pt_bunny.png"
+      }
+    },
+    {
+      "id": "pt_dragon",
+      "slot": "pet",
+      "z": 95,
+      "label": "아기 드래곤",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/pt_dragon.png",
+        "princess2": "assets/clothes/princess2/pt_dragon.png"
+      }
+    },
+    {
+      "id": "pt_owl",
+      "slot": "pet",
+      "z": 95,
+      "label": "부엉이",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/pt_owl.png",
+        "princess2": "assets/clothes/princess2/pt_owl.png"
+      }
+    },
+    {
+      "id": "pt_fox",
+      "slot": "pet",
+      "z": 95,
+      "label": "여우",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/pt_fox.png",
+        "princess2": "assets/clothes/princess2/pt_fox.png"
+      }
+    },
+    {
+      "id": "pt_puppy",
+      "slot": "pet",
+      "z": 95,
+      "label": "강아지",
+      "srcByCharacter": {
+        "princess1": "assets/clothes/princess1/pt_puppy.png",
+        "princess2": "assets/clothes/princess2/pt_puppy.png"
+      }
+    }
+  ]
+}

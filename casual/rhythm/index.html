@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a1033">
+<title>피카츄 리듬</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <div class="score-bar">
+      <span class="chip chip-score">
+        <span class="chip-label">점수</span>
+        <span id="hud-score">0</span>
+      </span>
+      <span class="chip chip-combo">
+        <span class="chip-label">콤보</span>
+        <span id="hud-combo">0</span>
+      </span>
+      <span class="chip chip-best">
+        <span class="chip-label">베스트</span>
+        <span id="hud-best">0</span>
+      </span>
+    </div>
+    <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+      <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <main class="stage-wrap">
+    <div class="stage-bg" aria-hidden="true">
+      <div class="stage-glow stage-glow-a"></div>
+      <div class="stage-glow stage-glow-b"></div>
+      <div class="stage-spark stage-spark-a">⚡</div>
+      <div class="stage-spark stage-spark-b">⚡</div>
+      <div class="stage-spark stage-spark-c">⚡</div>
+    </div>
+
+    <div class="mascot-wrap" id="mascot-wrap">
+      <div class="mascot-glow" id="mascot-glow" aria-hidden="true"></div>
+      <img id="mascot" class="mascot-img" alt="피카츄" draggable="false"
+        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png">
+    </div>
+
+    <div id="combo-display" class="combo-display hidden">
+      <span id="combo-num">0</span>
+      <span class="combo-word">콤보</span>
+    </div>
+
+    <canvas id="game-canvas"></canvas>
+
+    <div id="judge-popup" class="judge-popup" aria-hidden="true"></div>
+
+    <div id="countdown" class="countdown hidden"></div>
+
+    <div id="lane-buttons" class="lane-buttons" aria-hidden="true">
+      <button class="lane-btn" type="button" data-lane="0"><span class="lane-key">D</span></button>
+      <button class="lane-btn" type="button" data-lane="1"><span class="lane-key">F</span></button>
+      <button class="lane-btn" type="button" data-lane="2"><span class="lane-key">J</span></button>
+      <button class="lane-btn" type="button" data-lane="3"><span class="lane-key">K</span></button>
+    </div>
+
+    <div id="start-overlay" class="overlay">
+      <div class="overlay-card overlay-card-wide">
+        <h2>피카츄 리듬</h2>
+        <p>노래를 고르고, 노트가 라인에 닿을 때 탭하세요!<br>키보드 <b>D · F · J · K</b> 또는 화면 하단을 탭해요.</p>
+        <div id="song-list" class="song-list" role="listbox" aria-label="스테이지 곡 선택"></div>
+        <p class="best-line">이 곡 베스트 <strong id="start-best">0</strong></p>
+        <button id="btn-start" class="btn" disabled>시작하기</button>
+        <p id="song-load-status" class="song-load-status" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div id="pause-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <h2>일시정지</h2>
+        <p>화면을 나갔다 오셨네요.<br>이어서 플레이해 볼까요?</p>
+        <button id="btn-resume" class="btn">계속하기</button>
+      </div>
+    </div>
+
+    <div id="result-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <h2>결과</h2>
+        <div class="result-rank" id="result-rank">S</div>
+        <div class="result-stats">
+          <div class="stat"><span class="stat-label">점수</span><span id="result-score">0</span></div>
+          <div class="stat"><span class="stat-label">최고 콤보</span><span id="result-combo">0</span></div>
+          <div class="stat"><span class="stat-label">정확도</span><span id="result-acc">0%</span></div>
+        </div>
+        <div class="judge-counts">
+          <span class="jc jc-perfect">퍼펙트 <b id="jc-perfect">0</b></span>
+          <span class="jc jc-good">굿 <b id="jc-good">0</b></span>
+          <span class="jc jc-miss">미스 <b id="jc-miss">0</b></span>
+        </div>
+        <p class="best-line"><span id="result-new-best" class="new-best hidden">신기록!</span>이 곡 베스트 <strong id="result-best">0</strong></p>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn">다시하기</button>
+          <button id="btn-song-select" class="btn btn-secondary" type="button">곡 선택</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="hint">D F J K 키 또는 레인을 탭해서 노트를 맞춰보세요 · 히트라인에 닿는 순간이 타이밍!</footer>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="bgm-controller.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

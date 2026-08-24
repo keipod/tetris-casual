@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#3d6b2e">
+<title>포켓몬 잡기 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.js"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">포켓몬 잡기 2</h1>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="설명">설명</button>
+      <button id="btn-reset" class="icon-btn" type="button" aria-label="다시하기">다시</button>
+      <button id="btn-party" class="icon-btn" type="button" aria-label="파티">파티</button>
+      <button id="btn-dex" class="icon-btn" type="button" aria-label="도감">도감</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리" aria-pressed="true">소리</button>
+    </div>
+  </header>
+
+  <div class="play-shell">
+    <main class="stage">
+      <canvas id="field-canvas" aria-label="필드"></canvas>
+      <div id="field-toast" class="field-toast" hidden></div>
+      <div id="battle-layer" class="battle-layer hidden" aria-hidden="true">
+        <canvas id="battle-canvas"></canvas>
+        <div class="battle-vignette" aria-hidden="true"></div>
+        <div class="battle-blur" aria-hidden="true"></div>
+        <div id="battle-flash" class="battle-flash" aria-hidden="true"></div>
+        <div id="battle-fx" class="battle-fx" aria-hidden="true"></div>
+        <div id="battle-ui" class="battle-ui"></div>
+      </div>
+      <div id="catch-layer" class="catch-layer hidden" aria-hidden="true">
+        <canvas id="catch-canvas" aria-label="포획"></canvas>
+      </div>
+      <div id="card-layer" class="card-layer hidden" aria-hidden="true"></div>
+      <div id="overlay" class="overlay" hidden></div>
+    </main>
+
+    <aside id="edge-pad" class="dpad-panel" aria-label="이동 키패드">
+      <div class="dpad" role="group" aria-label="방향">
+        <button type="button" class="dpad-btn up" data-dir="up" aria-label="위">▲</button>
+        <button type="button" class="dpad-btn left" data-dir="left" aria-label="왼쪽">◀</button>
+        <button type="button" class="dpad-btn right" data-dir="right" aria-label="오른쪽">▶</button>
+        <button type="button" class="dpad-btn down" data-dir="down" aria-label="아래">▼</button>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="dock" id="dock">
+    <p class="hint">아래·옆 방향키로 이동 · 보이는 포켓몬에게 다가가기 · 볼 줍기 · WASD</p>
+  </footer>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script type="module" src="game.js"></script>
+</body>
+</html>

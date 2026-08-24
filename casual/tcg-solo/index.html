@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#142d1f">
+<title>TCG 솔리테어</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@500;600;700&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+
+  <header class="topbar">
+    <a class="back-link" href="../">목록</a>
+    <h1 class="title">TCG 솔리테어</h1>
+    <div class="topbar-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명">?</button>
+      <button id="btn-restart" class="icon-btn" type="button" aria-label="새 게임">↻</button>
+    </div>
+  </header>
+
+  <div class="hud">
+    <div class="hud-stat">
+      <span class="hud-label">에너지</span>
+      <div class="energy-track" id="energy-track" aria-label="남은 에너지"></div>
+    </div>
+    <div class="hud-stat hud-right">
+      <span class="hud-label">남은 카드</span>
+      <span class="hud-value" id="cards-left">--</span>
+    </div>
+    <div class="hud-stat hud-right">
+      <span class="hud-label">최고 기록</span>
+      <span class="hud-value" id="best-value">0장</span>
+    </div>
+  </div>
+
+  <main class="board-wrap">
+    <div id="board" class="board" aria-label="카드 보드"></div>
+  </main>
+
+  <footer class="action-bar" id="action-bar">
+    <div class="action-empty" id="action-empty">
+      <p>카드를 탭해 골라보세요. 같은 진화 라인끼리 짝지으면 <strong>무료</strong>로 치울 수 있어요!</p>
+    </div>
+    <div class="action-selected hidden" id="action-selected">
+      <img id="action-thumb" class="action-thumb" src="" alt="">
+      <div class="action-info">
+        <span class="action-name" id="action-name">-</span>
+        <span class="action-hint" id="action-hint">진화 상대를 탭하면 무료예요</span>
+      </div>
+      <button id="btn-release" class="btn gold" type="button">방출 <span id="btn-release-cost">⚡1</span></button>
+    </div>
+  </footer>
+
+  <div class="toast-stack" id="toast-stack"></div>
+
+  <!-- ===================== RESULT OVERLAY ===================== -->
+  <div id="overlay-result" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="result-title">
+    <div class="overlay-panel">
+      <h2 id="result-title" class="result-title">승리!</h2>
+      <p id="result-msg">보드의 카드를 모두 치웠어요</p>
+      <div class="overlay-actions">
+        <button id="btn-result-again" class="btn gold" type="button">다시하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== HOWTO OVERLAY ===================== -->
+  <div id="overlay-howto" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="howto-title">
+    <div class="howto-panel">
+      <header class="howto-head">
+        <h2 id="howto-title">게임 설명</h2>
+        <button id="btn-howto-close" class="icon-btn" type="button" aria-label="닫기">✕</button>
+      </header>
+      <div class="howto-body">
+
+        <article class="howto-card">
+          <h3>목표</h3>
+          <p>보드에 깔린 포켓몬 카드를 <strong>모두 치우면 승리</strong>예요. 에너지가 바닥났는데 더 이상 치울 카드가 없으면 패배합니다.</p>
+        </article>
+
+        <article class="howto-card">
+          <h3>카드 혼자 치우기</h3>
+          <div class="howto-illu" aria-hidden="true">
+            <span class="mini-card"><span class="mini-cost">⚡1</span></span>
+            <span class="howto-arrow">→</span>
+            <span class="mini-gone">치움!</span>
+          </div>
+          <p>카드를 탭해서 선택한 뒤 <strong>방출</strong> 버튼을 누르면 에너지를 써서 혼자 치울 수 있어요. 기본 카드는 ⚡1, 진화 카드는 ⚡2가 필요해요.</p>
+        </article>
+
+        <article class="howto-card">
+          <h3>무료 진화 (핵심 전략!)</h3>
+          <div class="howto-illu" aria-hidden="true">
+            <span class="mini-card">기본</span>
+            <span class="howto-arrow">+</span>
+            <span class="mini-card">진화</span>
+            <span class="howto-arrow">=</span>
+            <span class="mini-gone free">무료!</span>
+          </div>
+          <p>카드를 하나 선택한 뒤, 같은 진화 라인의 카드(예: 이상해씨 → 이상해풀)를 탭하면 <strong>둘 다 에너지 없이</strong> 사라져요. 어떤 카드가 어떤 카드로 진화하는지 잘 기억해두세요!</p>
+        </article>
+
+        <article class="howto-card">
+          <h3>선택 바꾸기</h3>
+          <p>선택한 카드와 진화 관계가 아닌 다른 카드를 탭하면 선택만 바뀔 뿐 에너지는 소모되지 않아요. 자유롭게 살펴보고 짝을 찾아보세요.</p>
+        </article>
+
+      </div>
+      <footer class="howto-foot">
+        <button id="btn-howto-ok" class="btn gold" type="button">시작하기</button>
+      </footer>
+    </div>
+  </div>
+
+</div>
+<script src="game.js"></script>
+</body>
+</html>

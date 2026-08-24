@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#3d6b2e">
+<title>마을 심부름</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">마을 심부름</h1>
+    <div class="star-badge" id="star-badge" aria-label="별">
+      <span class="star-icon" aria-hidden="true">⭐</span>
+      <span id="star-count">0</span><span class="star-max">/2</span>
+    </div>
+  </header>
+
+  <p class="quest-hint" id="quest-hint">마을을 걸어다니며 사람들과 이야기해 보세요.</p>
+
+  <main class="stage" id="stage">
+    <canvas id="game-canvas" width="640" height="480" aria-label="마을 지도"></canvas>
+
+    <div id="talk-prompt" class="talk-prompt" hidden>스페이스바로 대화하기</div>
+
+    <div id="dpad" class="dpad" aria-label="이동 버튼">
+      <button type="button" class="dpad-btn dpad-up" data-dir="up" aria-label="위">▲</button>
+      <button type="button" class="dpad-btn dpad-left" data-dir="left" aria-label="왼쪽">◀</button>
+      <button type="button" class="dpad-btn dpad-right" data-dir="right" aria-label="오른쪽">▶</button>
+      <button type="button" class="dpad-btn dpad-down" data-dir="down" aria-label="아래">▼</button>
+    </div>
+
+    <button type="button" id="talk-btn" class="talk-btn" aria-label="대화하기">대화</button>
+
+    <div id="dialog-box" class="dialog-box" hidden>
+      <div class="dialog-name" id="dialog-name">NPC</div>
+      <div class="dialog-text" id="dialog-text"></div>
+      <button type="button" id="dialog-next" class="dialog-next">다음 ▶</button>
+    </div>
+
+    <div id="toast" class="toast" hidden></div>
+  </main>
+
+  <footer class="dock">
+    <p class="hint">방향키/D패드로 이동 · 스페이스바/대화 버튼으로 말하기</p>
+  </footer>
+</div>
+<script type="module" src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,709 @@
+{
+      "types": [
+            "grass",
+            "fire",
+            "water",
+            "lightning",
+            "psychic",
+            "fighting",
+            "darkness",
+            "metal",
+            "dragon",
+            "colorless"
+      ],
+      "cards": [
+            {
+                  "id": "bulbasaur",
+                  "dex": 1,
+                  "name": "이상해씨",
+                  "type": "grass",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": "fire",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "vine",
+                              "name": "덩굴채찍",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "ivysaur",
+                  "dex": 2,
+                  "name": "이상해풀",
+                  "type": "grass",
+                  "stage": "stage1",
+                  "evolves_from": "bulbasaur",
+                  "hp": 90,
+                  "retreat": 2,
+                  "weakness": "fire",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "razor2",
+                              "name": "잎날가르기",
+                              "damage": 40
+                        }
+                  ]
+            },
+            {
+                  "id": "charmander",
+                  "dex": 4,
+                  "name": "파이리",
+                  "type": "fire",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": "water",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "ember",
+                              "name": "불꽃세례",
+                              "damage": 30
+                        }
+                  ]
+            },
+            {
+                  "id": "charmeleon",
+                  "dex": 5,
+                  "name": "리자드",
+                  "type": "fire",
+                  "stage": "stage1",
+                  "evolves_from": "charmander",
+                  "hp": 90,
+                  "retreat": 2,
+                  "weakness": "water",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "flame",
+                              "name": "화염방사",
+                              "damage": 50
+                        }
+                  ]
+            },
+            {
+                  "id": "squirtle",
+                  "dex": 7,
+                  "name": "꼬부기",
+                  "type": "water",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": "lightning",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "bubble",
+                              "name": "거품",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "wartortle",
+                  "dex": 8,
+                  "name": "어니부기",
+                  "type": "water",
+                  "stage": "stage1",
+                  "evolves_from": "squirtle",
+                  "hp": 90,
+                  "retreat": 2,
+                  "weakness": "lightning",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "aqua",
+                              "name": "아쿠아제트",
+                              "damage": 50
+                        }
+                  ]
+            },
+            {
+                  "id": "pikachu",
+                  "dex": 25,
+                  "name": "피카츄",
+                  "type": "lightning",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "fighting",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "nuzzle",
+                              "name": "볼부비부비",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "raichu",
+                  "dex": 26,
+                  "name": "라이츄",
+                  "type": "lightning",
+                  "stage": "stage1",
+                  "evolves_from": "pikachu",
+                  "hp": 100,
+                  "retreat": 1,
+                  "weakness": "fighting",
+                  "prize": 2,
+                  "attacks": [
+                        {
+                              "id": "spark",
+                              "name": "스파크",
+                              "damage": 40
+                        }
+                  ]
+            },
+            {
+                  "id": "jigglypuff",
+                  "dex": 39,
+                  "name": "푸린",
+                  "type": "colorless",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": "fighting",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "pound",
+                              "name": "막치기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "meowth",
+                  "dex": 52,
+                  "name": "나옹",
+                  "type": "colorless",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "fighting",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "scratch",
+                              "name": "할퀴기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "psyduck",
+                  "dex": 54,
+                  "name": "고라파덕",
+                  "type": "water",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 2,
+                  "weakness": "lightning",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "confuse",
+                              "name": "사념의박치기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "growlithe",
+                  "dex": 58,
+                  "name": "가디",
+                  "type": "fire",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 2,
+                  "weakness": "water",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "bite",
+                              "name": "물기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "abra",
+                  "dex": 63,
+                  "name": "캐이시",
+                  "type": "psychic",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "darkness",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "teleport",
+                              "name": "순간이동",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "kadabra",
+                  "dex": 64,
+                  "name": "윤겔라",
+                  "type": "psychic",
+                  "stage": "stage1",
+                  "evolves_from": "abra",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": "darkness",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "psy2",
+                              "name": "사이코키네시스",
+                              "damage": 50
+                        }
+                  ]
+            },
+            {
+                  "id": "machop",
+                  "dex": 66,
+                  "name": "알통몬",
+                  "type": "fighting",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 2,
+                  "weakness": "psychic",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "lowkick",
+                              "name": "안다리걸기",
+                              "damage": 30
+                        }
+                  ]
+            },
+            {
+                  "id": "machoke",
+                  "dex": 67,
+                  "name": "근육몬",
+                  "type": "fighting",
+                  "stage": "stage1",
+                  "evolves_from": "machop",
+                  "hp": 100,
+                  "retreat": 2,
+                  "weakness": "psychic",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "submission",
+                              "name": "배지기",
+                              "damage": 50
+                        }
+                  ]
+            },
+            {
+                  "id": "geodude",
+                  "dex": 74,
+                  "name": "꼬마돌",
+                  "type": "fighting",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 2,
+                  "weakness": "grass",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "tackle",
+                              "name": "몸통박치기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "magnemite",
+                  "dex": 81,
+                  "name": "코일",
+                  "type": "lightning",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "fighting",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "magnet",
+                              "name": "전자포",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "gastly",
+                  "dex": 92,
+                  "name": "고오스",
+                  "type": "psychic",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "darkness",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "lick",
+                              "name": "핥기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "onix",
+                  "dex": 95,
+                  "name": "롱스톤",
+                  "type": "fighting",
+                  "stage": "basic",
+                  "hp": 110,
+                  "retreat": 3,
+                  "weakness": "grass",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "rockthrow",
+                              "name": "돌떨구기",
+                              "damage": 30
+                        }
+                  ]
+            },
+            {
+                  "id": "voltorb",
+                  "dex": 100,
+                  "name": "찌리리공",
+                  "type": "lightning",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "fighting",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "charge",
+                              "name": "전기쇼크",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "cubone",
+                  "dex": 104,
+                  "name": "탕구리",
+                  "type": "fighting",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 2,
+                  "weakness": "grass",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "bone",
+                              "name": "뼈다귀메롯메롯",
+                              "damage": 30
+                        }
+                  ]
+            },
+            {
+                  "id": "horsea",
+                  "dex": 116,
+                  "name": "쏘드라",
+                  "type": "water",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "lightning",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "smokescreen",
+                              "name": "연막",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "staryu",
+                  "dex": 120,
+                  "name": "별가사리",
+                  "type": "water",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "lightning",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "rapidspin",
+                              "name": "고속스핀",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "magikarp",
+                  "dex": 129,
+                  "name": "잉어킹",
+                  "type": "water",
+                  "stage": "basic",
+                  "hp": 50,
+                  "retreat": 1,
+                  "weakness": "lightning",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "splash",
+                              "name": "튀어오르기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "eevee",
+                  "dex": 133,
+                  "name": "이브이",
+                  "type": "colorless",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "fighting",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "tackle2",
+                              "name": "몸통박치기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "vaporeon",
+                  "dex": 134,
+                  "name": "샤미드",
+                  "type": "water",
+                  "stage": "stage1",
+                  "evolves_from": "eevee",
+                  "hp": 110,
+                  "retreat": 2,
+                  "weakness": "lightning",
+                  "prize": 2,
+                  "attacks": [
+                        {
+                              "id": "aurora",
+                              "name": "오로라빔",
+                              "damage": 50
+                        }
+                  ]
+            },
+            {
+                  "id": "jolteon",
+                  "dex": 135,
+                  "name": "쥬피썬더",
+                  "type": "lightning",
+                  "stage": "stage1",
+                  "evolves_from": "eevee",
+                  "hp": 100,
+                  "retreat": 1,
+                  "weakness": "fighting",
+                  "prize": 2,
+                  "attacks": [
+                        {
+                              "id": "pin",
+                              "name": "바늘미사일",
+                              "damage": 50
+                        }
+                  ]
+            },
+            {
+                  "id": "flareon",
+                  "dex": 136,
+                  "name": "부스터",
+                  "type": "fire",
+                  "stage": "stage1",
+                  "evolves_from": "eevee",
+                  "hp": 110,
+                  "retreat": 2,
+                  "weakness": "water",
+                  "prize": 2,
+                  "attacks": [
+                        {
+                              "id": "firemane",
+                              "name": "화염갈기",
+                              "damage": 50
+                        }
+                  ]
+            },
+            {
+                  "id": "dratini",
+                  "dex": 147,
+                  "name": "미뇽",
+                  "type": "dragon",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": null,
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "wrap",
+                              "name": "김밥말이",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "chikorita",
+                  "dex": 152,
+                  "name": "치코리타",
+                  "type": "grass",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": "fire",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "razorleaf",
+                              "name": "잎날가르기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "cyndaquil",
+                  "dex": 155,
+                  "name": "브케인",
+                  "type": "fire",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": "water",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "smokescreen2",
+                              "name": "연막",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "totodile",
+                  "dex": 158,
+                  "name": "리아코",
+                  "type": "water",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": "lightning",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "scratch2",
+                              "name": "할퀴기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "houndour",
+                  "dex": 228,
+                  "name": "델빌",
+                  "type": "darkness",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 1,
+                  "weakness": "fighting",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "howl",
+                              "name": "울부짖기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "larvitar",
+                  "dex": 246,
+                  "name": "애버라스",
+                  "type": "fighting",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 2,
+                  "weakness": "grass",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "sand",
+                              "name": "모래뿌리기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "ralts",
+                  "dex": 280,
+                  "name": "랄토스",
+                  "type": "psychic",
+                  "stage": "basic",
+                  "hp": 70,
+                  "retreat": 1,
+                  "weakness": "darkness",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "confusion",
+                              "name": "염동력",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "aron",
+                  "dex": 304,
+                  "name": "코코파스",
+                  "type": "metal",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 2,
+                  "weakness": "fire",
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "harden2",
+                              "name": "단단해지기",
+                              "damage": 20
+                        }
+                  ]
+            },
+            {
+                  "id": "bagon",
+                  "dex": 371,
+                  "name": "아공이",
+                  "type": "dragon",
+                  "stage": "basic",
+                  "hp": 80,
+                  "retreat": 2,
+                  "weakness": null,
+                  "prize": 1,
+                  "attacks": [
+                        {
+                              "id": "headbutt",
+                              "name": "박치기",
+                              "damage": 20
+                        }
+                  ]
+            }
+      ]
+}

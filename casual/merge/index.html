@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#5b6fd8">
+<title>진화 머지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <div class="score-bar">
+      <span class="chip"><span class="chip-label">점수</span><span id="score">0</span></span>
+      <span class="chip"><span class="chip-label">최고</span><span id="best">0</span></span>
+    </div>
+    <div class="top-actions">
+      <button id="btn-new" class="icon-btn" type="button" aria-label="새 게임" title="새 게임">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 12a8 8 0 1 1 2.6 5.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <path d="M4 12V7M4 12h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </button>
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage-wrap">
+    <div class="board-wrap">
+      <div class="board-frame">
+        <div id="board-bg" class="board-bg" aria-hidden="true"></div>
+        <div id="tile-layer" class="tile-layer"></div>
+      </div>
+      <div id="evo-toast" class="evo-toast" hidden></div>
+    </div>
+
+    <div class="dpad" role="group" aria-label="이동 버튼">
+      <button class="dpad-btn dpad-up" data-dir="up" type="button" aria-label="위로">▲</button>
+      <button class="dpad-btn dpad-left" data-dir="left" type="button" aria-label="왼쪽으로">◀</button>
+      <button class="dpad-btn dpad-right" data-dir="right" type="button" aria-label="오른쪽으로">▶</button>
+      <button class="dpad-btn dpad-down" data-dir="down" type="button" aria-label="아래로">▼</button>
+    </div>
+  </main>
+
+  <footer class="hint">스와이프 또는 방향키로 이동 · 같은 포켓몬 두 마리를 합치면 진화해요</footer>
+</div>
+
+<div id="help-overlay" class="overlay help-overlay" hidden>
+  <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <h2 id="help-title">진화 머지 설명서</h2>
+    <p class="help-lead">같은 포켓몬 타일 두 개를 <strong>부딪히게</strong> 밀면 다음 단계로 <strong>진화</strong>해요!</p>
+
+    <div class="help-lines">
+      <div class="help-line">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" alt="이상해씨" loading="lazy">
+        <span class="help-arrow">→</span>
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png" alt="이상해풀" loading="lazy">
+        <span class="help-arrow">→</span>
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" alt="이상해꽃" loading="lazy">
+      </div>
+      <div class="help-line">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" alt="파이리" loading="lazy">
+        <span class="help-arrow">→</span>
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/5.png" alt="리자드" loading="lazy">
+        <span class="help-arrow">→</span>
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" alt="리자몽" loading="lazy">
+      </div>
+      <div class="help-line">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png" alt="꼬부기" loading="lazy">
+        <span class="help-arrow">→</span>
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/8.png" alt="어니부기" loading="lazy">
+        <span class="help-arrow">→</span>
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" alt="거북왕" loading="lazy">
+      </div>
+      <div class="help-line help-line-rare">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/172.png" alt="피츄" loading="lazy">
+        <span class="help-arrow">→</span>
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="피카츄" loading="lazy">
+        <span class="help-rare-badge">희귀</span>
+      </div>
+    </div>
+
+    <ul class="help-list">
+      <li>스와이프(드래그) · 방향키/WASD · 화면 아래 방향 버튼으로 모든 타일이 한 방향으로 밀려요.</li>
+      <li>밀리다가 같은 포켓몬끼리 만나면 합쳐지며 다음 단계로 진화해요.</li>
+      <li>진화할 때마다 점수를 얻고, 최고 점수는 자동으로 저장돼요.</li>
+      <li>피츄는 드물게 나타나고, 합치면 희귀한 피카츄가 돼요.</li>
+      <li>보드가 가득 차고 더 이상 합칠 수 없으면 게임이 끝나요.</li>
+    </ul>
+    <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+  </div>
+</div>
+
+<div id="gameover-overlay" class="overlay" hidden>
+  <div class="overlay-card gameover-card" role="dialog" aria-modal="true" aria-labelledby="gameover-title">
+    <h2 id="gameover-title">게임 종료!</h2>
+    <p class="gameover-score">이번 점수 <strong id="final-score">0</strong></p>
+    <p class="gameover-best" id="final-best-msg">최고 점수 <strong id="final-best">0</strong></p>
+    <button type="button" class="retry" id="btn-retry">다시 하기</button>
+  </div>
+</div>
+
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

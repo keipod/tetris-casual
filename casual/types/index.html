@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#171226">
+<title>타입 트레이너</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <div class="score-bar">
+      <span class="chip"><span class="chip-label">연속</span><span id="streak">0</span></span>
+      <span class="chip"><span class="chip-label">최고</span><span id="best">0</span></span>
+      <span class="chip"><span class="chip-label">점수</span><span id="score">0</span></span>
+    </div>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="timer-row">
+      <div class="timer-track" aria-hidden="true"><div id="timer-bar" class="timer-fill"></div></div>
+    </div>
+
+    <section class="arena" id="arena" aria-live="polite">
+      <div class="arena-glow" aria-hidden="true"></div>
+      <div class="arena-rings" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="mon-wrap">
+        <div id="mon-spin" class="spinner" hidden></div>
+        <img id="mon-sprite" class="mon-sprite" alt="" />
+      </div>
+      <h1 id="mon-name" class="mon-name"></h1>
+      <div id="mon-types" class="mon-types" aria-label="이 포켓몬의 타입"></div>
+    </section>
+
+    <section class="choice-panel" id="choice-panel" aria-label="공격 타입을 고르세요">
+      <p class="prompt" id="prompt">이 포켓몬에게 효과적인 타입은?</p>
+      <div id="feedback-banner" class="feedback-banner" hidden>
+        <div class="feedback-inner">
+          <p id="feedback-title" class="feedback-title"></p>
+          <p id="feedback-detail" class="feedback-detail"></p>
+        </div>
+      </div>
+      <div class="choices" id="choices" role="group"></div>
+    </section>
+
+    <div id="fx-layer" class="fx-layer" aria-hidden="true"></div>
+  </main>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">상성이 뭐예요?</h2>
+      <p class="help-lead">포켓몬 배틀에는 <strong>타입 상성</strong>이 있어요.<br>공격 타입이 상대 타입의 <strong>약점</strong>이면 데미지가 <strong>2배</strong>!</p>
+
+      <section class="help-ex help-ex-ok" aria-label="효과가 굉장한 예시">
+        <div class="help-badge"><span class="mult-tag mult-2">×2</span>효과가 굉장하다!</div>
+        <div class="mini-battle">
+          <span class="mini-type" style="--tc:#F08030">🔥 불꽃</span>
+          <span class="mini-arrow">→</span>
+          <span class="mini-type" style="--tc:#78C850">🌿 풀</span>
+        </div>
+        <p class="help-note">불꽃 타입 공격은 풀 타입에게 2배 데미지</p>
+      </section>
+
+      <section class="help-ex help-ex-bad" aria-label="효과가 없는 예시">
+        <div class="help-badge"><span class="mult-tag mult-0">×0</span>전혀 효과가 없다</div>
+        <div class="mini-battle">
+          <span class="mini-type" style="--tc:#E0C068">⛰️ 땅</span>
+          <span class="mini-arrow">→</span>
+          <span class="mini-type" style="--tc:#F8D030">⚡ 전기</span>
+        </div>
+        <p class="help-note">전기 타입은 땅 속성 몸엔 흐르지 않아요 (면역)</p>
+      </section>
+
+      <section class="help-ex help-ex-bad" aria-label="효과가 별로인 예시">
+        <div class="help-badge"><span class="mult-tag mult-half">×0.5</span>효과가 별로인 듯하다</div>
+        <div class="mini-battle">
+          <span class="mini-type" style="--tc:#F08030">🔥 불꽃</span>
+          <span class="mini-arrow">→</span>
+          <span class="mini-type" style="--tc:#6890F0">💧 물</span>
+        </div>
+        <p class="help-note">물 타입은 불꽃 공격에 강해요 (저항)</p>
+      </section>
+
+      <p class="help-tip">4가지 공격 타입 중 <strong>약점(×2 이상)</strong>이 되는 타입을 골라요. 약점이 여러 개면 아무거나 맞혀도 정답!</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

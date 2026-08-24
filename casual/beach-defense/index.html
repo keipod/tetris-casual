@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1aa6b7">
+<title>비치 디펜스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">비치 디펜스</h1>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="설명서">?</button>
+      <button id="btn-pause" class="icon-btn" type="button" aria-label="일시정지">Ⅱ</button>
+      <button id="btn-speed" class="icon-btn" type="button" aria-label="배속">1×</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage-wrap">
+    <canvas id="game-canvas"></canvas>
+    <p id="banner" class="banner" hidden></p>
+  </main>
+
+  <footer class="dock">
+    <div class="dock-top">
+      <div class="status">
+        <span class="chip"><span class="chip-label">골드</span><span id="gold">200</span></span>
+        <span class="chip"><span class="chip-label">목재</span><span id="wood">0</span></span>
+        <span class="chip"><span class="chip-label">공격</span><span id="wave">0/8</span></span>
+        <span class="chip"><span class="chip-label">다음</span><span id="next-wave">보병×5</span></span>
+        <span class="chip"><span class="chip-label">HQ</span><span id="hp">100</span></span>
+      </div>
+      <button type="button" id="btn-start-wave" class="btn wave-btn">공격 시작</button>
+    </div>
+    <div class="build-row" role="group" aria-label="건물 선택">
+      <button type="button" class="tower-btn" data-kind="mg" aria-pressed="false">
+        <span class="tower-icon"><img src="assets/icon-mg.png?v=bb-pure2" alt="" width="36" height="36"></span>
+        <span class="tower-info"><span>기관총</span> <span class="cost">50</span></span>
+      </button>
+      <button type="button" class="tower-btn" data-kind="cannon" aria-pressed="false">
+        <span class="tower-icon"><img src="assets/icon-cannon.png?v=bb-pure2" alt="" width="36" height="36"></span>
+        <span class="tower-info"><span>대포</span> <span class="cost">80</span></span>
+      </button>
+      <button type="button" class="tower-btn" data-kind="mortar" aria-pressed="false">
+        <span class="tower-icon"><img src="assets/icon-mortar.png?v=bb-pure2" alt="" width="36" height="36"></span>
+        <span class="tower-info"><span>박격포</span> <span class="cost">100</span></span>
+      </button>
+      <button type="button" class="tower-btn" data-kind="residence" aria-pressed="false">
+        <span class="tower-icon"><img src="assets/icon-residence.png?v=bb-pure2" alt="" width="36" height="36"></span>
+        <span class="tower-info"><span>주둔지</span> <span class="cost">60</span></span>
+      </button>
+      <button type="button" class="tower-btn" data-kind="sawmill" aria-pressed="false">
+        <span class="tower-icon"><img src="assets/icon-sawmill.png?v=bb-pure2" alt="" width="36" height="36"></span>
+        <span class="tower-info"><span>제재소</span> <span class="cost">70</span></span>
+      </button>
+    </div>
+  </footer>
+
+  <div id="sheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-card">
+      <h2 id="sheet-title">타워 정보</h2>
+      <p id="sheet-body"></p>
+      <div class="sheet-actions">
+        <button type="button" id="btn-upgrade" class="btn">강화</button>
+        <button type="button" id="btn-sell" class="btn ghost">판매</button>
+        <button type="button" id="btn-sheet-close" class="btn ghost">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+
+  <div id="help" class="help hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <div class="help-card">
+      <header class="help-head">
+        <h2 id="help-title">게임 설명서</h2>
+        <button type="button" id="btn-help-close" class="icon-btn" aria-label="닫기">✕</button>
+      </header>
+      <div class="help-body">
+        <section class="help-sec">
+          <h3>🌴 목표</h3>
+          <p>내 섬에 <strong>방어·생산 건물</strong>을 세우고, 해변으로 상륙하는 NPC 부대로부터 <strong>본부(HQ)</strong>를 지키세요. 모든 공격을 막아내면 승리입니다.</p>
+        </section>
+
+        <section class="help-sec">
+          <h3>🏖️ 지형</h3>
+          <div class="help-tiles">
+            <div class="tile-item">
+              <span class="tile-badge sand">내륙 잔디</span>
+              <p>방어·생산 건물 건설 (섬 대부분)</p>
+            </div>
+            <div class="tile-item">
+              <span class="tile-badge path">좌하단 해변</span>
+              <p>대각선 넓은 해변·바다. 좌·중·우로 상륙해 HQ로 진격. 우측 부두</p>
+            </div>
+          </div>
+          <p>하단에서 건물을 고른 뒤 잔디를 터치해 배치하세요. 방어탑은 해변(좌하단)을 향합니다.</p>
+        </section>
+
+        <section class="help-sec">
+          <h3>🛡️ 방어 / 🏭 생산</h3>
+          <ul class="help-list">
+            <li><span class="item-icon">🔫</span><div><strong>기관총 · 대포 · 박격포</strong><span>자동 사격으로 상륙 부대를 저지합니다. 경로를 막으면 적이 건물을 공격합니다.</span></div></li>
+            <li><span class="item-icon">🏠</span><div><strong>주둔지 · 60G</strong><span>공격 방어 성공 시 골드 수입.</span></div></li>
+            <li><span class="item-icon">🪵</span><div><strong>제재소 · 70G</strong><span>목재 수입. 강화에 목재가 필요합니다.</span></div></li>
+          </ul>
+        </section>
+
+        <section class="help-sec">
+          <h3>🚢 NPC 공격</h3>
+          <p>적이 해변에 상륙한 뒤 HQ를 향해 이동합니다. HQ 길이 막히면 가장 가까운 건물을 부수고 다시 진격합니다.</p>
+        </section>
+
+        <section class="help-sec">
+          <h3>🎮 조작</h3>
+          <ul class="help-ops">
+            <li><span class="help-op-label">터치/클릭</span> 건물 건설 · 상세(강화/판매)</li>
+            <li><span class="help-op-label">공격 시작</span> NPC 상륙 웨이브 개시</li>
+            <li><span class="help-op-label">Ⅱ / 1×</span> 일시정지 · 배속</li>
+          </ul>
+        </section>
+      </div>
+      <div class="help-foot">
+        <button type="button" id="btn-help-ok" class="btn">작전 시작</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script type="module" src="game.js?v=bb-pure2"></script>
+</body>
+</html>

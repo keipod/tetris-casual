@@ -1,0 +1,13 @@
+SC1 unit art used by StarSim Studio.
+
+Sprite sheets and talking-head portraits come from:
+  https://github.com/raydogg779/StarCraft
+  img/Charas/*.png
+  img/Charas/Portrait.png
+
+Idle frames are cropped from the Charas sheets; command-panel
+portraits are 60x56 cells from Portrait.png.
+
+StarCraft assets are trademarks of Blizzard Entertainment.
+Used only as local UI art for a personal simulator that already
+requires a legal StarCraft 1.16.1 data directory.

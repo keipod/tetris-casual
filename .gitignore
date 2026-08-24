@@ -1,3 +1,39 @@
 .playwright-mcp/
 .run/
 .DS_Store
+
+# 게임 에셋은 game.tainery.com(webhub)에 배포 — GitHub Pages 미사용
+/casual/tetris/
+/casual/bubble/
+/casual/gemgem/
+/casual/catch/
+/casual/volleyball/
+/casual/quiz/
+/casual/puzzle/
+/casual/lanes/
+/casual/tower/
+/casual/skyraid/
+/casual/dressup/
+/casual/angry-pikachu/
+/casual/hub.css
+casual/catch2/.venv/
+casual/beach-defense/tools/.venv/
+casual/beach-defense/tools/__pycache__/
+# Boom Beach extract tooling under casual (symlinks + clones) — local-only
+casual/beach-defense/vendor/
+
+
+casual/catch2/assets/characters/_work/
+
+# Asset library — large / copyrighted binaries stay local (README/INDEX tracked)
+/library/boom-beach/raw/
+/library/boom-beach/shapes/
+/library/boom-beach/atlas/
+/library/boom-beach/curated/
+/library/audio/rhythm-bgm/
+/library/catalog.json
+
+# Session tooling artifacts
+.sisyphus/
+__pycache__/
+*.pyc

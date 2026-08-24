@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0f1f">
+<title>실루엣 스냅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <div class="score-bar">
+      <span class="chip"><span class="chip-label">점수</span><span id="score">0</span></span>
+      <span class="chip"><span class="chip-label">최고</span><span id="best">0</span></span>
+      <span class="chip"><span class="chip-label">연속</span><span id="streak">0</span></span>
+    </div>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="progress-row">
+      <span id="q-index" class="q-index">—</span>
+      <div class="timer-track" aria-hidden="true"><div id="timer-bar" class="timer-fill"></div></div>
+      <span id="timer-num" class="timer-num">10</span>
+    </div>
+
+    <section id="reveal-card" class="reveal-card" aria-live="polite">
+      <p id="prompt" class="prompt-line">이 포켓몬은 누구일까요?</p>
+      <div class="spot-wrap">
+        <div class="spot-ring" aria-hidden="true"></div>
+        <div id="img-spin" class="spinner" hidden></div>
+        <img id="mon-img" class="mon-img" alt="" />
+      </div>
+      <h2 id="mon-name" class="mon-name" hidden></h2>
+
+      <div id="feedback-banner" class="feedback-banner" hidden>
+        <div class="feedback-inner">
+          <p id="feedback-title" class="feedback-title"></p>
+          <p id="feedback-gain" class="feedback-gain" hidden></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="choice-grid" id="choice-grid" role="group" aria-label="포켓몬 이름 선택">
+      <button type="button" class="choice-btn" data-idx="0"></button>
+      <button type="button" class="choice-btn" data-idx="1"></button>
+      <button type="button" class="choice-btn" data-idx="2"></button>
+      <button type="button" class="choice-btn" data-idx="3"></button>
+    </section>
+
+    <div id="fx-layer" class="fx-layer" aria-hidden="true"></div>
+  </main>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">게임 설명서</h2>
+      <p class="help-lead">까만 <strong>실루엣</strong>만 보고 어떤 포켓몬인지 맞혀보세요!</p>
+
+      <section class="help-ex">
+        <div class="help-badge">1. 실루엣을 확인하고 보기 중 정답을 골라요</div>
+        <div class="mini-row">
+          <img class="mini-sil" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="실루엣 예시" width="64" height="64" loading="lazy">
+          <div class="mini-arrow" aria-hidden="true">→</div>
+          <div class="mini-choices">
+            <span>피카츄</span><span>라이츄</span><span>이브이</span><span>나옹</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="help-ex">
+        <div class="help-badge">2. 고르면 바로 실루엣이 사라지고 정답이 나와요</div>
+        <div class="mini-row">
+          <img class="mini-sil revealed" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="피카츄" width="64" height="64" loading="lazy">
+          <div class="mini-body">
+            <p class="mini-name">피카츄</p>
+            <p class="mini-note">색깔 그림 + 이름이 함께 보여요</p>
+          </div>
+        </div>
+      </section>
+
+      <p class="help-tip">한 세트 10문제 · 제한시간 안에 맞히면 보너스 점수! · 연속 정답은 콤보 보너스로 이어져요.</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

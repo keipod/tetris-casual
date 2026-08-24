@@ -2,11 +2,235 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0;url=https://game.tainery.com/casual/">
-<link rel="canonical" href="https://game.tainery.com/casual/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f5f5f7">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='0.9em'%20font-size='90'%3E%F0%9F%8E%AE%3C/text%3E%3C/svg%3E">
 <title>캐주얼 게임</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hub.css">
+<link rel="stylesheet" href="assets/no-select.css">
 </head>
 <body>
-<p><a href="https://game.tainery.com/casual/">game.tainery.com/casual</a> 로 이동합니다.</p>
+<main class="hub">
+  <header class="hub-header">
+    <p class="hub-eyebrow">tainery games</p>
+    <h1>캐주얼 게임</h1>
+    <p class="hub-sub">플레이할 게임을 선택하세요</p>
+  </header>
+
+  <nav class="game-grid" aria-label="게임 목록">
+    <a class="game-card" href="tetris/">
+      <span class="game-icon" aria-hidden="true">🍬</span>
+      <span class="game-title">카와이 테트리스</span>
+      <span class="game-desc">선명한 블록을 쌓고 라인을 지워요</span>
+    </a>
+    <a class="game-card" href="bubble/">
+      <span class="game-icon" aria-hidden="true">🫧</span>
+      <span class="game-title">버블슈터</span>
+      <span class="game-desc">같은 색 3개를 터뜨려요</span>
+    </a>
+    <a class="game-card" href="gemgem/games/animal-match.html">
+      <span class="game-icon" aria-hidden="true">🐱</span>
+      <span class="game-title">Animal Match</span>
+      <span class="game-desc">귀여운 동물 친구들</span>
+    </a>
+    <a class="game-card" href="gemgem/games/gem-crush.html">
+      <span class="game-icon" aria-hidden="true">💎</span>
+      <span class="game-title">Gem Crush</span>
+      <span class="game-desc">반짝이는 보석들</span>
+    </a>
+    <a class="game-card" href="gemgem/games/fruit-pop.html">
+      <span class="game-icon" aria-hidden="true">🍓</span>
+      <span class="game-title">Fruit Pop</span>
+      <span class="game-desc">달콤한 과일들</span>
+    </a>
+    <a class="game-card" href="catch/">
+      <span class="game-icon" aria-hidden="true">⚪</span>
+      <span class="game-title">포켓몬 잡기</span>
+      <span class="game-desc">초원에서 잡고 도감 카드를 모아요</span>
+    </a>
+    <a class="game-card" href="tcg/">
+      <span class="game-icon" aria-hidden="true">🃏</span>
+      <span class="game-title">포켓몬 카드대전</span>
+      <span class="game-desc">접속자·방코드로 실시간 TCG 배틀</span>
+    </a>
+    <a class="game-card" href="catch2/">
+      <span class="game-icon" aria-hidden="true">🗺️</span>
+      <span class="game-title">포켓몬 잡기 2</span>
+      <span class="game-desc">타일맵 탐험 · 3D 배틀 · 카드 승부</span>
+    </a>
+    <a class="game-card" href="volleyball/">
+      <span class="game-icon" aria-hidden="true">🏐</span>
+      <span class="game-title">피카츄 배구</span>
+      <span class="game-desc">드래그한 만큼 점프해요</span>
+    </a>
+    <a class="game-card" href="quiz/">
+      <span class="game-icon" aria-hidden="true">📖</span>
+      <span class="game-title">도감 퀴즈</span>
+      <span class="game-desc">그림·이름이 설명과 맞는지 O/X</span>
+    </a>
+    <a class="game-card" href="puzzle/">
+      <span class="game-icon" aria-hidden="true">🧩</span>
+      <span class="game-title">퍼즐 맞추기</span>
+      <span class="game-desc">타일을 밀어 포켓몬 그림을 완성해요</span>
+    </a>
+    <a class="game-card" href="lanes/">
+      <span class="game-icon" aria-hidden="true">🏰</span>
+      <span class="game-title">포켓몬 대전쟁</span>
+      <span class="game-desc">유닛을 뽑아 상대 기지를 밀어요</span>
+    </a>
+    <a class="game-card" href="tower/">
+      <span class="game-icon" aria-hidden="true">🛡️</span>
+      <span class="game-title">타워 디펜스</span>
+      <span class="game-desc">파스텔 중세 길을 지키세요</span>
+    </a>
+    <a class="game-card" href="skyraid/">
+      <span class="game-icon" aria-hidden="true">✈️</span>
+      <span class="game-title">스카이레이드</span>
+      <span class="game-desc">1942처럼 드래그하며 적기를 격추해요</span>
+    </a>
+    <a class="game-card" href="beach-defense/">
+      <span class="game-icon" aria-hidden="true">🏝️</span>
+      <span class="game-title">비치 디펜스</span>
+      <span class="game-desc">섬에 상륙하는 적을 포탑으로 막아요</span>
+    </a>
+    <a class="game-card" href="dressup/">
+      <span class="game-icon" aria-hidden="true">👗</span>
+      <span class="game-title">공주님 옷입히기</span>
+      <span class="game-desc">옷장에서 드래그해 공주님을 꾸며요</span>
+    </a>
+    <a class="game-card" href="angry-pikachu/">
+      <span class="game-icon" aria-hidden="true">⚡</span>
+      <span class="game-title">앵그리 피카츄</span>
+      <span class="game-desc">슬링샷으로 날려 로켓단을 쓰러뜨려요</span>
+    </a>
+    <a class="game-card" href="memory/">
+      <span class="game-icon" aria-hidden="true">🃏</span>
+      <span class="game-title">포켓몬 메모리</span>
+      <span class="game-desc">같은 포켓몬 카드를 뒤집어 짝을 맞춰요</span>
+    </a>
+    <a class="game-card" href="types/">
+      <span class="game-icon" aria-hidden="true">🔥</span>
+      <span class="game-title">타입 트레이너</span>
+      <span class="game-desc">약점 타입을 골라 연속 승부를 해요</span>
+    </a>
+    <a class="game-card" href="merge/">
+      <span class="game-icon" aria-hidden="true">✨</span>
+      <span class="game-title">진화 머지</span>
+      <span class="game-desc">같은 포켓몬을 합쳐 진화시켜요</span>
+    </a>
+    <a class="game-card" href="silhouette/">
+      <span class="game-icon" aria-hidden="true">🌑</span>
+      <span class="game-title">실루엣 스냅</span>
+      <span class="game-desc">실루엣만 보고 포켓몬을 맞춰요</span>
+    </a>
+    <a class="game-card" href="quest/">
+      <span class="game-icon" aria-hidden="true">🏘️</span>
+      <span class="game-title">마을 심부름</span>
+      <span class="game-desc">타일맵 마을에서 NPC 심부름을 해요</span>
+    </a>
+    <a class="game-card" href="rhythm/">
+      <span class="game-icon" aria-hidden="true">🎵</span>
+      <span class="game-title">피카츄 리듬</span>
+      <span class="game-desc">타이밍에 맞춰 탭해요</span>
+    </a>
+    <a class="game-card" href="tcg-solo/">
+      <span class="game-icon" aria-hidden="true">🂠</span>
+      <span class="game-title">TCG 솔리테어</span>
+      <span class="game-desc">혼자 두는 포켓몬 카드 퍼즐</span>
+    </a>
+    <a class="game-card" href="story/">
+      <span class="game-icon" aria-hidden="true">📖</span>
+      <span class="game-title">공주 이야기</span>
+      <span class="game-desc">선택지로 공주님의 하루를 꾸려요</span>
+    </a>
+  </nav>
+
+  <footer class="hub-footer">
+    <button type="button" class="hub-reset" id="btn-reset-saves">
+      저장한 거 다지우기
+    </button>
+    <p class="hub-reset-hint">진행도·최고점수·소리 설정 등 이 기기에 저장된 값을 완전 리셋합니다</p>
+    <p class="hub-reset-status" id="reset-status" hidden></p>
+  </footer>
+</main>
+<script>
+(function () {
+  const btn = document.getElementById("btn-reset-saves");
+  const status = document.getElementById("reset-status");
+  if (!btn) return;
+
+  function showStatus(text, ok) {
+    status.hidden = false;
+    status.textContent = text;
+    status.classList.toggle("is-ok", !!ok);
+    status.classList.toggle("is-err", !ok);
+  }
+
+  async function clearIndexedDb() {
+    if (!window.indexedDB || typeof indexedDB.databases !== "function") return 0;
+    const dbs = await indexedDB.databases();
+    let n = 0;
+    await Promise.all(
+      (dbs || []).map((db) => {
+        if (!db || !db.name) return Promise.resolve();
+        n += 1;
+        return new Promise((resolve) => {
+          const req = indexedDB.deleteDatabase(db.name);
+          req.onsuccess = req.onerror = req.onblocked = () => resolve();
+        });
+      })
+    );
+    return n;
+  }
+
+  btn.addEventListener("click", async () => {
+    const ok = window.confirm(
+      "이 기기에 저장된 게임 데이터를 모두 지울까요?\n\n" +
+        "· 진행도 / 해금 / 최고점수 / 도감\n" +
+        "· 닉네임 / 소리·테마 설정\n\n" +
+        "되돌릴 수 없습니다."
+    );
+    if (!ok) return;
+
+    btn.disabled = true;
+    let ls = 0;
+    let ss = 0;
+    try {
+      ls = localStorage.length;
+      localStorage.clear();
+    } catch (e) {
+      showStatus("localStorage를 지울 수 없습니다", false);
+      btn.disabled = false;
+      return;
+    }
+    try {
+      ss = sessionStorage.length;
+      sessionStorage.clear();
+    } catch (_) {
+      /* ignore */
+    }
+    let idb = 0;
+    try {
+      idb = await clearIndexedDb();
+    } catch (_) {
+      /* ignore */
+    }
+
+    showStatus(
+      `리셋 완료 · localStorage ${ls}개` +
+        (ss ? ` · session ${ss}개` : "") +
+        (idb ? ` · IndexedDB ${idb}개` : "") +
+        " 삭제됨. 게임을 다시 열어 주세요.",
+      true
+    );
+    btn.disabled = false;
+  });
+})();
+</script>
 </body>
 </html>

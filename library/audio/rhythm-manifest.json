@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "playMs": 75000,
+  "songs": [
+    {
+      "id": "berry-bounce",
+      "title": "베리 바운스",
+      "difficulty": "easy",
+      "difficultyLabel": "쉬움",
+      "bpm": 95.7,
+      "durationMs": 75000,
+      "noteCount": 98,
+      "nps": 1.31,
+      "fallMs": 2300,
+      "audio": "assets/bgm/berry-bounce.mp3",
+      "chart": "assets/charts/berry-bounce.json"
+    },
+    {
+      "id": "spark-waltz",
+      "title": "스파크 왈츠",
+      "difficulty": "easy",
+      "difficultyLabel": "쉬움",
+      "bpm": 95.7,
+      "durationMs": 75000,
+      "noteCount": 93,
+      "nps": 1.24,
+      "fallMs": 2300,
+      "audio": "assets/bgm/spark-waltz.mp3",
+      "chart": "assets/charts/spark-waltz.json"
+    },
+    {
+      "id": "thunder-lullaby",
+      "title": "썬더 자장가",
+      "difficulty": "easy",
+      "difficultyLabel": "쉬움",
+      "bpm": 92.3,
+      "durationMs": 75000,
+      "noteCount": 93,
+      "nps": 1.24,
+      "fallMs": 2300,
+      "audio": "assets/bgm/thunder-lullaby.mp3",
+      "chart": "assets/charts/thunder-lullaby.json"
+    },
+    {
+      "id": "volt-parade",
+      "title": "볼트 퍼레이드",
+      "difficulty": "normal",
+      "difficultyLabel": "보통",
+      "bpm": 95.7,
+      "durationMs": 75000,
+      "noteCount": 131,
+      "nps": 1.75,
+      "fallMs": 2000,
+      "audio": "assets/bgm/volt-parade.mp3",
+      "chart": "assets/charts/volt-parade.json"
+    },
+    {
+      "id": "forest-groove",
+      "title": "포레스트 그루브",
+      "difficulty": "normal",
+      "difficultyLabel": "보통",
+      "bpm": 129.2,
+      "durationMs": 75000,
+      "noteCount": 163,
+      "nps": 2.17,
+      "fallMs": 2000,
+      "audio": "assets/bgm/forest-groove.mp3",
+      "chart": "assets/charts/forest-groove.json"
+    },
+    {
+      "id": "pika-pop",
+      "title": "피카 팝",
+      "difficulty": "normal",
+      "difficultyLabel": "보통",
+      "bpm": 129.2,
+      "durationMs": 75000,
+      "noteCount": 146,
+      "nps": 1.95,
+      "fallMs": 2000,
+      "audio": "assets/bgm/pika-pop.mp3",
+      "chart": "assets/charts/pika-pop.json"
+    },
+    {
+      "id": "storm-rush",
+      "title": "스톰 러시",
+      "difficulty": "hard",
+      "difficultyLabel": "어려움",
+      "bpm": 129.2,
+      "durationMs": 75000,
+      "noteCount": 272,
+      "nps": 3.63,
+      "fallMs": 1750,
+      "audio": "assets/bgm/storm-rush.mp3",
+      "chart": "assets/charts/storm-rush.json"
+    },
+    {
+      "id": "final-thunder",
+      "title": "파이널 썬더",
+      "difficulty": "hard",
+      "difficultyLabel": "어려움",
+      "bpm": 95.7,
+      "durationMs": 75000,
+      "noteCount": 271,
+      "nps": 3.61,
+      "fallMs": 1750,
+      "audio": "assets/bgm/final-thunder.mp3",
+      "chart": "assets/charts/final-thunder.json"
+    },
+    {
+      "id": "hyper-spark",
+      "title": "하이퍼 스파크",
+      "difficulty": "hard",
+      "difficultyLabel": "어려움",
+      "bpm": 123.0,
+      "durationMs": 75000,
+      "noteCount": 244,
+      "nps": 3.25,
+      "fallMs": 1750,
+      "audio": "assets/bgm/hyper-spark.mp3",
+      "chart": "assets/charts/hyper-spark.json"
+    }
+  ]
+}

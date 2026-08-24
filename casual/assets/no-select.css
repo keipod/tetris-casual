@@ -1,0 +1,66 @@
+/* Global: disable accidental text selection in casual games */
+html,
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+*,
+*::before,
+*::after {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow typing/selection where needed */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+/* ---- Mobile hardening: kill pull-to-refresh / rubber-band overscroll ----
+   Applied on html AND body: Chrome Android triggers drag-to-refresh from the
+   root scroller, so both levels must opt out. Inner scrollable containers
+   (hub list, tcg hand, story text) keep normal scrolling; only the
+   refresh/bounce gesture at the edges is suppressed. */
+html {
+  overscroll-behavior: none;
+  touch-action: manipulation; /* also kills double-tap zoom on iOS Safari */
+}
+body {
+  overscroll-behavior: none;
+}
+
+/* Fullscreen toggle button injected by mobile-hardening.js */
+#mh-fs-btn {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 8px);
+  right: calc(env(safe-area-inset-right, 0px) + 8px);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(20, 20, 24, 0.45);
+  color: #fff;
+  font-size: 17px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.55;
+  z-index: 2147483000;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease;
+}
+#mh-fs-btn:hover,
+#mh-fs-btn:focus-visible {
+  opacity: 1;
+}
+#mh-fs-btn:active {
+  transform: scale(0.94);
+}

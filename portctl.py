@@ -90,10 +90,12 @@ def start_game(game: dict) -> None:
     env = os.environ.copy()
     env["PORT"] = str(port)
     env["GAME_ENTRY"] = entry
+    script = game.get("script")
+    cmd = [sys.executable, str(ROOT / script)] if script else [sys.executable, str(SERVE)]
     log = RUN_DIR / f"{port}.log"
     with log.open("w", encoding="utf-8") as fh:
         proc = subprocess.Popen(
-            [sys.executable, str(SERVE)],
+            cmd,
             cwd=ROOT,
             env=env,
             stdout=fh,

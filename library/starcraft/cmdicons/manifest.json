@@ -1,0 +1,505 @@
+{
+  "frame_count": 390,
+  "overlay": [
+    "Patch_rt.mpq",
+    "BrooDat.mpq",
+    "StarDat.mpq"
+  ],
+  "size": [
+    36,
+    34
+  ],
+  "source": "unit/cmdbtns/cmdicons.grp",
+  "studio": {
+    "Adrenal Glands": {
+      "file": "/cmdicons/adrenal_glands.png",
+      "frame": 264
+    },
+    "Anabolic Synthesis": {
+      "file": "/cmdicons/anabolic_synthesis.png",
+      "frame": 379
+    },
+    "Burrowing": {
+      "file": "/cmdicons/burrowing.png",
+      "frame": 259
+    },
+    "Charon Boosters": {
+      "file": "/cmdicons/charon_boosters.png",
+      "frame": 378
+    },
+    "Chitinous Plating": {
+      "file": "/cmdicons/chitinous_plating.png",
+      "frame": 384
+    },
+    "Cloaking Field": {
+      "file": "/cmdicons/cloaking_field.png",
+      "frame": 252
+    },
+    "Consume": {
+      "file": "/cmdicons/consume.png",
+      "frame": 302
+    },
+    "Dark Swarm": {
+      "file": "/cmdicons/dark_swarm.png",
+      "frame": 270
+    },
+    "Defensive Matrix": {
+      "file": "/cmdicons/defensive_matrix.png",
+      "frame": 247
+    },
+    "Disruption Web": {
+      "file": "/cmdicons/disruption_web.png",
+      "frame": 369
+    },
+    "EMP Shockwave": {
+      "file": "/cmdicons/emp_shockwave.png",
+      "frame": 241
+    },
+    "Ensnare": {
+      "file": "/cmdicons/ensnare.png",
+      "frame": 267
+    },
+    "Feedback": {
+      "file": "/cmdicons/feedback.png",
+      "frame": 372
+    },
+    "Grooved Spines": {
+      "file": "/cmdicons/grooved_spines.png",
+      "frame": 268
+    },
+    "Hallucination": {
+      "file": "/cmdicons/hallucination.png",
+      "frame": 277
+    },
+    "Irradiate": {
+      "file": "/cmdicons/irradiate.png",
+      "frame": 242
+    },
+    "Leg Enhancements": {
+      "file": "/cmdicons/leg_enhancements.png",
+      "frame": 307
+    },
+    "Lockdown": {
+      "file": "/cmdicons/lockdown.png",
+      "frame": 240
+    },
+    "Lurker Aspect": {
+      "file": "/cmdicons/lurker_aspect.png",
+      "frame": 376
+    },
+    "Maelstrom": {
+      "file": "/cmdicons/maelstrom.png",
+      "frame": 381
+    },
+    "Metabolic Boost": {
+      "file": "/cmdicons/metabolic_boost.png",
+      "frame": 263
+    },
+    "Mind Control": {
+      "file": "/cmdicons/mind_control.png",
+      "frame": 371
+    },
+    "Muscular Augments": {
+      "file": "/cmdicons/muscular_augments.png",
+      "frame": 266
+    },
+    "Optical Flare": {
+      "file": "/cmdicons/optical_flare.png",
+      "frame": 373
+    },
+    "Parasite": {
+      "file": "/cmdicons/parasite.png",
+      "frame": 271
+    },
+    "Personnel Cloaking": {
+      "file": "/cmdicons/personnel_cloaking.png",
+      "frame": 252
+    },
+    "Plague": {
+      "file": "/cmdicons/plague.png",
+      "frame": 265
+    },
+    "Protoss Air Armor": {
+      "file": "/cmdicons/protoss_air_armor.png",
+      "frame": 304
+    },
+    "Protoss Air Weapons": {
+      "file": "/cmdicons/protoss_air_weapons.png",
+      "frame": 306
+    },
+    "Protoss Ground Armor": {
+      "file": "/cmdicons/protoss_ground_armor.png",
+      "frame": 303
+    },
+    "Protoss Ground Weapons": {
+      "file": "/cmdicons/protoss_ground_weapons.png",
+      "frame": 305
+    },
+    "Protoss Plasma Shields": {
+      "file": "/cmdicons/protoss_plasma_shields.png",
+      "frame": 310
+    },
+    "Psionic Storm": {
+      "file": "/cmdicons/psionic_storm.png",
+      "frame": 275
+    },
+    "Recall": {
+      "file": "/cmdicons/recall.png",
+      "frame": 280
+    },
+    "Restoration": {
+      "file": "/cmdicons/restoration.png",
+      "frame": 366
+    },
+    "Siege Mode": {
+      "file": "/cmdicons/siege_mode.png",
+      "frame": 245
+    },
+    "Singularity Charge": {
+      "file": "/cmdicons/singularity_charge.png",
+      "frame": 281
+    },
+    "Spawn Broodlings": {
+      "file": "/cmdicons/spawn_broodlings.png",
+      "frame": 40
+    },
+    "Spider Mines": {
+      "file": "/cmdicons/spider_mines.png",
+      "frame": 243
+    },
+    "Stasis Field": {
+      "file": "/cmdicons/stasis_field.png",
+      "frame": 278
+    },
+    "Stimpack": {
+      "file": "/cmdicons/stimpack.png",
+      "frame": 237
+    },
+    "Terran Infantry Armor": {
+      "file": "/cmdicons/terran_infantry_armor.png",
+      "frame": 292
+    },
+    "Terran Infantry Weapons": {
+      "file": "/cmdicons/terran_infantry_weapons.png",
+      "frame": 288
+    },
+    "Terran Ship Plating": {
+      "file": "/cmdicons/terran_ship_plating.png",
+      "frame": 291
+    },
+    "Terran Ship Weapons": {
+      "file": "/cmdicons/terran_ship_weapons.png",
+      "frame": 290
+    },
+    "Terran Vehicle Plating": {
+      "file": "/cmdicons/terran_vehicle_plating.png",
+      "frame": 293
+    },
+    "Terran Vehicle Weapons": {
+      "file": "/cmdicons/terran_vehicle_weapons.png",
+      "frame": 289
+    },
+    "U-238 Shells": {
+      "file": "/cmdicons/u_238_shells.png",
+      "frame": 238
+    },
+    "Yamato Gun": {
+      "file": "/cmdicons/yamato_gun.png",
+      "frame": 251
+    },
+    "Zerg Carapace": {
+      "file": "/cmdicons/zerg_carapace.png",
+      "frame": 297
+    },
+    "Zerg Flyer Attacks": {
+      "file": "/cmdicons/zerg_flyer_attacks.png",
+      "frame": 301
+    },
+    "Zerg Flyer Carapace": {
+      "file": "/cmdicons/zerg_flyer_carapace.png",
+      "frame": 298
+    },
+    "Zerg Melee Attacks": {
+      "file": "/cmdicons/zerg_melee_attacks.png",
+      "frame": 299
+    },
+    "Zerg Missile Attacks": {
+      "file": "/cmdicons/zerg_missile_attacks.png",
+      "frame": 300
+    }
+  },
+  "tech": [
+    {
+      "dat": 0,
+      "icon": 237,
+      "name": "Stimpack"
+    },
+    {
+      "dat": 1,
+      "icon": 240,
+      "name": "Lockdown"
+    },
+    {
+      "dat": 2,
+      "icon": 241,
+      "name": "EMP Shockwave"
+    },
+    {
+      "dat": 3,
+      "icon": 243,
+      "name": "Spider Mines"
+    },
+    {
+      "dat": 5,
+      "icon": 245,
+      "name": "Siege Mode"
+    },
+    {
+      "dat": 6,
+      "icon": 247,
+      "name": "Defensive Matrix"
+    },
+    {
+      "dat": 7,
+      "icon": 242,
+      "name": "Irradiate"
+    },
+    {
+      "dat": 8,
+      "icon": 251,
+      "name": "Yamato Gun"
+    },
+    {
+      "dat": 9,
+      "icon": 252,
+      "name": "Cloaking Field"
+    },
+    {
+      "dat": 10,
+      "icon": 252,
+      "name": "Personnel Cloaking"
+    },
+    {
+      "dat": 11,
+      "icon": 259,
+      "name": "Burrowing"
+    },
+    {
+      "dat": 13,
+      "icon": 40,
+      "name": "Spawn Broodlings"
+    },
+    {
+      "dat": 14,
+      "icon": 270,
+      "name": "Dark Swarm"
+    },
+    {
+      "dat": 15,
+      "icon": 265,
+      "name": "Plague"
+    },
+    {
+      "dat": 16,
+      "icon": 302,
+      "name": "Consume"
+    },
+    {
+      "dat": 17,
+      "icon": 267,
+      "name": "Ensnare"
+    },
+    {
+      "dat": 18,
+      "icon": 271,
+      "name": "Parasite"
+    },
+    {
+      "dat": 19,
+      "icon": 275,
+      "name": "Psionic Storm"
+    },
+    {
+      "dat": 20,
+      "icon": 277,
+      "name": "Hallucination"
+    },
+    {
+      "dat": 21,
+      "icon": 280,
+      "name": "Recall"
+    },
+    {
+      "dat": 22,
+      "icon": 278,
+      "name": "Stasis Field"
+    },
+    {
+      "dat": 24,
+      "icon": 366,
+      "name": "Restoration"
+    },
+    {
+      "dat": 25,
+      "icon": 369,
+      "name": "Disruption Web"
+    },
+    {
+      "dat": 27,
+      "icon": 371,
+      "name": "Mind Control"
+    },
+    {
+      "dat": 29,
+      "icon": 372,
+      "name": "Feedback"
+    },
+    {
+      "dat": 30,
+      "icon": 373,
+      "name": "Optical Flare"
+    },
+    {
+      "dat": 31,
+      "icon": 381,
+      "name": "Maelstrom"
+    },
+    {
+      "dat": 32,
+      "icon": 376,
+      "name": "Lurker Aspect"
+    }
+  ],
+  "upgrades": [
+    {
+      "dat": 0,
+      "icon": 292,
+      "name": "Terran Infantry Armor"
+    },
+    {
+      "dat": 1,
+      "icon": 293,
+      "name": "Terran Vehicle Plating"
+    },
+    {
+      "dat": 2,
+      "icon": 291,
+      "name": "Terran Ship Plating"
+    },
+    {
+      "dat": 3,
+      "icon": 297,
+      "name": "Zerg Carapace"
+    },
+    {
+      "dat": 4,
+      "icon": 298,
+      "name": "Zerg Flyer Carapace"
+    },
+    {
+      "dat": 5,
+      "icon": 303,
+      "name": "Protoss Ground Armor"
+    },
+    {
+      "dat": 6,
+      "icon": 304,
+      "name": "Protoss Air Armor"
+    },
+    {
+      "dat": 7,
+      "icon": 288,
+      "name": "Terran Infantry Weapons"
+    },
+    {
+      "dat": 8,
+      "icon": 289,
+      "name": "Terran Vehicle Weapons"
+    },
+    {
+      "dat": 9,
+      "icon": 290,
+      "name": "Terran Ship Weapons"
+    },
+    {
+      "dat": 10,
+      "icon": 299,
+      "name": "Zerg Melee Attacks"
+    },
+    {
+      "dat": 11,
+      "icon": 300,
+      "name": "Zerg Missile Attacks"
+    },
+    {
+      "dat": 12,
+      "icon": 301,
+      "name": "Zerg Flyer Attacks"
+    },
+    {
+      "dat": 13,
+      "icon": 305,
+      "name": "Protoss Ground Weapons"
+    },
+    {
+      "dat": 14,
+      "icon": 306,
+      "name": "Protoss Air Weapons"
+    },
+    {
+      "dat": 15,
+      "icon": 310,
+      "name": "Protoss Plasma Shields"
+    },
+    {
+      "dat": 16,
+      "icon": 238,
+      "name": "U-238 Shells"
+    },
+    {
+      "dat": 27,
+      "icon": 263,
+      "name": "Metabolic Boost"
+    },
+    {
+      "dat": 28,
+      "icon": 264,
+      "name": "Adrenal Glands"
+    },
+    {
+      "dat": 29,
+      "icon": 266,
+      "name": "Muscular Augments"
+    },
+    {
+      "dat": 30,
+      "icon": 268,
+      "name": "Grooved Spines"
+    },
+    {
+      "dat": 33,
+      "icon": 281,
+      "name": "Singularity Charge"
+    },
+    {
+      "dat": 34,
+      "icon": 307,
+      "name": "Leg Enhancements"
+    },
+    {
+      "dat": 51,
+      "icon": 384,
+      "name": "Chitinous Plating"
+    },
+    {
+      "dat": 52,
+      "icon": 379,
+      "name": "Anabolic Synthesis"
+    },
+    {
+      "dat": 53,
+      "icon": 378,
+      "name": "Charon Boosters"
+    }
+  ]
+}
