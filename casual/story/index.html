@@ -44,27 +44,36 @@
       <span class="twinkle t3"></span>
       <span class="twinkle t4"></span>
     </div>
+    <div class="title-hero" aria-hidden="true">
+      <img id="title-cover-img" class="title-cover-img" alt="" src="assets/bg/castle.png">
+      <div class="title-hero-shade"></div>
+    </div>
     <div class="title-card">
-      <p class="eyebrow">파스텔 성에서 보내는 하루</p>
-      <h2 class="game-title">공주 이야기<br><span class="sub">별빛 정원의 하루</span></h2>
-      <p class="game-desc">아라 공주가 되어 특별한 하루를 보내요.<br>선택에 따라 서로 다른 결말을 만날 수 있어요.</p>
-      <button id="btn-start" type="button" class="btn-primary">이야기 시작하기</button>
+      <p class="eyebrow">파스텔 성의 이야기책</p>
+      <h2 class="game-title">공주 이야기<br><span class="sub">세 편의 특별한 하루</span></h2>
+      <p class="game-desc">아라 공주가 되어 선택으로 하루를 꾸려요.<br>이야기마다 다른 일러스트와 결말이 기다려요.</p>
+      <button id="btn-start" type="button" class="btn-primary">이야기 고르기</button>
       <div class="endings-progress" aria-live="polite">
-        <p class="endings-label">모은 결말 <span id="endings-count">0</span> / 3</p>
-        <div class="endings-dots" id="endings-dots" aria-hidden="true">
-          <span class="ending-dot" data-ending="ball"></span>
-          <span class="ending-dot" data-ending="heart"></span>
-          <span class="ending-dot" data-ending="wander"></span>
-        </div>
+        <p class="endings-label">모은 결말 <span id="endings-count">0</span> / <span id="endings-total">12</span></p>
       </div>
     </div>
+  </section>
+
+  <!-- Story picker -->
+  <section id="screen-pick" class="screen screen-pick hidden">
+    <div class="pick-head">
+      <button id="btn-pick-back" type="button" class="btn-text">← 타이틀</button>
+      <h2 class="pick-title">어떤 이야기를 읽을까요?</h2>
+      <p class="pick-desc">장면을 따라가며 선택하고, 결말을 모아 보세요.</p>
+    </div>
+    <div id="story-list" class="story-list" role="list"></div>
   </section>
 
   <!-- Story / game screen -->
   <section id="screen-game" class="screen screen-game hidden">
     <div id="scene-bg" class="scene-bg">
       <img id="scene-bg-img" class="scene-bg-img" alt="" hidden>
-      <div class="scene-deco" aria-hidden="true"></div>
+      <div class="scene-veil" aria-hidden="true"></div>
     </div>
 
     <div class="story-stage">
@@ -88,16 +97,16 @@
   <section id="screen-ending" class="screen screen-ending hidden">
     <div id="ending-bg" class="scene-bg">
       <img id="ending-bg-img" class="scene-bg-img" alt="" hidden>
-      <div class="scene-deco" aria-hidden="true"></div>
+      <div class="scene-veil" aria-hidden="true"></div>
     </div>
     <div class="ending-card">
-      <p class="ending-eyebrow">엔딩</p>
+      <p class="ending-eyebrow">엔딩 · <span id="ending-story-label">이야기</span></p>
       <h2 class="ending-title" id="ending-title">엔딩 제목</h2>
       <p class="ending-text" id="ending-text">엔딩 설명</p>
       <div class="ending-flags" id="ending-flags"></div>
       <div class="ending-actions">
-        <button id="btn-replay" type="button" class="btn-primary">다시 도전하기</button>
-        <button id="btn-title" type="button" class="btn-secondary">타이틀로</button>
+        <button id="btn-replay" type="button" class="btn-primary">같은 이야기 다시</button>
+        <button id="btn-title" type="button" class="btn-secondary">다른 이야기 고르기</button>
       </div>
     </div>
   </section>
@@ -105,6 +114,7 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </div>
 <script src="../assets/sfx-bank.js"></script>
+<script src="stories.js"></script>
 <script src="game.js"></script>
 </body>
 </html>

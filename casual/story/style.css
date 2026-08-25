@@ -111,14 +111,40 @@ html, body {
 /* ---------- Title screen ---------- */
 .screen-title {
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   padding: 10px 20px calc(28px + var(--safe-bottom));
   overflow: hidden;
+}
+
+.title-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.title-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  transform: scale(1.04);
+  animation: cover-drift 18s ease-in-out infinite alternate;
+}
+.title-hero-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(234, 243, 255, 0.35) 0%, rgba(255, 233, 242, 0.55) 45%, rgba(255, 250, 246, 0.92) 78%, #fffaf6 100%);
+}
+@keyframes cover-drift {
+  from { transform: scale(1.04) translateY(0); }
+  to { transform: scale(1.08) translateY(-2%); }
 }
 
 .title-sky {
   position: absolute;
   inset: 0;
+  z-index: 1;
   overflow: hidden;
   pointer-events: none;
 }
@@ -174,14 +200,14 @@ html, body {
   z-index: 2;
   width: 100%;
   max-width: 360px;
-  background: var(--paper);
+  background: rgba(255, 250, 246, 0.94);
   border-radius: var(--radius-lg);
   padding: 30px 24px 26px;
   text-align: center;
   box-shadow: var(--shadow-soft);
   border: 3px solid #fff;
-  outline: 2px dashed rgba(255, 217, 125, 0.7);
-  outline-offset: -10px;
+  backdrop-filter: blur(8px);
+  animation: rise-in 0.35s ease;
 }
 
 .eyebrow {
@@ -262,6 +288,94 @@ html, body {
 .ending-dot.seen[data-ending="heart"] { background: var(--pink); border-color: var(--pink-deep); }
 .ending-dot.seen[data-ending="wander"] { background: var(--mint); border-color: var(--mint-deep); }
 
+/* ---------- Story picker ---------- */
+.screen-pick {
+  padding: 4px 16px calc(20px + var(--safe-bottom));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.pick-head { margin-bottom: 12px; }
+.btn-text {
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+.pick-title {
+  margin: 4px 0 6px;
+  font-family: "Gowun Batang", serif;
+  font-size: 22px;
+  color: var(--ink);
+}
+.pick-desc {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.story-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.story-card {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+  border: 3px solid #fff;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  transition: transform 0.12s ease;
+}
+.story-card:active { transform: scale(0.98); }
+.story-card-cover {
+  display: block;
+  min-height: 118px;
+  background-size: cover;
+  background-position: center 30%;
+  background-color: #f6ecff;
+}
+.story-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 14px 12px 12px;
+}
+.story-card-title {
+  font-family: "Jua", sans-serif;
+  font-size: 16px;
+  color: var(--ink);
+}
+.story-card-sub {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mint-deep);
+}
+.story-card-desc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.story-card-progress {
+  margin-top: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--pink-deep);
+}
+
 /* ---------- Scene background (shared by game + ending) ---------- */
 .scene-bg {
   position: absolute;
@@ -279,65 +393,51 @@ html, body {
   object-fit: cover;
   object-position: center 30%;
 }
-.scene-deco { position: absolute; inset: 0; pointer-events: none; }
+.scene-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 28%, transparent 52%, rgba(40, 30, 50, 0.28) 100%);
+  z-index: 1;
+}
+.scene-bg.scene-fade .scene-bg-img {
+  animation: bg-fade-in 0.45s ease;
+}
+@keyframes bg-fade-in {
+  from { opacity: 0.35; transform: scale(1.03); }
+  to { opacity: 1; transform: scale(1); }
+}
 
-/* scene palettes */
+/* CSS fallback palettes while images load */
 .scene-bg.bg-garden { background: linear-gradient(180deg, #eafff2 0%, #d9f7e6 55%, #c9f3d6 100%); }
 .scene-bg.bg-forest { background: linear-gradient(180deg, #e4f6f2 0%, #bfe9dd 55%, #9fd9c9 100%); }
+.scene-bg.bg-meadow { background: linear-gradient(180deg, #fff8d6 0%, #e8f7c9 55%, #c8e89a 100%); }
 .scene-bg.bg-dressroom { background: linear-gradient(180deg, #fdeeff 0%, #f6e0ff 55%, #eccbf7 100%); }
 .scene-bg.bg-kitchen { background: linear-gradient(180deg, #fff5e4 0%, #ffe8c2 55%, #ffdca0 100%); }
+.scene-bg.bg-library { background: linear-gradient(180deg, #f4ebe0 0%, #e8d4bc 55%, #d4b896 100%); }
+.scene-bg.bg-tower { background: linear-gradient(180deg, #cfe4ff 0%, #e8d4ff 55%, #f7c6e8 100%); }
+.scene-bg.bg-fountain { background: linear-gradient(180deg, #e3f7ff 0%, #c9ecf7 55%, #a8dceb 100%); }
 .scene-bg.bg-dusk { background: linear-gradient(180deg, #ffe3ec 0%, #ffd0dd 45%, #f6b8d6 100%); }
 .scene-bg.bg-heart { background: linear-gradient(180deg, #ffe9f2 0%, #ffd3e6 50%, #ffc1da 100%); }
 .scene-bg.bg-wander { background: linear-gradient(180deg, #e3f3ff 0%, #cdeaf7 45%, #a9d9e6 100%); }
+.scene-bg.bg-balcony { background: linear-gradient(180deg, #1a1a3a 0%, #3a2a5c 50%, #6a4a7a 100%); }
+.scene-bg.bg-fireplace { background: linear-gradient(180deg, #3a2a22 0%, #6b4030 50%, #c47848 100%); }
 .scene-bg.bg-ballroom { background: linear-gradient(180deg, #3a2a4f 0%, #6a4b7d 60%, #a86fa0 100%); }
-
-/* simple silhouette decorations, made with pure CSS shapes */
-.scene-deco::before, .scene-deco::after { content: ""; position: absolute; }
-
-.bg-garden .scene-deco::before {
-  left: -10%; right: -10%; bottom: 0; height: 22%;
-  background: #7fce9c; border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-}
-.bg-forest .scene-deco::before {
-  left: -10%; right: -10%; bottom: 0; height: 30%;
-  background: #4f9e86; border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-}
-.bg-dressroom .scene-deco::before {
-  left: 6%; right: 6%; bottom: 0; height: 18%;
-  background: #dcaee9; border-radius: 16px 16px 0 0;
-}
-.bg-kitchen .scene-deco::before {
-  left: -10%; right: -10%; bottom: 0; height: 16%;
-  background: #f0b568;
-}
-.bg-dusk .scene-deco::before, .bg-heart .scene-deco::before {
-  left: -10%; right: -10%; bottom: 0; height: 20%;
-  background: #d888ab; border-radius: 60% 60% 0 0 / 100% 100% 0 0;
-}
-.bg-wander .scene-deco::before {
-  left: -10%; right: -10%; bottom: 0; height: 24%;
-  background: #6fb6c9; border-radius: 60% 60% 0 0 / 100% 100% 0 0;
-}
-.bg-ballroom .scene-deco::before {
-  left: -10%; right: -10%; bottom: 0; height: 14%;
-  background: rgba(0,0,0,0.18);
-}
-
-/* soft floating sparkle dots reused across scenes */
-.scene-deco::after {
-  top: 10%; left: 12%; width: 6px; height: 6px; border-radius: 50%;
-  background: rgba(255,255,255,0.9); box-shadow:
-    40px 30px 0 -1px rgba(255,255,255,0.7),
-    90px 10px 0 -1px rgba(255,255,255,0.5),
-    160px 50px 0 -2px rgba(255,255,255,0.6),
-    220px 16px 0 -1px rgba(255,255,255,0.8),
-    280px 60px 0 -2px rgba(255,255,255,0.5);
-  animation: sparkle-float 5s ease-in-out infinite;
-}
-@keyframes sparkle-float {
-  0%, 100% { opacity: 0.5; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(6px); }
-}
+.scene-bg.bg-rainy_window { background: linear-gradient(180deg, #d4dde8 0%, #b8c4d4 55%, #9aabbf 100%); }
+.scene-bg.bg-parlor { background: linear-gradient(180deg, #fff0f5 0%, #ffe4ec 55%, #f5d0dc 100%); }
+.scene-bg.bg-attic { background: linear-gradient(180deg, #e8dcc8 0%, #d4c4a8 55%, #c0a888 100%); }
+.scene-bg.bg-greenhouse { background: linear-gradient(180deg, #d8f0e0 0%, #a8d8b8 55%, #78c090 100%); }
+.scene-bg.bg-candle_tea { background: linear-gradient(180deg, #2a2218 0%, #5a4030 50%, #c89860 100%); }
+.scene-bg.bg-rain_garden { background: linear-gradient(180deg, #c8dce8 0%, #a8c8b8 55%, #88b898 100%); }
+.scene-bg.bg-lantern_path { background: linear-gradient(180deg, #2a3048 0%, #4a3a58 50%, #8a6080 100%); }
+.scene-bg.bg-firefly { background: linear-gradient(180deg, #1a2830 0%, #2a4040 50%, #3a6050 100%); }
+.scene-bg.bg-mushroom { background: linear-gradient(180deg, #2a2040 0%, #4a3860 50%, #7a6090 100%); }
+.scene-bg.bg-festival { background: linear-gradient(180deg, #2a2048 0%, #5a3870 50%, #a86890 100%); }
+.scene-bg.bg-wish_tree { background: linear-gradient(180deg, #1a2038 0%, #3a3858 50%, #6870a0 100%); }
+.scene-bg.bg-stream { background: linear-gradient(180deg, #1a2838 0%, #2a4860 50%, #4880a0 100%); }
+.scene-bg.bg-music_gazebo { background: linear-gradient(180deg, #2a2848 0%, #4a4070 50%, #8878b0 100%); }
+.scene-bg.bg-castle { background: linear-gradient(180deg, #eaf3ff, #fdeef8 65%, #ffe6ef); }
 
 /* ---------- Story stage ---------- */
 .screen-game { padding: 0 16px calc(16px + var(--safe-bottom)); justify-content: flex-end; }

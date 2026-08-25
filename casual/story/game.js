@@ -1,152 +1,24 @@
-/*! 공주 이야기: 별빛 정원의 하루 — 짧은 분기형 비주얼 노벨 */
+/*! 공주 이야기 — 멀티 스토리 비주얼 노벨 엔진 */
 (function () {
   "use strict";
 
-  /* ---------- Assets (only reading from allowed external folders) ---------- */
-  var P_ARA = "../dressup/assets/portraits/princess1.jpg";
-  var P_RIA = "../dressup/assets/portraits/princess2.jpg";
-  var IMG_PUPPY = "../../assets/characters/puppy.png";
-  var IMG_BEAR = "../../assets/characters/bear.png";
-  var BG_CASTLE = "../dressup/assets/bg/castle_purple.png";
-  var BG_BALLROOM = "../dressup/assets/bg/ballroom.png";
-
-  var ENDINGS_KEY = "story_endings_v1";
-  var SOUND_KEY = "story_sound_v1";
-
-  /* ---------- Story graph ---------- */
-  var NODES = {
-    n1: {
-      bg: "castle", bgImg: BG_CASTLE,
-      portrait: P_ARA, name: "아라 공주",
-      text: "포근한 아침 햇살이 커튼 사이로 스며들어요. 오늘 저녁엔 정원에서 작은 별빛 파티가 열리는 특별한 날이에요. 아침 시간, 무엇부터 해볼까요?",
-      choices: [
-        { label: "이슬 맺힌 정원을 산책해요", next: "n2_garden", effect: { outfit: "adventure" } },
-        { label: "옷장에서 드레스를 골라봐요", next: "n2_dress", effect: { outfit: "elegant" } },
-        { label: "달콤한 간식을 만들어요", next: "n2_kitchen", effect: { outfit: "cozy" } }
-      ]
-    },
-    n2_garden: {
-      bg: "garden",
-      portrait: P_ARA, name: "아라 공주",
-      text: "이슬이 맺힌 꽃길을 따라 걷다 보니, 산울타리 틈에 낀 작은 강아지가 낑낑거리고 있어요.",
-      choices: [
-        { label: "얼른 다가가 강아지를 꺼내주고 함께 놀아요", next: "n3_meadow", effect: { animal: "puppy", mood: "warm" } },
-        { label: "울타리 너머 이어진 신비한 발자국을 따라가요", next: "n3_forest", effect: { mood: "brave" } }
-      ]
-    },
-    n3_meadow: {
-      bg: "garden",
-      portrait: IMG_PUPPY, name: "몽실이 (강아지)",
-      text: "몽실이가 꼬리를 흔들며 아라 공주의 손등을 폴짝폴짝 핥아요. 오늘 하루 종일 곁을 졸졸 따라다니고 싶은 눈치예요!",
-      choices: [
-        { label: "좋아, 오늘은 몽실이와 함께 다닐래", next: "n4_party", effect: { mood: "cheerful" } },
-        { label: "저녁 준비를 위해 몽실이를 다독이고 성으로 돌아가요", next: "n4_party", effect: { mood: "dreamy" } }
-      ]
-    },
-    n3_forest: {
-      bg: "forest",
-      portrait: P_ARA, name: "아라 공주",
-      text: "발자국을 따라가니 오래된 나무 아래에서, 작은 곰돌이가 꿀단지를 놓치고 울상을 짓고 있어요.",
-      choices: [
-        { label: "곰돌이를 도와 함께 꿀단지를 찾아줘요", next: "n4_party", effect: { animal: "bear", mood: "warm" } },
-        { label: "곰돌이에게 인사만 하고 숲 안쪽을 더 탐험해요", next: "n4_party", effect: { mood: "brave" } }
-      ]
-    },
-    n2_dress: {
-      bg: "dressroom",
-      portrait: P_ARA, name: "아라 공주",
-      text: "옷장 문을 여니 별빛처럼 반짝이는 드레스들이 가득해요. 마침 놀러 온 리아 공주가 옷장을 함께 구경해요.",
-      choices: [
-        { label: "화려한 별빛 드레스를 입어봐요", next: "n3_dress2", effect: { mood: "dreamy" } },
-        { label: "가볍고 편안한 산책용 원피스를 입어봐요", next: "n3_dress2", effect: { mood: "cheerful" } }
-      ]
-    },
-    n3_dress2: {
-      bg: "dressroom",
-      portrait: P_RIA, name: "리아 공주",
-      text: "\"우와, 오늘 정말 잘 어울려! 저녁 파티에서 제일 반짝일 것 같아.\" 리아가 눈을 반짝이며 웃어요.",
-      choices: [
-        { label: "고마워! 오늘 저녁이 정말 기대돼", next: "n4_party", effect: { mood: "cheerful" } },
-        { label: "리아와 함께 준비하며 도란도란 수다를 떨어요", next: "n4_party", effect: { mood: "warm" } }
-      ]
-    },
-    n2_kitchen: {
-      bg: "kitchen",
-      portrait: P_ARA, name: "아라 공주",
-      text: "달콤한 냄새를 맡았는지, 작은 곰돌이 한 마리가 부엌 창문으로 코를 빼꼼 내밀어요.",
-      choices: [
-        { label: "곰돌이에게 갓 구운 쿠키를 나눠줘요", next: "n3_kitchen2", effect: { animal: "bear", mood: "warm" } },
-        { label: "혼자 조용히 티타임을 준비해요", next: "n3_kitchen2", effect: { mood: "dreamy" } }
-      ]
-    },
-    n3_kitchen2: {
-      bg: "kitchen",
-      portrait: function (f) { return f.animal === "bear" ? IMG_BEAR : P_ARA; },
-      name: function (f) { return f.animal === "bear" ? "곰돌이" : "아라 공주"; },
-      text: function (f) {
-        return f.animal === "bear"
-          ? "곰돌이가 쿠키 부스러기를 얼굴 가득 묻힌 채 활짝 웃어요. 오늘 하루 종일 곁에 있고 싶어 하는 눈치예요."
-          : "따뜻한 차 한 잔의 향기가 부엌 가득 퍼져요. 창밖으로 노을이 예쁘게 물들기 시작해요.";
-      },
-      choices: [
-        { label: "좋아, 오늘을 특별한 하루로 만들어볼까", next: "n4_party", effect: {} },
-        { label: "이제 저녁 파티 준비를 하러 가요", next: "n4_party", effect: {} }
-      ]
-    },
-    n4_party: {
-      bg: "dusk",
-      portrait: P_ARA, name: "아라 공주",
-      text: "은은한 종소리가 정원 가득 울려 퍼져요. 드디어 별빛 정원 파티가 시작될 시간, 아라 공주는 오늘 하루를 떠올리며 미소 지어요.",
-      choices: [
-        { label: "가장 좋아하는 모습 그대로, 자신 있게 걸어가요", next: "ENDING", effect: {} },
-        { label: "한 번 더 매무새를 가다듬고 조심스레 들어가요", next: "ENDING", effect: { mood: "dreamy" } }
-      ]
-    }
-  };
-
-  var ENDINGS = {
-    ball: {
-      title: "반짝이는 별빛 무도회",
-      bg: "ballroom", bgImg: BG_BALLROOM,
-      text: "샹들리에 불빛 아래, 아라 공주는 별빛 드레스 자락을 살랑이며 무도회장 한가운데로 걸어 들어가요. 오늘 밤엔 성 전체가 그녀를 위해 반짝이는 것 같아요.",
-      toast: "✨ 별빛 무도회의 주인공이 되었어요!"
-    },
-    heart: {
-      title: "다정한 마음의 정원",
-      bg: "heart",
-      text: function (f) {
-        return f.animal === "puppy"
-          ? "몽실이가 신나게 앞장서며 파티장까지 함께 걸어요. 사람들보다 몽실이의 재롱이 오늘 파티의 주인공이 된 것 같아요."
-          : "작은 곰돌이가 아라 공주의 손을 꼭 잡고 파티장에 들어서요. 함께 나눠 먹은 쿠키 냄새가 아직도 달콤하게 남아 있어요.";
-      },
-      toast: "💕 다정한 친구와 함께하는 밤이 되었어요!"
-    },
-    wander: {
-      title: "노을 정원의 산책자",
-      bg: "wander",
-      text: "아라 공주는 화려한 파티장 대신, 노을이 물든 정원을 천천히 한 바퀴 걸어요. 저 멀리 들려오는 파티 소리를 배경음악 삼아, 오늘 하루의 자유로움을 마음껏 만끽해요.",
-      toast: "🌿 나만의 자유로운 하루를 만끽했어요!"
-    }
-  };
-
-  var OUTFIT_LABEL = { elegant: "우아한 드레스", adventure: "활동적인 차림", cozy: "포근한 차림" };
-  var MOOD_LABEL = { cheerful: "발랄한 마음", dreamy: "몽환적인 마음", warm: "다정한 마음", brave: "용감한 마음" };
-  var ANIMAL_LABEL = { puppy: "몽실이(강아지)", bear: "곰돌이", none: "혼자" };
-
-  function resolveEnding(flags) {
-    if (flags.animal !== "none") return "heart";
-    if (flags.outfit === "elegant") return "ball";
-    return "wander";
+  var DATA = window.PrincessStories;
+  if (!DATA) {
+    console.error("stories.js missing");
+    return;
   }
 
-  /* ---------- State ---------- */
-  var flags = { outfit: "cozy", mood: "cheerful", animal: "none" };
-  var currentId = "n1";
-  var typing = null; // active typewriter handle
+  var ENDINGS_KEY = "story_endings_v2";
+  var SOUND_KEY = "story_sound_v1";
 
-  /* ---------- DOM refs ---------- */
+  var activeStory = null;
+  var flags = {};
+  var currentId = null;
+  var typing = null;
+
   var $ = function (id) { return document.getElementById(id); };
   var screenTitle = $("screen-title");
+  var screenPick = $("screen-pick");
   var screenGame = $("screen-game");
   var screenEnding = $("screen-ending");
 
@@ -164,16 +36,19 @@
   var endingTitle = $("ending-title");
   var endingText = $("ending-text");
   var endingFlags = $("ending-flags");
+  var endingStoryLabel = $("ending-story-label");
 
   var btnStart = $("btn-start");
   var btnReplay = $("btn-replay");
   var btnTitle = $("btn-title");
+  var btnPickBack = $("btn-pick-back");
   var btnSound = $("btn-sound");
+  var storyListEl = $("story-list");
   var endingsCountEl = $("endings-count");
-  var endingsDots = $("endings-dots");
+  var endingsTotalEl = $("endings-total");
   var toastEl = $("toast");
+  var titleCoverImg = $("title-cover-img");
 
-  /* ---------- SFX helpers (optional) ---------- */
   function sfx(role) {
     if (typeof CasualSfx !== "undefined" && CasualSfx && CasualSfx.play) {
       try { CasualSfx.play(role); } catch (_) {}
@@ -195,7 +70,6 @@
     CasualSfx.setEnabled(soundOn);
   }
   btnSound.setAttribute("aria-pressed", soundOn ? "true" : "false");
-
   btnSound.addEventListener("click", function () {
     soundOn = !soundOn;
     btnSound.setAttribute("aria-pressed", soundOn ? "true" : "false");
@@ -206,30 +80,42 @@
     if (soundOn) sfx("toggle");
   });
 
-  /* ---------- Endings persistence ---------- */
-  function loadSeenEndings() {
+  /* ---------- Endings persistence (per story) ---------- */
+  function loadSeenMap() {
     try {
       var raw = localStorage.getItem(ENDINGS_KEY);
-      var arr = raw ? JSON.parse(raw) : [];
-      return Array.isArray(arr) ? arr : [];
-    } catch (_) { return []; }
+      var obj = raw ? JSON.parse(raw) : {};
+      return obj && typeof obj === "object" ? obj : {};
+    } catch (_) { return {}; }
   }
-  function saveSeenEnding(id) {
-    var seen = loadSeenEndings();
-    if (seen.indexOf(id) === -1) {
-      seen.push(id);
-      try { localStorage.setItem(ENDINGS_KEY, JSON.stringify(seen)); } catch (_) {}
+  function saveSeenEnding(storyId, endingId) {
+    var map = loadSeenMap();
+    if (!map[storyId]) map[storyId] = [];
+    if (map[storyId].indexOf(endingId) === -1) {
+      map[storyId].push(endingId);
+      try { localStorage.setItem(ENDINGS_KEY, JSON.stringify(map)); } catch (_) {}
     }
-    return seen;
+    return map;
   }
-  function renderEndingsProgress() {
-    var seen = loadSeenEndings();
-    endingsCountEl.textContent = String(seen.length);
-    var dots = endingsDots.querySelectorAll(".ending-dot");
-    dots.forEach(function (dot) {
-      var id = dot.getAttribute("data-ending");
-      dot.classList.toggle("seen", seen.indexOf(id) !== -1);
+  function totalSeenCount() {
+    var map = loadSeenMap();
+    var n = 0;
+    Object.keys(map).forEach(function (k) {
+      n += Array.isArray(map[k]) ? map[k].length : 0;
     });
+    return n;
+  }
+  function totalEndingSlots() {
+    return DATA.list.reduce(function (sum, s) { return sum + s.endingTotal; }, 0);
+  }
+  function renderHubProgress() {
+    endingsCountEl.textContent = String(totalSeenCount());
+    if (endingsTotalEl) endingsTotalEl.textContent = String(totalEndingSlots());
+  }
+
+  function seenFor(storyId) {
+    var map = loadSeenMap();
+    return Array.isArray(map[storyId]) ? map[storyId] : [];
   }
 
   /* ---------- Toast ---------- */
@@ -249,7 +135,7 @@
     el.textContent = "";
     tapHint.classList.remove("show");
     var i = 0;
-    var speed = 20;
+    var speed = 18;
     var handle = { done: false };
     handle.timer = setInterval(function () {
       i += 1;
@@ -275,12 +161,13 @@
     dialogBox.onclick = skip;
   }
 
-  /* ---------- Background rendering ---------- */
-  var BG_CLASSES = ["bg-castle", "bg-garden", "bg-forest", "bg-dressroom", "bg-kitchen", "bg-dusk", "bg-heart", "bg-wander", "bg-ballroom"];
-
+  /* ---------- Background ---------- */
   function setScene(target, targetImg, bgName, bgImgSrc) {
-    BG_CLASSES.forEach(function (c) { target.classList.remove(c); });
-    target.classList.add("bg-" + bgName);
+    target.className = "scene-bg";
+    if (bgName) target.classList.add("bg-" + bgName);
+    target.classList.remove("scene-fade");
+    void target.offsetWidth;
+    target.classList.add("scene-fade");
     if (bgImgSrc) {
       targetImg.src = bgImgSrc;
       targetImg.hidden = false;
@@ -290,9 +177,8 @@
     }
   }
 
-  /* ---------- Story rendering ---------- */
   function resolveField(field, fallback) {
-    return typeof field === "function" ? field(flags) : (field || fallback);
+    return typeof field === "function" ? field(flags) : (field != null ? field : fallback);
   }
 
   function applyEffect(effect) {
@@ -302,24 +188,34 @@
 
   function renderNode(id) {
     currentId = id;
-    var node = NODES[id];
+    var node = activeStory.nodes[id];
+    if (!node) {
+      console.error("missing node", id);
+      return;
+    }
     setScene(sceneBg, sceneBgImg, node.bg, node.bgImg);
 
-    var portraitSrc = resolveField(node.portrait, P_ARA);
+    var portraitSrc = resolveField(node.portrait, null);
     var name = resolveField(node.name, "아라 공주");
     var text = resolveField(node.text, "");
 
-    portraitImg.src = portraitSrc;
+    if (portraitSrc) {
+      portraitImg.src = portraitSrc;
+      portraitImg.hidden = false;
+    } else {
+      portraitImg.hidden = true;
+    }
     portraitImg.alt = name;
     speakerName.textContent = name;
     choicesEl.innerHTML = "";
     tapHint.classList.add("show");
 
-    // restart portrait pop animation
     var frame = document.querySelector(".portrait-frame");
-    frame.style.animation = "none";
-    void frame.offsetWidth;
-    frame.style.animation = "";
+    if (frame) {
+      frame.style.animation = "none";
+      void frame.offsetWidth;
+      frame.style.animation = "";
+    }
 
     typeText(dialogText, text, function () {
       renderChoices(node.choices);
@@ -328,7 +224,7 @@
 
   function renderChoices(choices) {
     choicesEl.innerHTML = "";
-    choices.forEach(function (choice) {
+    (choices || []).forEach(function (choice) {
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "choice-btn";
@@ -347,19 +243,25 @@
   }
 
   function finishStory() {
-    var endingId = resolveEnding(flags);
-    var ending = ENDINGS[endingId];
-    saveSeenEnding(endingId);
+    var endingId = activeStory.resolveEnding(flags);
+    var ending = activeStory.endings[endingId];
+    if (!ending) {
+      endingId = Object.keys(activeStory.endings)[0];
+      ending = activeStory.endings[endingId];
+    }
+    saveSeenEnding(activeStory.id, endingId);
+    renderHubProgress();
 
     screenGame.classList.add("hidden");
     screenEnding.classList.remove("hidden");
 
     setScene(endingBg, endingBgImg, ending.bg, ending.bgImg);
+    if (endingStoryLabel) endingStoryLabel.textContent = activeStory.title;
     endingTitle.textContent = ending.title;
     endingText.textContent = resolveField(ending.text, "");
 
     endingFlags.innerHTML = "";
-    [OUTFIT_LABEL[flags.outfit], MOOD_LABEL[flags.mood], ANIMAL_LABEL[flags.animal]].forEach(function (label) {
+    (activeStory.flagLabels(flags) || []).forEach(function (label) {
       var chip = document.createElement("span");
       chip.className = "flag-chip";
       chip.textContent = label;
@@ -367,27 +269,62 @@
     });
 
     sfx("fanfare");
-    showToast(ending.toast);
+    showToast(ending.toast || "엔딩에 도달했어요!");
   }
 
   function resetStory() {
-    flags = { outfit: "cozy", mood: "cheerful", animal: "none" };
-    currentId = "n1";
+    flags = Object.assign({}, activeStory.defaultFlags);
+    currentId = activeStory.start;
   }
 
-  /* ---------- Screen transitions ---------- */
+  /* ---------- Screens ---------- */
   function goTitle() {
     screenEnding.classList.add("hidden");
     screenGame.classList.add("hidden");
+    screenPick.classList.add("hidden");
     screenTitle.classList.remove("hidden");
-    renderEndingsProgress();
+    renderHubProgress();
+  }
+
+  function goPick() {
+    screenTitle.classList.add("hidden");
+    screenEnding.classList.add("hidden");
+    screenGame.classList.add("hidden");
+    screenPick.classList.remove("hidden");
+    renderStoryCards();
   }
 
   function goGame() {
     screenTitle.classList.add("hidden");
+    screenPick.classList.add("hidden");
     screenEnding.classList.add("hidden");
     screenGame.classList.remove("hidden");
     renderNode(currentId);
+  }
+
+  function renderStoryCards() {
+    storyListEl.innerHTML = "";
+    DATA.list.forEach(function (story) {
+      var seen = seenFor(story.id);
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "story-card";
+      card.innerHTML =
+        '<span class="story-card-cover" style="background-image:url(\'' + story.cover + '\')"></span>' +
+        '<span class="story-card-body">' +
+          '<span class="story-card-title">' + story.title + "</span>" +
+          '<span class="story-card-sub">' + story.subtitle + "</span>" +
+          '<span class="story-card-desc">' + story.desc + "</span>" +
+          '<span class="story-card-progress">결말 ' + seen.length + " / " + story.endingTotal + "</span>" +
+        "</span>";
+      card.addEventListener("click", function () {
+        sfx("click");
+        activeStory = story;
+        resetStory();
+        goGame();
+      });
+      storyListEl.appendChild(card);
+    });
   }
 
   btnStart.addEventListener("click", function () {
@@ -395,8 +332,12 @@
       try { CasualSfx.unlock(); } catch (_) {}
     }
     sfx("click");
-    resetStory();
-    goGame();
+    goPick();
+  });
+
+  btnPickBack.addEventListener("click", function () {
+    sfx("click");
+    goTitle();
   });
 
   btnReplay.addEventListener("click", function () {
@@ -407,9 +348,12 @@
 
   btnTitle.addEventListener("click", function () {
     sfx("click");
-    goTitle();
+    goPick();
   });
 
-  /* ---------- Init ---------- */
-  renderEndingsProgress();
+  if (titleCoverImg && DATA.list[0]) {
+    titleCoverImg.src = DATA.list[0].cover;
+  }
+
+  renderHubProgress();
 })();
