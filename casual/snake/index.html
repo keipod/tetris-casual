@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#07130c">
+<title>스네이크</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">스네이크</h1>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="stat-bar">
+    <span class="chip"><span class="chip-label">점수</span><span id="score">0</span></span>
+    <span class="chip"><span class="chip-label">최고</span><span id="best">0</span></span>
+    <div class="stat-actions">
+      <button id="btn-pause" class="icon-btn pause-btn" type="button" aria-label="일시정지" title="일시정지">
+        <svg class="ico-pause" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="6" y="5" width="4" height="14" rx="1.4" fill="currentColor"/>
+          <rect x="14" y="5" width="4" height="14" rx="1.4" fill="currentColor"/>
+        </svg>
+        <svg class="ico-play" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 5.5v13a.8.8 0 001.22.68l10-6.5a.8.8 0 000-1.36l-10-6.5A.8.8 0 008 5.5z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button id="btn-new" class="icon-btn new-btn" type="button" aria-label="새 게임" title="새 게임">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 12a8 8 0 0113.66-5.66M20 12a8 8 0 01-13.66 5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M17 4v4h-4M7 20v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <main class="stage" id="stage">
+    <div id="board-wrap" class="board-wrap">
+      <canvas id="board"></canvas>
+      <div id="hint" class="hint">밀거나 방향키로 시작!</div>
+    </div>
+  </main>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">게임 설명서</h2>
+      <p class="help-lead">뱀을 조종해 <strong>사과</strong>를 먹고 길게 늘려보세요!</p>
+
+      <section class="help-ex">
+        <div class="help-badge">🕹️ 조작 방법</div>
+        <p class="help-note">화면을 원하는 방향으로 밀거나 방향키·WASD로 움직여요. 빠르게 두 번 방향을 바꿔도 안전해요.</p>
+      </section>
+
+      <section class="help-ex help-ex-ok">
+        <div class="help-badge">🍎 사과 먹기</div>
+        <p class="help-note">사과를 먹으면 몸이 1칸 길어지고 점수 +1! 사과를 먹을수록 조금씩 빨라져요.</p>
+      </section>
+
+      <section class="help-ex help-ex-star">
+        <div class="help-badge">⭐ 황금 별</div>
+        <p class="help-note">가끔 나타나는 황금 별은 <strong>5점</strong>! 약 6초 후 사라지니 서두르세요.</p>
+      </section>
+
+      <section class="help-ex help-ex-bad">
+        <div class="help-badge">💥 조심!</div>
+        <p class="help-note">벽이나 자기 몸에 부딪히면 게임 끝! 최고 점수는 자동으로 저장돼요.</p>
+      </section>
+
+      <p class="help-tip">일시정지 버튼 또는 P 키로 언제든 쉴 수 있어요.</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

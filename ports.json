@@ -26,6 +26,13 @@
     { "id": "rhythm", "port": 48910, "entry": "/casual/rhythm/", "name": "피카츄 리듬" },
     { "id": "tcg-solo", "port": 48911, "entry": "/casual/tcg-solo/", "name": "TCG 솔리테어" },
     { "id": "story", "port": 48912, "entry": "/casual/story/", "name": "공주 이야기" },
-    { "id": "beach-defense", "port": 48913, "entry": "/casual/beach-defense/", "name": "비치 디펜스" }
+    { "id": "beach-defense", "port": 48913, "entry": "/casual/beach-defense/", "name": "비치 디펜스" },
+    { "id": "lol", "port": 48914, "entry": "/casual/lol/", "name": "리그 오브 챔피언" },
+    { "id": "snake", "port": 48915, "entry": "/casual/snake/", "name": "스네이크" },
+    { "id": "2048", "port": 48916, "entry": "/casual/2048/", "name": "2048" },
+    { "id": "minesweeper", "port": 48917, "entry": "/casual/minesweeper/", "name": "지뢰찾기" },
+    { "id": "flappy", "port": 48918, "entry": "/casual/flappy/", "name": "플래피 대시" },
+    { "id": "cookie-clicker", "port": 48919, "entry": "/casual/cookie-clicker/", "name": "쿠키 클리커" },
+    { "id": "slope", "port": 48920, "entry": "/casual/slope/", "name": "슬로프 러너" }
   ]
 }

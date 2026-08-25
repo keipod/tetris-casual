@@ -3,7 +3,6 @@ import {
   effectivenessText, catchChance, combatPower, cardEffectivePower, typeChipsHtml,
   TYPE_KO, TYPE_COLOR,
 } from "./poke.js";
-import { Battle3D } from "./battle3d.js";
 import {
   T, MAP_W, MAP_H, ENCOUNTER_RATE,
   PATCH_COOLDOWN_STEPS, PATCH_SOFT_COOLDOWN,
@@ -14,6 +13,12 @@ import {
 import { AudioFx } from "./audio.js";
 import { runCatchScene } from "./catchscene.js";
 import { runCardDuel } from "./cardscene.js";
+
+/** Lazy-load Three.js battle — keeps overworld playable if vendor/three is missing. */
+async function loadBattle3D() {
+  const mod = await import("./battle3d.js");
+  return mod.Battle3D;
+}
 
 const LS = "catch2_save_v1";
 const LS_SOUND = "catch2_sound";
@@ -430,7 +435,16 @@ async function startEncounterFromWild(wild) {
       <button class="btn ghost" type="button" id="pick-run">도망친다</button>
     </div>
   `);
-  document.getElementById("pick-battle").onclick = () => { AudioFx.ui(); hidePanel(); beginBattle(); };
+  document.getElementById("pick-battle").onclick = () => {
+    AudioFx.ui();
+    hidePanel();
+    beginBattle().catch((err) => {
+      console.error(err);
+      showPanel(`<h2>전투 오류</h2><p>${esc(err?.message || err)}</p>
+        <button class="btn primary" id="ok" type="button">필드로</button>`);
+      document.getElementById("ok").onclick = () => { hidePanel(); endBattleScene(); };
+    });
+  };
   const pickCard = document.getElementById("pick-card");
   pickCard.onclick = () => {
     if (!ownedCards().length || pickCard.disabled) return;
@@ -539,17 +553,29 @@ async function beginBattle() {
     phase: "command",
     balls: app.save.balls,
   };
-  app.battle3d = new Battle3D(battleCanvas);
-  const g = app.save.gender || "male";
-  const trainerSrc = g === "female" ? "assets/characters/female-back.png" : "assets/characters/male-back.png";
-  await app.battle3d.loadImages({
-    meadow: "assets/battle/meadow.png",
-    grass: "assets/tiles/grass.png",
-    wild: app.battle.wild.front,
-    ally: app.battle.ally.back || app.battle.ally.front,
-    trainer: trainerSrc,
-  });
-  app.battle3d.start();
+  let Battle3D;
+  try {
+    Battle3D = await loadBattle3D();
+    app.battle3d = new Battle3D(battleCanvas);
+    const g = app.save.gender || "male";
+    const trainerSrc = g === "female" ? "assets/characters/female-back.png" : "assets/characters/male-back.png";
+    await app.battle3d.loadImages({
+      meadow: "assets/battle/meadow.png",
+      grass: "assets/tiles/grass.png",
+      wild: app.battle.wild.front,
+      ally: app.battle.ally.back || app.battle.ally.front,
+      trainer: trainerSrc,
+    });
+    await app.battle3d.start();
+  } catch (err) {
+    console.error(err);
+    app.battle3d?.stop?.();
+    app.battle3d = null;
+    showPanel(`<h2>전투 엔진 오류</h2><p>전투 화면을 준비하지 못했어요.</p>
+      <button class="btn primary" id="ok" type="button">필드로</button>`);
+    document.getElementById("ok").onclick = () => { hidePanel(); endBattleScene(); };
+    return;
+  }
   playFocusIntro();
   syncBattleFlash();
   AudioFx.battleStart();

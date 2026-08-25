@@ -1,6 +1,20 @@
-/** Three.js battle arena: classic anime framing, lunge attacks, impact FX. */
+/** Three.js battle arena: classic anime framing, lunge attacks, impact FX.
+ * Three.js is loaded dynamically so battle still runs in 2D if vendor/three is missing.
+ */
 
-import * as THREE from "three";
+let THREE = null;
+
+async function ensureThree() {
+  if (THREE) return true;
+  try {
+    THREE = await import("three");
+    return true;
+  } catch (err) {
+    console.warn("[battle3d] three.js unavailable, using 2D fallback", err);
+    THREE = null;
+    return false;
+  }
+}
 
 const TYPE_HEX = {
   normal: 0xa8a878, fire: 0xf08030, water: 0x6890f0, grass: 0x78c850, electric: 0xf8d030,
@@ -46,8 +60,8 @@ export class Battle3D {
     this.images = Object.fromEntries(entries);
   }
 
-  start() {
-    this.use3d = this.tryWebGL();
+  async start() {
+    this.use3d = await this.tryWebGL();
     this.resize();
     if (this.use3d) this.buildScene();
     this.loop();
@@ -68,7 +82,8 @@ export class Battle3D {
     this.trainerSpr = null;
   }
 
-  tryWebGL() {
+  async tryWebGL() {
+    if (!(await ensureThree())) return false;
     try {
       this.renderer = new THREE.WebGLRenderer({
         canvas: this.canvas,
@@ -86,8 +101,10 @@ export class Battle3D {
       sun.position.set(5, 12, 3);
       this.scene.add(sun);
       return true;
-    } catch {
+    } catch (err) {
+      console.warn("[battle3d] WebGL init failed", err);
       this.renderer = null;
+      this.use3d = false;
       return false;
     }
   }
@@ -404,7 +421,8 @@ export class Battle3D {
 function loadImage(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    // crossOrigin only for remote CDN sprites — same-origin assets often lack ACAO
+    if (/^https?:\/\//i.test(src)) img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
     img.onerror = reject;
     img.src = src;

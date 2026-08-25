@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b1522">
+<title>지뢰찾기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">지뢰찾기</h1>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button id="btn-new" class="icon-btn new-btn" type="button" aria-label="새 게임" title="새 게임">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 12a8 8 0 0113.66-5.66M20 12a8 8 0 01-13.66 5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M17 4v4h-4M7 20v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="stat-bar">
+    <span class="chip"><span class="chip-label">💣 남은 지뢰</span><span id="mines">10</span></span>
+    <span class="chip"><span class="chip-label">⏱ 시간</span><span id="timer">0</span></span>
+    <span class="chip"><span class="chip-label">🏆 최고</span><span id="best">–</span></span>
+    <button type="button" class="flag-btn" id="btn-flag" aria-pressed="false" title="플래그 모드: 탭으로 깃발 꽂기">🚩 플래그</button>
+    <div class="mode-toggle" role="group" aria-label="난이도 선택">
+      <button type="button" class="mode-btn" data-diff="easy">초급</button>
+      <button type="button" class="mode-btn" data-diff="normal">중급</button>
+      <button type="button" class="mode-btn" data-diff="hard">고급</button>
+    </div>
+  </div>
+
+  <main class="stage">
+    <div id="board" class="board" aria-label="지뢰찾기 판"></div>
+  </main>
+
+  <div id="overlay" class="overlay" hidden>
+    <div id="confetti" class="confetti-wrap" hidden aria-hidden="true"></div>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">게임 설명서</h2>
+      <p class="help-lead">판 안의 <strong>모든 안전한 칸</strong>을 지뢰를 밟지 않고 열어보세요!</p>
+
+      <section class="help-ex">
+        <div class="help-badge">👆 칸 열기</div>
+        <p class="help-note">칸을 탭하면 열려요. 숫자는 그 칸을 둘러싼 8칸 중 지뢰 개수예요. 첫 탭은 절대 지뢰가 아니에요!</p>
+      </section>
+
+      <section class="help-ex help-ex-ok">
+        <div class="help-badge">🚩 깃발 꽂는 법</div>
+        <p class="help-note">지뢰라고 생각되는 칸에 깃발을 꽂아 표시하세요. 세 가지 방법이 있어요.<br>① 컴퓨터: 오른쪽 클릭<br>② 모바일: 길게 꾹 누르기 (약 0.35초)<br>③ 🚩 플래그 버튼을 켜고 탭하기</p>
+      </section>
+
+      <section class="help-ex help-ex-bad">
+        <div class="help-badge">💥 지뢰를 밟으면</div>
+        <p class="help-note">깃발 없는 지뢰 칸을 열면 폭발! 남은 시간에 유의해 빠르게 모든 안전 칸을 여세요.</p>
+      </section>
+
+      <section class="help-ex">
+        <div class="help-badge">🏆 승리 조건</div>
+        <p class="help-note">지뢰 칸을 제외한 모든 칸을 열면 클리어! 소요 시간이 짧을수록 좋아요. 난이도별 최고 기록이 저장돼요.</p>
+      </section>
+
+      <p class="help-tip">초급 9×9(지뢰 10) · 중급 12×12(24) · 고급 16×16(40)</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

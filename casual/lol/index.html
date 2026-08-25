@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e1a2f">
+<title>리그 오브 챔피언</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body data-mh-fs-pos="tr">
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <div class="score-bar">
+      <span class="chip chip-you">
+        <span class="chip-label">내 넥서스</span>
+        <span id="hp-you">2800</span>
+      </span>
+      <span class="chip chip-gold">
+        <span class="chip-label">골드</span>
+        <span id="gold">0</span>
+      </span>
+      <span class="chip chip-cs">
+        <span class="chip-label">CS</span>
+        <span id="cs">0</span>
+      </span>
+      <span class="chip chip-them">
+        <span class="chip-label">적 넥서스</span>
+        <span id="hp-them">2800</span>
+      </span>
+    </div>
+    <button id="btn-help" class="icon-btn" type="button" aria-label="설명서">?</button>
+    <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+      <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <main class="stage-wrap">
+    <div class="stage-frame">
+      <canvas id="game"></canvas>
+
+      <div class="hud">
+        <div class="hud-portrait">
+          <span class="portrait-ring">
+            <img id="portrait-img" data-fb="champ-you" src="assets/champ-you.png" alt="" draggable="false">
+          </span>
+          <span class="lvl-badge" id="lvl-badge">1</span>
+          <div class="hud-bars">
+            <div class="bar bar-hp"><i id="bar-hp"></i><em id="hp-text">620 / 620</em></div>
+            <div class="bar bar-mp"><i id="bar-mp"></i><em id="mp-text">340 / 340</em></div>
+          </div>
+        </div>
+        <div class="hud-skills" id="hud-skills"></div>
+      </div>
+
+      <div id="respawn-banner" class="respawn-banner hidden">
+        <strong>쓰러졌습니다</strong>
+        <span id="respawn-time">부활까지 7초</span>
+      </div>
+
+      <div id="overlay" class="overlay">
+        <div class="overlay-card" id="overlay-card"></div>
+      </div>
+    </div>
+  </main>
+
+  <div id="help-overlay" class="help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <div class="help-card">
+      <header class="help-head">
+        <h2 id="help-title">게임 설명서</h2>
+        <button id="btn-help-close" class="help-close" type="button" aria-label="닫기">닫기</button>
+      </header>
+      <div class="help-body">
+        <section class="help-block">
+          <h3>목표</h3>
+          <div class="help-row">
+            <figure class="help-fig">
+              <img data-fb="nexus-blue" src="assets/nexus-blue.png" alt="내 넥서스" />
+              <figcaption>내 넥서스 지키기</figcaption>
+            </figure>
+            <span class="help-arrow" aria-hidden="true">→</span>
+            <figure class="help-fig">
+              <img data-fb="nexus-red" src="assets/nexus-red.png" alt="적 넥서스" />
+              <figcaption>적 넥서스 부수기</figcaption>
+            </figure>
+          </div>
+          <p>왼쪽 아래 파란 진영에서 오른쪽 위 빨간 진영으로 대각선 라인을 밀어 올라가세요. <strong>적 넥서스 HP를 0</strong>으로 만들면 승리하고, 내 넥서스가 먼저 무너지면 패배합니다. 넥서스는 앞에 선 포탑 2개가 모두 파괴된 뒤에만 공격할 수 있습니다.</p>
+        </section>
+
+        <section class="help-block">
+          <h3>조작 (마우스 + 키보드)</h3>
+          <ul class="help-keys">
+            <li><kbd>오른쪽 클릭</kbd><span>바닥을 누르면 이동, 적 유닛을 누르면 공격 대상 지정</span></li>
+            <li><kbd>A + 왼쪽 클릭</kbd><span>공격 이동 — 가는 길의 적을 자동으로 교전합니다</span></li>
+            <li><kbd>S</kbd><span>정지 — 이동과 공격 명령을 취소합니다</span></li>
+            <li><kbd>Q W E R</kbd><span>스킬 사용 (커서 방향/지점 기준)</span></li>
+          </ul>
+        </section>
+
+        <section class="help-block">
+          <h3>챔피언 스킬</h3>
+          <div class="help-units">
+            <figure class="help-unit">
+              <img data-fb="skill-q" src="assets/skill-q.png" alt="발사" />
+              <figcaption><b>Q 발사</b><span>직선 관통 마법탄</span></figcaption>
+            </figure>
+            <figure class="help-unit">
+              <img data-fb="skill-w" src="assets/skill-w.png" alt="방어막" />
+              <figcaption><b>W 방어막</b><span>3초간 피해 흡수</span></figcaption>
+            </figure>
+            <figure class="help-unit">
+              <img data-fb="skill-e" src="assets/skill-e.png" alt="돌진" />
+              <figcaption><b>E 돌진</b><span>커서 방향 돌진 + 가속</span></figcaption>
+            </figure>
+            <figure class="help-unit">
+              <img data-fb="skill-r" src="assets/skill-r.png" alt="폭발" />
+              <figcaption><b>R 폭발</b><span>지점 광역 폭발 · Lv.6</span></figcaption>
+            </figure>
+          </div>
+          <p>스킬 위력은 챔피언 레벨에 따라 자동으로 강해집니다. R은 레벨 6이 되면 해금됩니다.</p>
+        </section>
+
+        <section class="help-block">
+          <h3>골드와 CS</h3>
+          <div class="help-row">
+            <figure class="help-fig help-fig-sm">
+              <img data-fb="coin" src="assets/coin.png" alt="골드" />
+              <figcaption>처치 보상</figcaption>
+            </figure>
+          </div>
+          <p>미니언을 <strong>직접 마지막으로 처치</strong>하면 골드와 CS가 올라갑니다. 챔피언·포탑 처치와 시간당 수당으로도 골드가 모입니다. 상점은 아직 준비 중이라 골드는 점수처럼 쌓입니다.</p>
+        </section>
+
+        <section class="help-block">
+          <h3>미니언·포탑·전투 흐름</h3>
+          <ol class="help-steps">
+            <li>25초마다 양쪽 넥서스에서 미니언 웨이브가 출발합니다. 3번째 웨이브마다 튼튼한 공성 미니언이 합류합니다.</li>
+            <li>포탑은 미니언을 우선 공격하지만, 당신을 노리면 <strong>붉은 경고 표시</strong>와 함께 강한 일격을 날립니다. 포탑 범위는 조심하세요.</li>
+            <li>주변에서 적이 죽으면 경험치를 얻어 레벨이 오르고 능력치가 자랍니다.</li>
+            <li>쓰러지면 <strong>5초 + 레벨 × 2초</strong> 뒤 샘에서 부활합니다. 샘 근처에서는 체력과 마나가 빠르게 회복됩니다.</li>
+            <li>적 챔피언 AI도 같은 스킬을 씁니다. 위태로우면 물러났다가 회복 후 다시 옵니다.</li>
+          </ol>
+        </section>
+      </div>
+      <footer class="help-foot">
+        <button id="btn-help-ok" class="btn" type="button">알겠어요</button>
+      </footer>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

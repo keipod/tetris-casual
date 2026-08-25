@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#160c05">
+  <title>쿠키 클리커</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../assets/no-select.css">
+  <script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">쿠키 클리커</h1>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <section class="stat-bar">
+    <div class="stat stat-cookies">
+      <span class="stat-label">🍪 쿠키</span>
+      <span id="cookies" class="stat-big">0</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">초당 쿠키</span>
+      <span id="cps" class="stat-val">0</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">손클릭</span>
+      <span id="hand" class="stat-val">+1</span>
+    </div>
+  </section>
+
+  <main class="playfield">
+    <section class="cookie-pane">
+      <div id="cookie-zone">
+        <button id="big-cookie" type="button" aria-label="쿠키 굽기">
+          <svg viewBox="0 0 220 220" aria-hidden="true">
+            <defs>
+              <radialGradient id="dough" cx="36%" cy="30%" r="82%">
+                <stop offset="0%" stop-color="#f6cd8f"/>
+                <stop offset="45%" stop-color="#e2a75a"/>
+                <stop offset="80%" stop-color="#c07f33"/>
+                <stop offset="100%" stop-color="#9c5f22"/>
+              </radialGradient>
+              <radialGradient id="chip" cx="35%" cy="30%" r="90%">
+                <stop offset="0%" stop-color="#7a4a26"/>
+                <stop offset="60%" stop-color="#4e2c14"/>
+                <stop offset="100%" stop-color="#33200f"/>
+              </radialGradient>
+            </defs>
+            <circle cx="110" cy="111" r="102" fill="#7d4b1b"/>
+            <circle cx="110" cy="108" r="100" fill="url(#dough)"/>
+            <g fill="#8a5420" opacity="0.45">
+              <circle cx="90" cy="80" r="2"/><circle cx="124" cy="92" r="2.5"/>
+              <circle cx="70" cy="132" r="2"/><circle cx="146" cy="136" r="2"/>
+              <circle cx="100" cy="170" r="2"/><circle cx="60" cy="96" r="1.8"/>
+              <circle cx="134" cy="74" r="1.8"/><circle cx="156" cy="96" r="1.6"/>
+              <circle cx="84" cy="116" r="1.6"/><circle cx="118" cy="128" r="2"/>
+            </g>
+            <g>
+              <ellipse cx="72" cy="66" rx="13" ry="12" fill="url(#chip)"/>
+              <ellipse cx="138" cy="60" rx="10" ry="9" fill="url(#chip)"/>
+              <ellipse cx="104" cy="104" rx="16" ry="15" fill="url(#chip)"/>
+              <ellipse cx="58" cy="118" rx="11" ry="10" fill="url(#chip)"/>
+              <ellipse cx="152" cy="112" rx="13" ry="12" fill="url(#chip)"/>
+              <ellipse cx="88" cy="152" rx="10" ry="9" fill="url(#chip)"/>
+              <ellipse cx="128" cy="158" rx="12" ry="11" fill="url(#chip)"/>
+              <ellipse cx="160" cy="84" rx="8" ry="7" fill="url(#chip)"/>
+              <ellipse cx="46" cy="86" rx="8" ry="7" fill="url(#chip)"/>
+              <ellipse cx="112" cy="44" rx="8" ry="7" fill="url(#chip)"/>
+              <g fill="#ffffff" opacity="0.22">
+                <ellipse cx="69" cy="62" rx="4.5" ry="3"/>
+                <ellipse cx="135" cy="57" rx="3.5" ry="2.4"/>
+                <ellipse cx="99" cy="99" rx="5.5" ry="3.6"/>
+                <ellipse cx="55" cy="114" rx="3.8" ry="2.6"/>
+                <ellipse cx="149" cy="108" rx="4.5" ry="3"/>
+                <ellipse cx="85" cy="149" rx="3.5" ry="2.4"/>
+                <ellipse cx="125" cy="154" rx="4.2" ry="2.8"/>
+                <ellipse cx="158" cy="81" rx="2.8" ry="2"/>
+                <ellipse cx="44" cy="83" rx="2.8" ry="2"/>
+                <ellipse cx="110" cy="41" rx="2.8" ry="2"/>
+              </g>
+            </g>
+          </svg>
+        </button>
+      </div>
+      <p class="cookie-hint" id="cookie-hint">탭할 때마다 +1개 구워요!</p>
+    </section>
+
+    <aside class="shop-pane">
+      <h2 class="shop-title">🏪 상점</h2>
+      <div id="shop-buildings" class="shop-list"></div>
+      <h2 class="shop-title">💪 강화</h2>
+      <div id="shop-upgrades" class="shop-list"></div>
+      <div class="shop-foot">
+        <button id="btn-reset" class="danger-btn" type="button">초기화</button>
+      </div>
+    </aside>
+  </main>
+
+  <div id="fx-layer" aria-hidden="true"></div>
+  <div id="toasts" aria-live="polite"></div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">게임 설명서</h2>
+      <p class="help-lead">쿠키를 탭해 <strong>굽고</strong>, 건물을 사서 <strong>자동으로</strong> 구워보세요!</p>
+
+      <section class="help-ex">
+        <div class="help-badge">🍪 굽기</div>
+        <p class="help-note">큰 쿠키를 탭하면 손클릭만큼 쿠키가 구워져요. 강화를 사면 한 번에 더 많이 구워요.</p>
+      </section>
+
+      <section class="help-ex help-ex-ok">
+        <div class="help-badge">🏪 건물과 CPS</div>
+        <p class="help-note">커서·할머니·농장 등을 사면 <strong>초당 쿠키(CPS)</strong>만큼 자동으로 구워져요. 살 때마다 가격이 1.15배씩 올라가요.</p>
+      </section>
+
+      <section class="help-ex">
+        <div class="help-badge">✨ 황금 쿠키</div>
+        <p class="help-note">1~2분마다 화면 어딘가에 황금 쿠키가 나타나요! 10초 안에 클릭하면 큰 보너스를 받아요.</p>
+      </section>
+
+      <section class="help-ex">
+        <div class="help-badge">💾 자동 저장</div>
+        <p class="help-note">5초마다 저장돼요. 게임을 닫아도 최대 2시간까지 베이킹이 계속돼요.</p>
+      </section>
+
+      <p class="help-tip">황금 쿠키는 놓치면 사라져요 — 눈을 떼지 마세요!</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
