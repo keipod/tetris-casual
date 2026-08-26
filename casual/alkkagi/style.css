@@ -1,0 +1,21 @@
+.theme-alkkagi {
+  --bg: #0d1024;
+  --bg-2: #171c38;
+  --panel: rgba(24, 30, 58, 0.92);
+  --panel-edge: rgba(120, 140, 220, 0.32);
+  --gold: #8fa7ff;
+  --gold-strong: #b9caff;
+  --ink: #eef1ff;
+  --ink-dim: #a3add8;
+}
+
+.board-round { border-radius: 50%; box-shadow: var(--shadow), inset 0 0 60px rgba(0,0,0,0.55); }
+#board { border-radius: 50%; }
+
+.shake { animation: shake 0.28s ease; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+}

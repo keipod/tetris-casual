@@ -1,0 +1,31 @@
+.theme-baduk {
+  --bg: #10160f;
+  --bg-2: #1b241a;
+  --panel: rgba(26, 36, 25, 0.92);
+  --panel-edge: rgba(154, 189, 122, 0.3);
+  --gold: #a8c98a;
+  --gold-strong: #cfe6ae;
+  --ink: #eef3e6;
+  --ink-dim: #a9bb9a;
+}
+
+.game-actions {
+  display: flex; gap: 10px; justify-content: center;
+  margin-top: 12px;
+}
+.btn-danger-ghost { color: #ffb3a3; }
+
+.cap-wrap { display: flex; gap: 6px; }
+.cap {
+  font-size: 11px; font-weight: 700;
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+}
+.cap-b { color: #dfe7d5; }
+.cap-w { color: #fff; background: rgba(255,255,255,0.14); }
+
+.territory-b {
+  fill: rgba(40, 60, 200, 0.28);
+}

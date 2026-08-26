@@ -1,0 +1,124 @@
+.theme-gostop {
+  --bg: #170d0d;
+  --bg-2: #241313;
+  --panel: rgba(44, 22, 22, 0.94);
+  --panel-edge: rgba(220, 120, 110, 0.3);
+  --gold: #e8907a;
+  --gold-strong: #ffc4ae;
+  --ink: #f8ebe6;
+  --ink-dim: #c9a09a;
+}
+
+.score-strip {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.score-box {
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: 14px;
+  padding: 8px 12px;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+.score-name { font-size: 11px; color: var(--ink-dim); }
+.score-num { font-size: 20px; font-weight: 800; color: var(--gold-strong); }
+.score-box.me .score-num.glowing { animation: score-glow 0.5s ease; }
+@keyframes score-glow {
+  40% { transform: scale(1.25); text-shadow: 0 0 18px rgba(255, 196, 174, 0.9); }
+}
+.score-detail { font-size: 9.5px; color: var(--ink-dim); opacity: 0.85; }
+.go-indicator {
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 15px;
+  color: var(--gold-strong);
+  min-width: 44px;
+}
+
+.field-wrap {
+  background:
+    radial-gradient(130% 100% at 50% 20%, rgba(150, 60, 50, 0.16), transparent 65%),
+    linear-gradient(180deg, #33201c, #201210);
+  border: 1px solid var(--panel-edge);
+  border-radius: 18px;
+  padding: 10px 8px;
+  box-shadow: var(--shadow), inset 0 0 46px rgba(0,0,0,0.45);
+}
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  min-height: 190px;
+}
+.month-slot {
+  position: relative;
+  min-height: 88px;
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 200, 160, 0.14);
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 2px;
+  padding: 3px;
+}
+.month-slot .slot-label {
+  position: absolute; top: 1px; left: 4px;
+  font-size: 8.5px; color: rgba(255, 210, 180, 0.35);
+  font-weight: 700;
+}
+
+.hand-row {
+  display: flex; gap: 7px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 10px 0 4px;
+  min-height: 92px;
+}
+
+.hcard {
+  width: 58px; height: 84px;
+  perspective: 600px;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.month-slot .hcard { width: 44px; height: 64px; cursor: default; pointer-events: none; }
+.hcard.playable:hover { transform: translateY(-8px) scale(1.05); filter: brightness(1.12); }
+.hcard-inner {
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.3, 1.3, 0.4, 1);
+  position: relative;
+}
+.hcard.is-back .hcard-inner { transform: rotateY(180deg); }
+.hface, .hback {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  border-radius: 7px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+.hface canvas { width: 100%; height: 100%; display: block; }
+.hback {
+  transform: rotateY(180deg);
+  background:
+    repeating-linear-gradient(45deg, rgba(240, 190, 120, 0.18) 0 5px, transparent 5px 10px),
+    linear-gradient(160deg, #8a3030, #551a17);
+  border: 2px solid rgba(240, 190, 120, 0.5);
+}
+.hcard.selected .hface::after {
+  content: "";
+  position: absolute; inset: 0;
+  border: 3px solid var(--gold-strong);
+  border-radius: 7px;
+  box-shadow: 0 0 14px rgba(255, 196, 174, 0.7);
+}
+
+.fly-card {
+  position: fixed;
+  z-index: 95;
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(0.35, 0.9, 0.4, 1);
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1024">
+<meta name="mp-ws-port" content="48947">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>">
+<title>알까기 대전 · 온라인</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/no-select.css">
+<link rel="stylesheet" href="../assets/mp_common.css?v=20260826a">
+<link rel="stylesheet" href="style.css?v=20260826a">
+<script src="../assets/mobile-hardening.js"></script>
+<script src="../assets/safe-storage.js"></script>
+<script src="../assets/sfx-bank.js"></script>
+<script src="../assets/mp_client.js"></script>
+</head>
+<body data-mh-fs-pos="tr" class="theme-alkkagi">
+<div id="app">
+
+  <section id="screen-lobby" class="screen lobby-screen" aria-label="대전 로비">
+    <div class="lobby-top">
+      <a class="back-link" href="../">목록</a>
+      <button id="btn-sound-lobby" class="icon-btn" type="button" aria-label="소리">🔊</button>
+    </div>
+
+    <header class="lobby-hero">
+      <p class="lobby-eyebrow">online match</p>
+      <h1 class="lobby-title">알까기 대전</h1>
+      <p class="lobby-sub">알을 튕겨 상대 네 알을 모두 판 밖으로!</p>
+    </header>
+
+    <div class="lobby-card">
+      <label class="nick-row">
+        <span class="nick-label">닉네임</span>
+        <input id="nick-input" type="text" maxlength="12" placeholder="닉네임" autocomplete="off">
+        <button id="nick-save" class="btn btn-ghost" type="button">저장</button>
+      </label>
+      <div class="lobby-actions">
+        <button id="btn-cpu" class="btn btn-primary" type="button">🤖 CPU 대전</button>
+        <button id="btn-room" class="btn btn-secondary" type="button">🔑 방 코드로 대전</button>
+      </div>
+      <div class="player-box">
+        <h3 class="player-head">온라인 플레이어 <span id="player-count" class="player-count">0</span></h3>
+        <ul id="player-list" class="player-list"></ul>
+        <p class="player-empty-hint" id="player-empty">아직 접속자가 없습니다 · 친구에게 링크를 공유하세요</p>
+      </div>
+    </div>
+
+    <div id="room-dialog" class="modal" hidden>
+      <div class="modal-card">
+        <h2>방 코드 대전</h2>
+        <input id="room-code-input" class="code-input" type="text" maxlength="6" placeholder="방 코드 6자리" autocomplete="off">
+        <div class="modal-actions">
+          <button id="room-create-btn" class="btn btn-secondary" type="button">방 만들기</button>
+          <button id="room-join-btn" class="btn btn-primary" type="button">입장</button>
+          <button id="room-close-btn" class="btn btn-ghost" type="button">닫기</button>
+        </div>
+        <p id="room-created-box" class="room-created" hidden>
+          방 코드: <strong id="room-created-code"></strong> — 상대에게 알려주세요
+        </p>
+      </div>
+    </div>
+
+    <div id="modal-challenge" class="modal" hidden>
+      <div class="modal-card">
+        <h2>대전 신청</h2>
+        <p id="chal-text"></p>
+        <div class="modal-actions">
+          <button id="chal-accept" class="btn btn-primary" type="button">수락</button>
+          <button id="chal-decline" class="btn btn-ghost" type="button">거절</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="waiting-overlay" class="modal modal-dim" hidden>
+      <div class="modal-card waiting-card">
+        <div class="spinner" aria-hidden="true"></div>
+        <p id="waiting-text">상대를 기다리는 중…</p>
+        <button id="waiting-cancel" class="btn btn-ghost" type="button">취소</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status"></div>
+  </section>
+
+  <section id="screen-game" class="screen game-screen" hidden aria-label="알까기 대전">
+    <div class="game-top">
+      <button class="icon-btn" data-mp-exit type="button" aria-label="로비로">←</button>
+      <div class="turn-pill-wrap">
+        <span class="turn-stone turn-black" id="stone-me" aria-hidden="true"></span>
+        <span id="status-text" class="status-text">준비 중…</span>
+      </div>
+      <span id="alive-count" class="move-count">4 : 4</span>
+    </div>
+
+    <div class="board-wrap board-round">
+      <canvas id="board" width="560" height="560"></canvas>
+      <canvas id="fx-layer" width="560" height="560" class="fx-layer" aria-hidden="true"></canvas>
+      <div id="result-overlay" class="result-overlay" hidden>
+        <div class="result-card">
+          <h2 id="result-title">승리!</h2>
+          <p id="result-sub"></p>
+          <button class="btn btn-primary" data-mp-exit type="button">로비로 돌아가기</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="game-help" id="help-text">내 알을 끌어 방향과 힘을 정하고 놓으세요</p>
+  </section>
+
+</div>
+<script src="game.js?v=20260826a"></script>
+</body>
+</html>

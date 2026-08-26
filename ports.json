@@ -1,57 +1,388 @@
 {
   "base": 48888,
   "games": [
-    { "id": "hub", "port": 48888, "entry": "/casual/", "name": "캐주얼 허브" },
-    { "id": "tetris", "port": 48889, "entry": "/casual/tetris/", "name": "카와이 테트리스" },
-    { "id": "bubble", "port": 48890, "entry": "/casual/bubble/", "name": "버블슈터" },
-    { "id": "gemgem-animal", "port": 48891, "entry": "/casual/gemgem/games/animal-match.html", "name": "Animal Match" },
-    { "id": "gemgem-gem", "port": 48892, "entry": "/casual/gemgem/games/gem-crush.html", "name": "Gem Crush" },
-    { "id": "gemgem-fruit", "port": 48893, "entry": "/casual/gemgem/games/fruit-pop.html", "name": "Fruit Pop" },
-    { "id": "catch", "port": 48894, "entry": "/casual/catch/", "name": "포켓몬 잡기" },
-    { "id": "catch2", "port": 48902, "entry": "/casual/catch2/", "name": "포켓몬 잡기 2" },
-    { "id": "volleyball", "port": 48895, "entry": "/casual/volleyball/", "name": "피카츄 배구" },
-    { "id": "quiz", "port": 48896, "entry": "/casual/quiz/", "name": "도감 퀴즈" },
-    { "id": "puzzle", "port": 48897, "entry": "/casual/puzzle/", "name": "퍼즐 맞추기" },
-    { "id": "lanes", "port": 48898, "entry": "/casual/lanes/", "name": "포켓몬 대전쟁" },
-    { "id": "tower", "port": 48899, "entry": "/casual/tower/", "name": "타워 디펜스" },
-    { "id": "skyraid", "port": 48900, "entry": "/casual/skyraid/", "name": "스카이레이드" },
-    { "id": "dressup", "port": 48901, "entry": "/casual/dressup/", "name": "공주님 옷입히기" },
-    { "id": "angry-pikachu", "port": 48903, "entry": "/casual/angry-pikachu/", "name": "앵그리 피카츄" },
-    { "id": "tcg", "port": 48904, "entry": "/casual/tcg/", "name": "포켓몬 카드대전", "script": "casual/tcg/server.py" },
-    { "id": "memory", "port": 48905, "entry": "/casual/memory/", "name": "포켓몬 메모리" },
-    { "id": "types", "port": 48906, "entry": "/casual/types/", "name": "타입 트레이너" },
-    { "id": "merge", "port": 48907, "entry": "/casual/merge/", "name": "진화 머지" },
-    { "id": "silhouette", "port": 48908, "entry": "/casual/silhouette/", "name": "실루엣 스냅" },
-    { "id": "quest", "port": 48909, "entry": "/casual/quest/", "name": "마을 심부름" },
-    { "id": "rhythm", "port": 48910, "entry": "/casual/rhythm/", "name": "피카츄 리듬" },
-    { "id": "tcg-solo", "port": 48911, "entry": "/casual/tcg-solo/", "name": "TCG 솔리테어" },
-    { "id": "story", "port": 48912, "entry": "/casual/story/", "name": "공주 이야기" },
-    { "id": "beach-defense", "port": 48913, "entry": "/casual/beach-defense/", "name": "비치 디펜스" },
-    { "id": "lol", "port": 48914, "entry": "/casual/lol/", "name": "리그 오브 챔피언" },
-    { "id": "snake", "port": 48915, "entry": "/casual/snake/", "name": "스네이크" },
-    { "id": "2048", "port": 48916, "entry": "/casual/2048/", "name": "2048" },
-    { "id": "minesweeper", "port": 48917, "entry": "/casual/minesweeper/", "name": "지뢰찾기" },
-    { "id": "flappy", "port": 48918, "entry": "/casual/flappy/", "name": "플래피 대시" },
-    { "id": "cookie-clicker", "port": 48919, "entry": "/casual/cookie-clicker/", "name": "쿠키 클리커" },
-    { "id": "slope", "port": 48920, "entry": "/casual/slope/", "name": "슬로프 러너" },
-    { "id": "hangman", "port": 48921, "entry": "/casual/hangman/", "name": "행맨" },
-    { "id": "wordle", "port": 48922, "entry": "/casual/wordle/", "name": "워들" },
-    { "id": "breakout", "port": 48923, "entry": "/casual/breakout/", "name": "벽돌깨기" },
-    { "id": "doodle-jump", "port": 48924, "entry": "/casual/doodle-jump/", "name": "두들 점프" },
-    { "id": "simon", "port": 48925, "entry": "/casual/simon/", "name": "시몬 메모리" },
-    { "id": "othello", "port": 48926, "entry": "/casual/othello/", "name": "오셀로" },
-    { "id": "gomoku", "port": 48927, "entry": "/casual/gomoku/", "name": "오목" },
-    { "id": "whack-a-mole", "port": 48928, "entry": "/casual/whack-a-mole/", "name": "두더지잡기" },
-    { "id": "air-hockey", "port": 48929, "entry": "/casual/air-hockey/", "name": "에어하키" },
-    { "id": "pacmaze", "port": 48930, "entry": "/casual/pacmaze/", "name": "미로 팩" },
-    { "id": "typing", "port": 48931, "entry": "/casual/typing/", "name": "타이핑 러시" },
-    { "id": "sudoku", "port": 48932, "entry": "/casual/sudoku/", "name": "스도쿠" },
-    { "id": "invaders", "port": 48933, "entry": "/casual/invaders/", "name": "인베이더" },
-    { "id": "drum", "port": 48934, "entry": "/casual/drum/", "name": "드럼 비트" },
-    { "id": "ddr", "port": 48935, "entry": "/casual/ddr/", "name": "댄스 스텝" },
-    { "id": "midnight-campus", "port": 48936, "entry": "/casual/midnight-campus/", "name": "미드나잇 캠퍼스" },
-    { "id": "shooting-range", "port": 48937, "entry": "/casual/shooting-range/", "name": "사격장" },
-    { "id": "rambo", "port": 48938, "entry": "/casual/rambo/", "name": "람보 히어로" },
-    { "id": "poke-world", "port": 48939, "entry": "/casual/poke-world/", "name": "포켓몬월드", "script": "casual/poke-world/server.py" }
+    {
+      "id": "hub",
+      "port": 48888,
+      "entry": "/casual/",
+      "name": "캐주얼 허브"
+    },
+    {
+      "id": "tetris",
+      "port": 48889,
+      "entry": "/casual/tetris/",
+      "name": "카와이 테트리스"
+    },
+    {
+      "id": "bubble",
+      "port": 48890,
+      "entry": "/casual/bubble/",
+      "name": "버블슈터"
+    },
+    {
+      "id": "gemgem-animal",
+      "port": 48891,
+      "entry": "/casual/gemgem/games/animal-match.html",
+      "name": "Animal Match"
+    },
+    {
+      "id": "gemgem-gem",
+      "port": 48892,
+      "entry": "/casual/gemgem/games/gem-crush.html",
+      "name": "Gem Crush"
+    },
+    {
+      "id": "gemgem-fruit",
+      "port": 48893,
+      "entry": "/casual/gemgem/games/fruit-pop.html",
+      "name": "Fruit Pop"
+    },
+    {
+      "id": "catch",
+      "port": 48894,
+      "entry": "/casual/catch/",
+      "name": "포켓몬 잡기"
+    },
+    {
+      "id": "catch2",
+      "port": 48902,
+      "entry": "/casual/catch2/",
+      "name": "포켓몬 잡기 2"
+    },
+    {
+      "id": "volleyball",
+      "port": 48895,
+      "entry": "/casual/volleyball/",
+      "name": "피카츄 배구"
+    },
+    {
+      "id": "quiz",
+      "port": 48896,
+      "entry": "/casual/quiz/",
+      "name": "도감 퀴즈"
+    },
+    {
+      "id": "puzzle",
+      "port": 48897,
+      "entry": "/casual/puzzle/",
+      "name": "퍼즐 맞추기"
+    },
+    {
+      "id": "lanes",
+      "port": 48898,
+      "entry": "/casual/lanes/",
+      "name": "포켓몬 대전쟁"
+    },
+    {
+      "id": "tower",
+      "port": 48899,
+      "entry": "/casual/tower/",
+      "name": "타워 디펜스"
+    },
+    {
+      "id": "skyraid",
+      "port": 48900,
+      "entry": "/casual/skyraid/",
+      "name": "스카이레이드"
+    },
+    {
+      "id": "dressup",
+      "port": 48901,
+      "entry": "/casual/dressup/",
+      "name": "공주님 옷입히기"
+    },
+    {
+      "id": "angry-pikachu",
+      "port": 48903,
+      "entry": "/casual/angry-pikachu/",
+      "name": "앵그리 피카츄"
+    },
+    {
+      "id": "tcg",
+      "port": 48904,
+      "entry": "/casual/tcg/",
+      "name": "포켓몬 카드대전",
+      "script": "casual/tcg/server.py"
+    },
+    {
+      "id": "memory",
+      "port": 48905,
+      "entry": "/casual/memory/",
+      "name": "포켓몬 메모리"
+    },
+    {
+      "id": "types",
+      "port": 48906,
+      "entry": "/casual/types/",
+      "name": "타입 트레이너"
+    },
+    {
+      "id": "merge",
+      "port": 48907,
+      "entry": "/casual/merge/",
+      "name": "진화 머지"
+    },
+    {
+      "id": "silhouette",
+      "port": 48908,
+      "entry": "/casual/silhouette/",
+      "name": "실루엣 스냅"
+    },
+    {
+      "id": "quest",
+      "port": 48909,
+      "entry": "/casual/quest/",
+      "name": "마을 심부름"
+    },
+    {
+      "id": "rhythm",
+      "port": 48910,
+      "entry": "/casual/rhythm/",
+      "name": "피카츄 리듬"
+    },
+    {
+      "id": "tcg-solo",
+      "port": 48911,
+      "entry": "/casual/tcg-solo/",
+      "name": "TCG 솔리테어"
+    },
+    {
+      "id": "story",
+      "port": 48912,
+      "entry": "/casual/story/",
+      "name": "공주 이야기"
+    },
+    {
+      "id": "beach-defense",
+      "port": 48913,
+      "entry": "/casual/beach-defense/",
+      "name": "비치 디펜스"
+    },
+    {
+      "id": "lol",
+      "port": 48914,
+      "entry": "/casual/lol/",
+      "name": "리그 오브 챔피언"
+    },
+    {
+      "id": "snake",
+      "port": 48915,
+      "entry": "/casual/snake/",
+      "name": "스네이크"
+    },
+    {
+      "id": "2048",
+      "port": 48916,
+      "entry": "/casual/2048/",
+      "name": "2048"
+    },
+    {
+      "id": "minesweeper",
+      "port": 48917,
+      "entry": "/casual/minesweeper/",
+      "name": "지뢰찾기"
+    },
+    {
+      "id": "flappy",
+      "port": 48918,
+      "entry": "/casual/flappy/",
+      "name": "플래피 대시"
+    },
+    {
+      "id": "cookie-clicker",
+      "port": 48919,
+      "entry": "/casual/cookie-clicker/",
+      "name": "쿠키 클리커"
+    },
+    {
+      "id": "slope",
+      "port": 48920,
+      "entry": "/casual/slope/",
+      "name": "슬로프 러너"
+    },
+    {
+      "id": "hangman",
+      "port": 48921,
+      "entry": "/casual/hangman/",
+      "name": "행맨"
+    },
+    {
+      "id": "wordle",
+      "port": 48922,
+      "entry": "/casual/wordle/",
+      "name": "워들"
+    },
+    {
+      "id": "breakout",
+      "port": 48923,
+      "entry": "/casual/breakout/",
+      "name": "벽돌깨기"
+    },
+    {
+      "id": "doodle-jump",
+      "port": 48924,
+      "entry": "/casual/doodle-jump/",
+      "name": "두들 점프"
+    },
+    {
+      "id": "simon",
+      "port": 48925,
+      "entry": "/casual/simon/",
+      "name": "시몬 메모리"
+    },
+    {
+      "id": "othello",
+      "port": 48926,
+      "entry": "/casual/othello/",
+      "name": "오셀로"
+    },
+    {
+      "id": "gomoku",
+      "port": 48927,
+      "entry": "/casual/gomoku/",
+      "name": "오목"
+    },
+    {
+      "id": "whack-a-mole",
+      "port": 48928,
+      "entry": "/casual/whack-a-mole/",
+      "name": "두더지잡기"
+    },
+    {
+      "id": "air-hockey",
+      "port": 48929,
+      "entry": "/casual/air-hockey/",
+      "name": "에어하키"
+    },
+    {
+      "id": "pacmaze",
+      "port": 48930,
+      "entry": "/casual/pacmaze/",
+      "name": "미로 팩"
+    },
+    {
+      "id": "typing",
+      "port": 48931,
+      "entry": "/casual/typing/",
+      "name": "타이핑 러시"
+    },
+    {
+      "id": "sudoku",
+      "port": 48932,
+      "entry": "/casual/sudoku/",
+      "name": "스도쿠"
+    },
+    {
+      "id": "invaders",
+      "port": 48933,
+      "entry": "/casual/invaders/",
+      "name": "인베이더"
+    },
+    {
+      "id": "drum",
+      "port": 48934,
+      "entry": "/casual/drum/",
+      "name": "드럼 비트"
+    },
+    {
+      "id": "ddr",
+      "port": 48935,
+      "entry": "/casual/ddr/",
+      "name": "댄스 스텝"
+    },
+    {
+      "id": "midnight-campus",
+      "port": 48936,
+      "entry": "/casual/midnight-campus/",
+      "name": "미드나잇 캠퍼스"
+    },
+    {
+      "id": "doukyu",
+      "port": 48943,
+      "entry": "/casual/doukyu/",
+      "name": "동급생"
+    },
+    {
+      "id": "shooting-range",
+      "port": 48937,
+      "entry": "/casual/shooting-range/",
+      "name": "사격장"
+    },
+    {
+      "id": "poke-tennis",
+      "port": 48941,
+      "entry": "/casual/poke-tennis/",
+      "name": "포켓몬 테니스",
+      "script": "casual/poke-tennis/server.py"
+    },
+    {
+      "id": "poke-penalty",
+      "port": 48942,
+      "entry": "/casual/poke-penalty/",
+      "name": "포켓몬 승부차기",
+      "script": "casual/poke-penalty/server.py"
+    },
+    {
+      "id": "rambo",
+      "port": 48938,
+      "entry": "/casual/rambo/",
+      "name": "람보 히어로"
+    },
+    {
+      "id": "poke-world",
+      "port": 48939,
+      "entry": "/casual/poke-world/",
+      "name": "포켓몬월드",
+      "script": "casual/poke-world/server.py"
+    },
+    {
+      "id": "omok-online",
+      "port": 48944,
+      "entry": "/casual/omok-online/",
+      "name": "오목 대전",
+      "script": "casual/omok-online/server.py"
+    },
+    {
+      "id": "gostop",
+      "port": 48945,
+      "entry": "/casual/gostop/",
+      "name": "고스톱 대전",
+      "script": "casual/gostop/server.py"
+    },
+    {
+      "id": "baduk",
+      "port": 48946,
+      "entry": "/casual/baduk/",
+      "name": "바둑 대전",
+      "script": "casual/baduk/server.py"
+    },
+    {
+      "id": "alkkagi",
+      "port": 48947,
+      "entry": "/casual/alkkagi/",
+      "name": "알까기 대전",
+      "script": "casual/alkkagi/server.py"
+    },
+    {
+      "id": "seotda",
+      "port": 48948,
+      "entry": "/casual/seotda/",
+      "name": "섯다 대전",
+      "script": "casual/seotda/server.py"
+    },
+    {
+      "id": "baccarat",
+      "port": 48949,
+      "entry": "/casual/baccarat/",
+      "name": "바카라",
+      "script": "casual/baccarat/server.py"
+    },
+    {
+      "id": "poker",
+      "port": 48950,
+      "entry": "/casual/poker/",
+      "name": "포커 대전",
+      "script": "casual/poker/server.py"
+    }
   ]
 }

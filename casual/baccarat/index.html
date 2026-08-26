@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1024">
+<meta name="mp-ws-port" content="48949">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎰</text></svg>">
+<title>바카라 · 온라인</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/no-select.css">
+<link rel="stylesheet" href="../assets/mp_common.css?v=20260826a">
+<link rel="stylesheet" href="style.css?v=20260826a">
+<script src="../assets/mobile-hardening.js"></script>
+<script src="../assets/safe-storage.js"></script>
+<script src="../assets/sfx-bank.js"></script>
+<script src="../assets/mp_client.js"></script>
+</head>
+<body data-mh-fs-pos="tr" class="theme-bac">
+<div id="app">
+
+  <section id="screen-lobby" class="screen lobby-screen" aria-label="대전 로비">
+    <div class="lobby-top">
+      <a class="back-link" href="../">목록</a>
+      <button id="btn-sound-lobby" class="icon-btn" type="button" aria-label="소리">🔊</button>
+    </div>
+
+    <header class="lobby-hero">
+      <p class="lobby-eyebrow">online match</p>
+      <h1 class="lobby-title">바카라</h1>
+      <p class="lobby-sub">플레이어·뱅커·타이 · 최고 잔고를 겨루는 카지노</p>
+    </header>
+
+    <div class="lobby-card">
+      <label class="nick-row">
+        <span class="nick-label">닉네임</span>
+        <input id="nick-input" type="text" maxlength="12" placeholder="닉네임" autocomplete="off">
+        <button id="nick-save" class="btn btn-ghost" type="button">저장</button>
+      </label>
+      <div class="lobby-actions">
+        <button id="btn-cpu" class="btn btn-primary" type="button">🤖 CPU 대전</button>
+        <button id="btn-room" class="btn btn-secondary" type="button">🔑 방 코드로 대전</button>
+      </div>
+      <div class="player-box">
+        <h3 class="player-head">온라인 플레이어 <span id="player-count" class="player-count">0</span></h3>
+        <ul id="player-list" class="player-list"></ul>
+        <p class="player-empty-hint" id="player-empty">아직 접속자가 없습니다 · 친구에게 링크를 공유하세요</p>
+      </div>
+    </div>
+
+    <div id="room-dialog" class="modal" hidden>
+      <div class="modal-card">
+        <h2>방 코드 대전</h2>
+        <input id="room-code-input" class="code-input" type="text" maxlength="6" placeholder="방 코드 6자리" autocomplete="off">
+        <div class="modal-actions">
+          <button id="room-create-btn" class="btn btn-secondary" type="button">방 만들기</button>
+          <button id="room-join-btn" class="btn btn-primary" type="button">입장</button>
+          <button id="room-close-btn" class="btn btn-ghost" type="button">닫기</button>
+        </div>
+        <p id="room-created-box" class="room-created" hidden>
+          방 코드: <strong id="room-created-code"></strong> — 상대에게 알려주세요
+        </p>
+      </div>
+    </div>
+
+    <div id="modal-challenge" class="modal" hidden>
+      <div class="modal-card">
+        <h2>대전 신청</h2>
+        <p id="chal-text"></p>
+        <div class="modal-actions">
+          <button id="chal-accept" class="btn btn-primary" type="button">수락</button>
+          <button id="chal-decline" class="btn btn-ghost" type="button">거절</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="waiting-overlay" class="modal modal-dim" hidden>
+      <div class="modal-card waiting-card">
+        <div class="spinner" aria-hidden="true"></div>
+        <p id="waiting-text">상대를 기다리는 중…</p>
+        <button id="waiting-cancel" class="btn btn-ghost" type="button">취소</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status"></div>
+  </section>
+
+  <section id="screen-game" class="screen game-screen" hidden aria-label="바카라 테이블">
+    <div class="game-top">
+      <button class="icon-btn" data-mp-exit type="button" aria-label="로비로">←</button>
+      <div class="turn-pill-wrap">
+        <span id="status-text" class="status-text">준비 중…</span>
+      </div>
+      <span id="round-info" class="move-count">R 0</span>
+    </div>
+
+    <div class="roadmap-strip" id="roadmap"></div>
+
+    <div class="bac-table">
+      <div class="hand-row bac-hand banker" id="banker-cards"></div>
+      <div class="total-badge" id="banker-total"></div>
+      <div class="vs-divider"><span>VS</span></div>
+      <div class="total-badge" id="player-total"></div>
+      <div class="hand-row bac-hand player" id="player-cards"></div>
+    </div>
+
+    <div class="bet-zones">
+      <button class="zone zone-p" data-spot="PLAYER" type="button">
+        <span class="zone-name">PLAYER</span><span class="zone-odds">1 : 1</span>
+        <span class="zone-mybet" id="bet-P"></span>
+      </button>
+      <button class="zone zone-t" data-spot="TIE" type="button">
+        <span class="zone-name">TIE</span><span class="zone-odds">8 : 1</span>
+        <span class="zone-mybet" id="bet-T"></span>
+      </button>
+      <button class="zone zone-b" data-spot="BANKER" type="button">
+        <span class="zone-name">BANKER</span><span class="zone-odds">0.95</span>
+        <span class="zone-mybet" id="bet-B"></span>
+      </button>
+    </div>
+
+    <div class="chip-tray" id="chip-tray">
+      <div class="chip-row">
+        <button class="chip c100" data-chip="100" type="button">100</button>
+        <button class="chip c500" data-chip="500" type="button">500</button>
+        <button class="chip c1k" data-chip="1000" type="button">1K</button>
+        <button class="chip c5k" data-chip="5000" type="button">5K</button>
+      </div>
+      <div class="tray-status">
+        <span id="my-chips">5,000</span>
+        <span class="timer-ring-wrap" id="timer-wrap" hidden><svg viewBox="0 0 36 36" class="timer-ring"><circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3"/><circle cx="18" cy="18" r="15.5" fill="none" stroke="url(#tgrad)" stroke-width="3" stroke-linecap="round" stroke-dasharray="97.4" stroke-dashoffset="0" transform="rotate(-90 18 18)" id="timer-arc"/></svg><span id="timer-num"></span></span>
+      </div>
+    </div>
+
+    <div class="seats-bar" id="seats-bar"></div>
+
+    <div id="host-start-box" class="modal modal-dim" hidden>
+      <div class="modal-card">
+        <h2>바카라 테이블</h2>
+        <p>혼자서도 딜러와 대결할 수 있어요</p>
+        <div class="modal-actions">
+          <button id="btn-host-start" class="btn btn-primary" type="button">게임 시작</button>
+          <button id="btn-host-exit" class="btn btn-ghost" data-mp-exit type="button">나가기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="result-overlay" class="result-overlay result-light" hidden>
+      <div class="result-card">
+        <h2 id="result-title">PLAYER WIN</h2>
+        <p id="result-sub"></p>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script src="game.js?v=20260826a"></script>
+</body>
+</html>
