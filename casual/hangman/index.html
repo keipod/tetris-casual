@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0c1828">
+<title>행맨</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">행맨</h1>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="stat-bar">
+    <span class="chip"><span class="chip-label">연속</span><span id="streak">0</span></span>
+    <span class="chip"><span class="chip-label">최고연속</span><span id="best">0</span></span>
+    <span class="chip"><span class="chip-label">승리</span><span id="wins">0</span></span>
+    <button type="button" class="skip-btn" id="btn-skip" aria-label="새 단어로 건너뛰기">새 단어</button>
+  </div>
+
+  <main class="stage">
+    <section class="play-area">
+      <div class="hint-chip">
+        <span class="cat-badge" id="cat-badge">🎯 힌트</span>
+        <span class="hint-text" id="hint-text"></span>
+      </div>
+
+      <div class="gallows-panel">
+        <svg id="gallows" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+          <line class="part p-scaffold" data-stage="0" x1="28" y1="192" x2="152" y2="192" pathLength="1"/>
+          <line class="part p-scaffold" data-stage="1" x1="58" y1="192" x2="58" y2="22" pathLength="1"/>
+          <line class="part p-scaffold" data-stage="2" x1="58" y1="22" x2="142" y2="22" pathLength="1"/>
+          <line class="part p-scaffold" data-stage="3" x1="142" y1="22" x2="142" y2="44" pathLength="1"/>
+          <circle class="part p-figure" data-stage="4" cx="142" cy="58" r="14" pathLength="1"/>
+          <line class="part p-figure" data-stage="5" x1="142" y1="72" x2="142" y2="122" pathLength="1"/>
+          <line class="part p-figure" data-stage="6" x1="142" y1="84" x2="119" y2="104" pathLength="1"/>
+          <line class="part p-figure" data-stage="6" x1="142" y1="84" x2="165" y2="104" pathLength="1"/>
+          <line class="part p-figure" data-stage="7" x1="142" y1="122" x2="121" y2="158" pathLength="1"/>
+          <line class="part p-figure" data-stage="7" x1="142" y1="122" x2="163" y2="158" pathLength="1"/>
+        </svg>
+        <div class="chances" id="chances" aria-label="남은 기회"></div>
+      </div>
+
+      <div class="answer-row" id="answer-row" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <section class="keyboard" aria-label="한글 자모 키보드">
+    <div class="key-group">
+      <div class="key-group-label">자음</div>
+      <div class="keys" id="keys-consonants"></div>
+    </div>
+    <div class="key-group">
+      <div class="key-group-label">모음</div>
+      <div class="keys" id="keys-vowels"></div>
+    </div>
+  </section>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">게임 설명서</h2>
+      <p class="help-lead">힌트를 보고 <strong>한글 단어의 자모</strong>를 모두 찾아보세요!</p>
+
+      <section class="help-ex">
+        <div class="help-badge">⌨️ 자모 고르기</div>
+        <p class="help-note">자음 19개, 모음 21개 중 하나를 탭해요. 단어에 없는 글자를 고르면 기회가 줄어요.</p>
+      </section>
+
+      <section class="help-ex help-ex-ok">
+        <div class="help-badge">✨ 글자가 채워지면</div>
+        <p class="help-note">한 음절을 이루는 자모를 모두 맞히면 그 음절이 짠! 하고 나타나요.</p>
+      </section>
+
+      <section class="help-ex help-ex-bad">
+        <div class="help-badge">💔 기회는 7번</div>
+        <p class="help-note">틀릴 때마다 교수대 그림이 한 획씩 그려져요. 사람이 완성되면 실패!</p>
+      </section>
+
+      <section class="help-ex">
+        <div class="help-badge">🏆 기록</div>
+        <p class="help-note">연속 정답(스트릭)과 총 승리가 저장돼요. 최고 연속 기록도 자동으로 남아요.</p>
+      </section>
+
+      <p class="help-tip">새 단어 버튼으로 넘기면 포기 처리되어 연속 기록이 사라져요.</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0a1626">
+  <title>워들</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../assets/no-select.css">
+  <script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">워들</h1>
+    <div class="top-actions">
+      <button id="btn-stats" class="icon-btn" type="button" aria-label="통계" title="통계">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 20V12M12 20V5M19 20v-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div id="board" class="board" aria-live="polite"></div>
+  </main>
+
+  <section id="pad" class="pad" aria-label="한글 자판"></section>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card" role="dialog" aria-modal="true"></div>
+  </div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">워들 규칙</h2>
+      <p class="help-lead">여섯 번 안에 <strong>다섯 글자 단어</strong>를 맞혀 보세요!</p>
+
+      <section class="help-ex">
+        <div class="help-badge">🎯 색의 의미</div>
+        <div class="help-demo">
+          <span class="mini-t ok">학</span><span class="mini-t ok">교</span><span class="mini-t mid">종</span><span class="mini-t off">소</span><span class="mini-t off">리</span>
+        </div>
+        <p class="help-note">정답이 <strong>학교운동장</strong>일 때 위 예시는 이렇게 칠해져요.</p>
+        <ul class="help-list">
+          <li><span class="dot dot-ok"></span>초록 — 글자와 자리 모두 정확!</li>
+          <li><span class="dot dot-mid"></span>노랑 — 글자는 있지만 자리가 달라요</li>
+          <li><span class="dot dot-off"></span>회색 — 단어에 없는 글자예요</li>
+        </ul>
+      </section>
+
+      <section class="help-ex">
+        <div class="help-badge">✂️ 낱글자로 판정해요</div>
+        <p class="help-note">글자를 자모(초성·중성·받침) 단위로 비교해요. 받침 하나가 어디에 있는지도 중요해요!</p>
+      </section>
+
+      <section class="help-ex">
+        <div class="help-badge">⌨️ 입력 팁</div>
+        <p class="help-note">자판을 누르면 글자가 저절로 모여요(ㅎ+ㅏ+ㄴ = 한). 어떤 다섯 글자든 제출할 수 있어요 — 사전 확인은 없어요. 하드웨어 키보드의 Enter·Backspace도 지원해요.</p>
+      </section>
+
+      <p class="help-tip">연속으로 맞히면 기록이 쌓여요. 오늘의 워들, 몇 번 만에 맞힐까요?</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

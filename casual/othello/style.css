@@ -1,0 +1,53 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 3px;
+  width: min(92vw, 420px);
+  aspect-ratio: 1;
+  padding: 8px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #1a6b4a, #0d4a32);
+  box-shadow: inset 0 0 0 3px rgba(255, 207, 92, 0.25), 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.cell {
+  position: relative;
+  border-radius: 4px;
+  background: rgba(8, 60, 40, 0.55);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  aspect-ratio: 1;
+}
+
+.cell:disabled { cursor: default; }
+
+.disc {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.disc.black {
+  background: radial-gradient(circle at 35% 30%, #555, #111 70%);
+}
+
+.disc.white {
+  background: radial-gradient(circle at 35% 30%, #fff, #d8d8d8 70%);
+}
+
+.hint-dot {
+  position: absolute;
+  inset: 38%;
+  border-radius: 50%;
+  background: rgba(255, 207, 92, 0.55);
+  pointer-events: none;
+}
+
+.turn-hint {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}

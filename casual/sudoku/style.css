@@ -1,0 +1,56 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: min(94vw, 400px);
+  aspect-ratio: 1;
+  background: #0a2030;
+  border: 2px solid var(--mint);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.cell {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: var(--cream);
+  font-family: var(--font);
+  font-size: clamp(14px, 4.2vw, 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+}
+.cell:nth-child(9n+3), .cell:nth-child(9n+6) { border-right: 2px solid rgba(79,216,196,0.45); }
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 2px solid rgba(79,216,196,0.45); }
+.cell.given { color: var(--mint); }
+.cell.selected { background: rgba(255, 207, 92, 0.22); }
+.cell.same { background: rgba(79, 216, 196, 0.12); }
+.cell.conflict { color: var(--bad) !important; }
+.cell .notes {
+  position: absolute; inset: 2px;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  font-size: 8px; color: var(--muted); line-height: 1;
+  font-family: var(--body-font);
+}
+.pad {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  width: min(94vw, 400px);
+  margin-top: 12px;
+}
+.num {
+  min-height: 42px;
+  border: none;
+  border-radius: 10px;
+  background: var(--panel-light);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  cursor: pointer;
+}
+.num.erase, .num.hint-btn { font-size: 12px; }
+.num.note-btn.is-on { background: linear-gradient(180deg, var(--mint), var(--mint-deep)); color: #062018; }
+.mode-toggle { display: inline-flex; gap: 4px; }
