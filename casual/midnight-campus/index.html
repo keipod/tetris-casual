@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#12081a">
+<title>미드나잇 캠퍼스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&family=Do+Hyeon&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <!-- 암호 게이트 -->
+  <section id="screen-gate" class="screen gate">
+    <div class="gate-card">
+      <p class="gate-eyebrow">19+ · Adults only</p>
+      <h1>미드나잇 캠퍼스</h1>
+      <p class="gate-desc">전원 만 21세 이상 캐릭터의 성인 연애 시뮬레이션입니다.<br>고교·미성년 설정 없음. 암호를 입력하세요.</p>
+      <label class="gate-label">암호
+        <input id="gate-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••">
+      </label>
+      <button type="button" class="btn-primary" id="btn-gate">입장</button>
+      <p id="gate-err" class="gate-err" hidden>암호가 올바르지 않습니다.</p>
+      <a class="back-link" href="../">포털로 돌아가기</a>
+    </div>
+  </section>
+
+  <section id="screen-title" class="screen title hidden">
+    <div class="title-bg" id="title-bg"></div>
+    <div class="title-card">
+      <p class="eyebrow">Original · University Romance</p>
+      <h2>미드나잇 캠퍼스</h2>
+      <p class="desc">21일간의 학기. 여섯 명의 성인, 여섯 갈래의 밤.<br>맵을 돌며 호감을 쌓고, 축제 전야에 고백하세요.</p>
+      <button type="button" class="btn-primary" id="btn-new">새 학기</button>
+      <button type="button" class="btn-secondary" id="btn-continue" hidden>이어하기</button>
+      <button type="button" class="btn-ghost" id="btn-cast">히로인 소개</button>
+      <button type="button" class="btn-ghost" id="btn-sound-title">소리 켜기/끄기</button>
+      <a class="back-link" href="../">목록</a>
+    </div>
+  </section>
+
+  <section id="screen-cast" class="screen cast hidden">
+    <header class="bar">
+      <button type="button" class="btn-text" id="btn-cast-back">← 타이틀</button>
+      <h2>히로인</h2>
+      <span></span>
+    </header>
+    <div id="cast-list" class="cast-list"></div>
+  </section>
+
+  <section id="screen-hub" class="screen hub hidden">
+    <header class="bar">
+      <a class="btn-text" href="../">목록</a>
+      <h2 id="hub-day">Day 1 · 아침</h2>
+      <button type="button" class="btn-text" id="btn-status">상태</button>
+    </header>
+    <div class="hub-stats" id="hub-stats"></div>
+    <div class="hub-aff" id="hub-aff"></div>
+    <p class="hub-hint">갈 곳을 고르세요. 한 장소 = 시간 한 칸.</p>
+    <div id="place-grid" class="place-grid"></div>
+    <button type="button" class="btn-secondary" id="btn-sleep" hidden>기숙사에서 잔다 (다음날)</button>
+  </section>
+
+  <section id="screen-status" class="screen status hidden">
+    <header class="bar">
+      <button type="button" class="btn-text" id="btn-status-back">← 맵</button>
+      <h2>상태</h2>
+      <button type="button" class="btn-text" id="btn-save">저장</button>
+    </header>
+    <div id="status-body" class="status-body"></div>
+  </section>
+
+  <section id="screen-scene" class="screen scene hidden">
+    <div class="scene-bg" id="scene-bg"></div>
+    <img class="scene-portrait" id="scene-portrait" alt="" hidden>
+    <div class="scene-shade"></div>
+    <div class="scene-panel">
+      <div class="scene-who" id="scene-who"></div>
+      <div class="scene-text" id="scene-text"></div>
+      <div class="scene-choices" id="scene-choices" hidden></div>
+      <button type="button" class="btn-primary scene-next" id="btn-next">다음</button>
+    </div>
+  </section>
+
+  <section id="screen-ending" class="screen ending hidden">
+    <div class="ending-card" id="ending-card"></div>
+  </section>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="data/places.js"></script>
+<script src="data/heroines.js"></script>
+<script src="data/events.js"></script>
+<script src="data/events-extra.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

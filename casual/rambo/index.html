@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0d1f16">
+  <title>람보 히어로</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../assets/no-select.css">
+  <script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">🎖️ 람보 히어로</h1>
+    <div class="top-actions">
+      <button id="btn-pause" class="icon-btn" type="button" aria-label="일시정지" title="일시정지(P)">
+        <svg class="ico-pause" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="6" y="5" width="4" height="14" rx="1.2" fill="currentColor"/>
+          <rect x="14" y="5" width="4" height="14" rx="1.2" fill="currentColor"/>
+        </svg>
+        <svg class="ico-play" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 5.5v13l11-6.5L8 5.5z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <div id="frame">
+      <canvas id="cv" width="720" height="405" aria-label="람보 히어로 게임 화면"></canvas>
+      <div id="vignette"></div>
+      <div class="ctl" aria-hidden="true">
+        <div class="zone-move" id="zone-move">
+          <span class="move-hint" id="move-hint"><span class="arr">◀</span> 드래그 이동 <span class="arr r">▶</span></span>
+        </div>
+        <div class="zone-fire" id="zone-fire">
+          <div class="fire-circle" id="fire-circle"><span class="gun">🔫</span><em>FIRE</em></div>
+        </div>
+        <button id="btn-nade" class="nade-btn" type="button" aria-label="수류탄 던지기">
+          <span>💣</span><b id="nade-count">2</b>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">게임 설명서</h2>
+      <p class="help-lead">빨간 두건의 람보 히어로가 <strong>혼자서</strong> 적 웨이브를 막아냅니다!</p>
+
+      <section class="help-ex">
+        <div class="help-badge">🕹️ 조작</div>
+        <p class="help-note">
+          화면 <strong>왼쪽 절반</strong>을 드래그하면 영웅이 손가락을 따라 이동해요.
+          <strong>오른쪽 FIRE 버튼</strong>을 길게 누르면 자동 사격! 가장 가까운 적을 향해
+          자동 조준합니다. 💣 버튼(또는 G)으로 수류탄을 적 무리에 던지세요.<br>
+          키보드: ←→/A D 이동 · Space/J 사격 · G 수류탄 · P 일시정지
+        </p>
+      </section>
+
+      <section class="help-ex help-ex-bad">
+        <div class="help-badge">😠 적 부대</div>
+        <p class="help-note">
+          <strong>돌격병</strong>은 달려와 몸으로 부딪히고, <strong>수류탄병</strong>은 멀리서
+          수류탄을 던져요(포물선을 잘 보세요!). <strong>육중 병사</strong>는 3웨이브마다 등장 —
+          체력이 6이고 닿으면 밀쳐냅니다.
+        </p>
+      </section>
+
+      <section class="help-ex help-ex-ok">
+        <div class="help-badge">🎁 전리품</div>
+        <p class="help-note">
+          적을 계속 처치하면 아이템이 떨어져요. 밟아서 획득!
+          🔺 산탄(12초, 3연발) · 💠 기관총(12초, 연사 ×3) · 💚 체력 +30 · 💣 수류탄 +2.
+          웨이브가 끝나면 체력이 15 회복됩니다.
+        </p>
+      </section>
+
+      <section class="help-ex">
+        <div class="help-badge">🏆 점수</div>
+        <p class="help-note">처치당 <strong>100 × 웨이브</strong> 점수! 최고 기록은 자동으로 저장돼요.</p>
+      </section>
+
+      <p class="help-tip">힌트: 수류탄은 계속 움직이면 피할 수 있어요!</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+
+  <script src="../assets/sfx-bank.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
