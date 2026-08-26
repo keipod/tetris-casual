@@ -8,14 +8,16 @@ import hashlib
 import json
 import os
 import random
+import signal
 import struct
 import threading
 import time
 import uuid
+from collections import deque
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import urlsplit, urlparse
 
 import engine
 
@@ -24,11 +26,19 @@ PORT = int(os.environ.get("PORT", "48900"))
 WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 CPU_ID = "cpu"
 
+MAX_FRAME = 64 * 1024
+MSG_RATE_LIMIT = 40
+MSG_RATE_WINDOW = 10.0
+CHALLENGE_TTL = 60.0
+ENDED_MATCH_TTL = 300.0
+HEARTBEAT_INTERVAL = 25.0
+
 lock = threading.RLock()
 clients: dict[str, "WSClient"] = {}  # player_id -> client
 rooms: dict[str, dict[str, Any]] = {}  # code -> room
 matches: dict[str, dict[str, Any]] = {}  # match_id -> state
 challenges: dict[str, dict[str, Any]] = {}  # challenge_id -> {...}
+ended_seen: dict[str, float] = {}  # match_id -> first time seen ended
 
 
 def nick_default() -> str:
@@ -45,25 +55,36 @@ class WSClient:
         self.match_id: str | None = None
         self.alive = True
         self.buf = b""
+        self.send_lock = threading.Lock()
+        self.msg_times: deque[float] = deque()
 
-    def send(self, obj: dict[str, Any]) -> None:
+    def _send_frame(self, opcode: int, payload: bytes) -> bool:
         if not self.alive:
-            return
+            return False
+        header = bytearray([0x80 | opcode])
+        n = len(payload)
+        if n < 126:
+            header.append(n)
+        elif n < 65536:
+            header.append(126)
+            header.extend(struct.pack("!H", n))
+        else:
+            header.append(127)
+            header.extend(struct.pack("!Q", n))
         try:
-            data = json.dumps(obj, ensure_ascii=False).encode("utf-8")
-            header = bytearray([0x81])
-            n = len(data)
-            if n < 126:
-                header.append(n)
-            elif n < 65536:
-                header.append(126)
-                header.extend(struct.pack("!H", n))
-            else:
-                header.append(127)
-                header.extend(struct.pack("!Q", n))
-            self.conn.sendall(header + data)
+            with self.send_lock:
+                self.conn.sendall(header + payload)
+            return True
         except OSError:
             self.alive = False
+            return False
+
+    def send(self, obj: dict[str, Any]) -> None:
+        data = json.dumps(obj, ensure_ascii=False).encode("utf-8")
+        self._send_frame(0x1, data)
+
+    def ping(self) -> bool:
+        return self._send_frame(0x9, b"")
 
     def close(self) -> None:
         self.alive = False
@@ -117,10 +138,13 @@ def run_cpu_if_needed(state: dict[str, Any]) -> None:
                 if matches.get(mid) is not state:
                     return
                 act = None
-                if state["phase"] == "setup":
+                pc = state.get("pendingChoice")
+                if pc and pc.get("player") == CPU_ID:
+                    act = engine.cpu_choose(state, CPU_ID)
+                elif state["phase"] == "setup":
                     if not state["setupReady"].get(CPU_ID):
                         act = engine.cpu_choose(state, CPU_ID)
-                elif state["phase"] == "playing" and state["turn"] == CPU_ID:
+                elif state["phase"] == "playing" and state["turn"] == CPU_ID and not pc:
                     act = engine.cpu_choose(state, CPU_ID)
                 if not act:
                     return
@@ -130,18 +154,20 @@ def run_cpu_if_needed(state: dict[str, Any]) -> None:
                 except ValueError:
                     return
             push_match(state, events)
-            time.sleep(0.5)
+            time.sleep(0.45)
             with lock:
-                if state["phase"] == "ended" or (
-                    state["phase"] == "playing" and state["turn"] != CPU_ID
-                ):
-                    if state["phase"] == "setup" and state["setupReady"].get(CPU_ID):
-                        if not all(state["setupReady"].get(p) for p in state["order"]):
-                            return
-                    if state["phase"] == "playing" and state["turn"] != CPU_ID:
+                if state["phase"] == "ended":
+                    return
+                pc2 = state.get("pendingChoice")
+                if pc2 and pc2.get("player") == CPU_ID:
+                    continue
+                if state["phase"] == "setup" and state["setupReady"].get(CPU_ID):
+                    if not all(state["setupReady"].get(p) for p in state["order"]):
                         return
-                    if state["phase"] == "ended":
-                        return
+                    continue
+                if state["phase"] == "playing" and state["turn"] == CPU_ID:
+                    continue
+                return
 
     threading.Thread(target=loop, daemon=True).start()
 
@@ -312,11 +338,43 @@ def handle_message(client: WSClient, msg: dict[str, Any]) -> None:
 def _clear_match(state: dict[str, Any]) -> None:
     mid = state["id"]
     matches.pop(mid, None)
+    ended_seen.pop(mid, None)
     for pid in state["order"]:
         c = clients.get(pid)
         if c:
             c.match_id = None
     broadcast_lobby()
+
+
+def reap_stale() -> None:
+    now = time.time()
+    with lock:
+        stale_ch = [cid for cid, ch in challenges.items() if now - ch["at"] > CHALLENGE_TTL]
+        for cid in stale_ch:
+            challenges.pop(cid, None)
+        ended = [
+            state
+            for mid, state in matches.items()
+            if state["phase"] == "ended"
+            and now - ended_seen.setdefault(mid, now) > ENDED_MATCH_TTL
+        ]
+        for state in ended:
+            ended_seen.pop(state["id"], None)
+        targets = [c for c in clients.values() if c.alive]
+    for state in ended:
+        _clear_match(state)
+    for c in targets:
+        if c.alive and not c.ping():
+            on_disconnect(c)
+
+
+def heartbeat_loop() -> None:
+    while True:
+        time.sleep(HEARTBEAT_INTERVAL)
+        try:
+            reap_stale()
+        except Exception as exc:
+            print(f"heartbeat error: {exc!r}", flush=True)
 
 
 def on_disconnect(client: WSClient) -> None:
@@ -357,6 +415,8 @@ def read_ws_frames(client: WSClient) -> None:
                 length = struct.unpack("!H", _recv_exact(conn, 2))[0]
             elif length == 127:
                 length = struct.unpack("!Q", _recv_exact(conn, 8))[0]
+            if length > MAX_FRAME:
+                break
             mask = _recv_exact(conn, 4) if masked else b""
             payload = _recv_exact(conn, length) if length else b""
             if masked:
@@ -364,13 +424,18 @@ def read_ws_frames(client: WSClient) -> None:
             if opcode == 0x8:
                 break
             if opcode == 0x9:  # ping → pong
-                try:
-                    conn.sendall(bytes([0x8A, len(payload)]) + payload)
-                except OSError:
+                if not client._send_frame(0xA, payload):
                     break
                 continue
             if opcode != 0x1:
                 continue
+            now = time.time()
+            times = client.msg_times
+            while times and now - times[0] > MSG_RATE_WINDOW:
+                times.popleft()
+            if len(times) >= MSG_RATE_LIMIT:
+                break
+            times.append(now)
             try:
                 msg = json.loads(payload.decode("utf-8"))
             except (json.JSONDecodeError, UnicodeDecodeError):
@@ -416,6 +481,9 @@ class Handler(SimpleHTTPRequestHandler):
         if not key:
             self.send_error(400, "Missing Sec-WebSocket-Key")
             return
+        if not self._origin_allowed():
+            self.send_error(403, "Origin not allowed")
+            return
         accept = base64.b64encode(hashlib.sha1((key + WS_GUID).encode()).digest()).decode()
         self.send_response(101, "Switching Protocols")
         self.send_header("Upgrade", "websocket")
@@ -430,10 +498,33 @@ class Handler(SimpleHTTPRequestHandler):
         # hello deferred until client sends hello
         read_ws_frames(client)
 
+    def _origin_allowed(self) -> bool:
+        origin = self.headers.get("Origin")
+        if not origin:
+            return True
+        origin_host = urlsplit(origin).netloc
+        if not origin_host:
+            return True
+        allowed = os.environ.get("WS_ALLOWED_ORIGINS", "").strip()
+        if allowed:
+            return any(origin_host == o.strip() or origin_host.endswith("." + o.strip()) for o in allowed.split(",") if o.strip())
+        return origin_host == self.headers.get("Host", "")
+
 
 def main() -> None:
     host = "0.0.0.0"
     server = ThreadingHTTPServer((host, PORT), Handler)
+
+    def _shutdown(signum, frame):
+        with lock:
+            cs = list(clients.values())
+        for c in cs:
+            c.close()
+        threading.Thread(target=server.shutdown, daemon=True).start()
+
+    signal.signal(signal.SIGTERM, _shutdown)
+    signal.signal(signal.SIGINT, _shutdown)
+    threading.Thread(target=heartbeat_loop, daemon=True).start()
     print(f"▶  포켓몬 카드대전  http://{host}:{PORT}/casual/tcg/")
     print(f"   ws → /ws")
     server.serve_forever()
