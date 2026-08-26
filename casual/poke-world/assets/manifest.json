@@ -1,0 +1,23 @@
+{
+  "tiles": {
+    "brick": "assets/tiles/brick.png",
+    "question": "assets/tiles/question.png",
+    "pipe": "assets/tiles/pipe.png",
+    "castle": "assets/tiles/castle.png",
+    "heart": "assets/tiles/heart.png",
+    "note": "assets/tiles/note.png",
+    "vs": "assets/tiles/vs.png",
+    "start": "assets/tiles/start.png",
+    "shop": "assets/tiles/shop.png"
+  },
+  "deco": {
+    "cloud": "assets/deco/cloud.png",
+    "tree": "assets/deco/tree.png",
+    "bush": "assets/deco/bush.png",
+    "coin": "assets/deco/coin.png",
+    "hill": "assets/deco/hill.png"
+  },
+  "bg": {
+    "world": "assets/bg/world.png"
+  }
+}

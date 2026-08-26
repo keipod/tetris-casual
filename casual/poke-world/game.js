@@ -19,10 +19,13 @@
   const roomBox = $("room-box");
   const roomCodeValue = $("room-code-value");
   const roomSeats = $("room-seats");
-  const boardEl = $("board");
+  const worldCanvas = $("world-canvas");
   const playerRail = $("player-rail");
   const logStrip = $("log-strip");
-  const diceFace = $("dice-face");
+  const dieA = $("die-a");
+  const dieB = $("die-b");
+  const diceSum = $("dice-sum");
+  const dicePair = $("dice-pair");
   const btnRoll = $("btn-roll");
   const actionHint = $("action-hint");
   const turnChip = $("turn-chip");
@@ -40,19 +43,90 @@
   let state = null;
   let room = null;
   let overlayMode = null;
-  let boardBuilt = false;
   let reconnectTimer = null;
+  let world = null;
+  let rafId = 0;
+  let lastShownParts = null;
 
-  const TILE_ICO = {
-    start: "🏁",
-    wild: "🌿",
-    item: "🎁",
-    event: "🎲",
-    gym: "🏅",
-    shop: "🏪",
-    rest: "💖",
-    duel: "⚔️",
+  const FACE_ROT = {
+    1: "rotateX(0deg) rotateY(0deg)",
+    2: "rotateX(0deg) rotateY(-90deg)",
+    3: "rotateX(-90deg) rotateY(0deg)",
+    4: "rotateX(90deg) rotateY(0deg)",
+    5: "rotateX(0deg) rotateY(90deg)",
+    6: "rotateX(0deg) rotateY(180deg)",
   };
+
+  function buildDieCube(el) {
+    if (!el || el.querySelector(".die-face")) return;
+    const cube = el.querySelector(".die-cube") || el;
+    const faces = [
+      ["front", 1],
+      ["right", 2],
+      ["top", 3],
+      ["bottom", 4],
+      ["left", 5],
+      ["back", 6],
+    ];
+    cube.innerHTML = faces
+      .map(([name, n]) => {
+        const pips = Array.from({ length: n }, (_, i) => `<i class="pip p${n}-${i + 1}"></i>`).join("");
+        return `<div class="die-face ${name}" data-n="${n}">${pips}</div>`;
+      })
+      .join("");
+  }
+
+  function setDieFace(el, n, spinning) {
+    if (!el) return;
+    const face = Math.max(1, Math.min(6, n | 0));
+    el.dataset.face = String(face);
+    const cube = el.querySelector(".die-cube");
+    if (!cube) return;
+    if (spinning) {
+      el.classList.add("is-rolling");
+      cube.style.transform = `rotateX(${720 + Math.random() * 360}deg) rotateY(${540 + Math.random() * 360}deg)`;
+    } else {
+      el.classList.remove("is-rolling");
+      cube.style.transform = FACE_ROT[face] || FACE_ROT[1];
+    }
+  }
+
+  function showDice(parts, sum, animate) {
+    const a = parts?.[0] ?? 1;
+    const b = parts?.[1] ?? 1;
+    const total = sum ?? a + b;
+    if (animate) {
+      setDieFace(dieA, a, true);
+      setDieFace(dieB, b, true);
+      dicePair?.classList.add("is-toss");
+      window.setTimeout(() => {
+        setDieFace(dieA, a, false);
+        setDieFace(dieB, b, false);
+        dicePair?.classList.remove("is-toss");
+        if (diceSum) diceSum.textContent = String(total);
+      }, 700);
+      if (diceSum) diceSum.textContent = "…";
+    } else {
+      setDieFace(dieA, a, false);
+      setDieFace(dieB, b, false);
+      if (diceSum) diceSum.textContent = state?.lastDice != null ? String(total) : "?";
+    }
+  }
+
+  function ensureWorld() {
+    if (world || !worldCanvas || !window.PokeWorldMap) return;
+    buildDieCube(dieA);
+    buildDieCube(dieB);
+    world = window.PokeWorldMap.createWorld(worldCanvas);
+    window.addEventListener("resize", () => world?.resize());
+    const loop = () => {
+      if (state && screenPlay && !screenPlay.classList.contains("hidden")) {
+        world.render(state);
+      }
+      rafId = requestAnimationFrame(loop);
+    };
+    rafId = requestAnimationFrame(loop);
+  }
 
   function wsUrl() {
     const override = document.querySelector('meta[name="pw-ws"]')?.content?.trim();
@@ -265,10 +339,9 @@
   function enterPlay() {
     screenLobby.classList.add("hidden");
     screenPlay.classList.remove("hidden");
-    if (!boardBuilt && state?.board) {
-      buildBoard(state.board);
-      boardBuilt = true;
-    }
+    ensureWorld();
+    world?.resize();
+    if (state) world?.render(state);
   }
 
   function showLobbyScreen() {
@@ -276,41 +349,7 @@
     screenLobby.classList.remove("hidden");
     hideOverlay();
     state = null;
-    boardBuilt = false;
-    boardEl.innerHTML = "";
-  }
-
-  function tilePos(i, n) {
-    const t = (i / n) * Math.PI * 2 - Math.PI / 2;
-    return { left: 50 + 42 * Math.cos(t), top: 50 + 42 * Math.sin(t) };
-  }
-
-  function shortName(tile) {
-    const m = { start: "출발", rest: "센터", duel: "시합", shop: "상점", item: "아이템", event: "사건", gym: "체육관", wild: "풀숲" };
-    return m[tile.kind] || tile.name;
-  }
-
-  function buildBoard(board) {
-    boardEl.innerHTML = "";
-    const n = board.length;
-    board.forEach((tile, i) => {
-      const pos = tilePos(i, n);
-      const el = document.createElement("div");
-      el.className = `tile kind-${tile.kind}`;
-      el.id = `tile-${i}`;
-      el.style.left = `${pos.left}%`;
-      el.style.top = `${pos.top}%`;
-      el.innerHTML = `<span class="tile-ico">${TILE_ICO[tile.kind] || "·"}</span><span>${shortName(tile)}</span>`;
-      el.title = `${tile.name} — ${tile.hint || ""}`;
-      boardEl.appendChild(el);
-    });
-    for (let i = 0; i < 4; i++) {
-      const m = document.createElement("div");
-      m.className = "meeple";
-      m.id = `meeple-${i}`;
-      m.hidden = true;
-      boardEl.appendChild(m);
-    }
+    lastShownParts = null;
   }
 
   function isMyTurn() {
@@ -319,43 +358,31 @@
 
   function renderMatch() {
     if (!state) return;
+    ensureWorld();
     const turnP = state.players.find((p) => p.id === state.turn) || state.players[0];
-    const me = state.players.find((p) => p.id === state.you);
 
     turnChip.textContent = turnP ? `${turnP.nick} 차례` : "";
     if (turnP) turnChip.style.borderBottom = `4px solid ${turnP.color}`;
-    diceFace.textContent = state.lastDice ?? "?";
+
+    const parts = state.lastDiceParts;
+    const partsKey = parts ? parts.join(",") : "";
+    if (parts && partsKey !== lastShownParts) {
+      const animate =
+        lastShownParts !== null || dieA?.classList.contains("is-rolling");
+      showDice(parts, state.lastDice, animate);
+      lastShownParts = partsKey;
+    } else if (!parts) {
+      showDice([1, 1], null, false);
+      if (diceSum) diceSum.textContent = "?";
+    } else {
+      showDice(parts, state.lastDice, false);
+    }
 
     const canRoll = isMyTurn() && state.phase === "playing" && state.awaitingRoll;
     btnRoll.disabled = !canRoll;
     actionHint.textContent = hintText(turnP);
 
-    document.querySelectorAll(".tile").forEach((el) => el.classList.remove("is-here"));
-    state.players.forEach((p) => {
-      if (p.eliminated) return;
-      const t = document.getElementById(`tile-${p.pos}`);
-      if (t) t.classList.add("is-here");
-    });
-
-    const n = (state.board || []).length || 24;
-    state.players.forEach((p, i) => {
-      const m = document.getElementById(`meeple-${i}`);
-      if (!m) return;
-      if (p.eliminated) {
-        m.hidden = true;
-        return;
-      }
-      m.hidden = false;
-      m.style.background = p.color;
-      const pos = tilePos(p.pos, n);
-      const jitter = (i - (state.players.length - 1) / 2) * 3;
-      m.style.left = `calc(${pos.left}% + ${jitter}px)`;
-      m.style.top = `calc(${pos.top}% + ${8 + i * 2}px)`;
-    });
-    for (let i = state.players.length; i < 4; i++) {
-      const m = document.getElementById(`meeple-${i}`);
-      if (m) m.hidden = true;
-    }
+    world?.render(state);
 
     playerRail.innerHTML = state.players
       .map((p) => {
@@ -582,9 +609,10 @@
     });
 
   btnRoll.onclick = () => {
-    diceFace.classList.remove("is-rolling");
-    void diceFace.offsetWidth;
-    diceFace.classList.add("is-rolling");
+    dicePair?.classList.add("is-toss");
+    setDieFace(dieA, 1 + ((Math.random() * 6) | 0), true);
+    setDieFace(dieB, 1 + ((Math.random() * 6) | 0), true);
+    if (diceSum) diceSum.textContent = "…";
     act({ type: "roll" });
   };
 

@@ -19,6 +19,8 @@
 casual/catch2/.venv/
 casual/beach-defense/tools/.venv/
 casual/beach-defense/tools/__pycache__/
+casual/poke-world/tools/.venv/
+casual/poke-world/tools/__pycache__/
 # Boom Beach extract tooling under casual (symlinks + clones) — local-only
 casual/beach-defense/vendor/
 

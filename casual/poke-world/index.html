@@ -2,25 +2,24 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#2f6b3a">
+<meta name="theme-color" content="#5ec8f0">
 <meta name="pw-ws-port" content="48939">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
 <title>포켓몬월드</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20260826bake">
 <link rel="stylesheet" href="../assets/no-select.css">
 <script src="../assets/mobile-hardening.js"></script>
 </head>
 <body>
 <div id="app">
 
-  <section id="screen-lobby" class="screen" aria-label="로비">
+  <section id="screen-lobby" class="screen lobby-screen" aria-label="로비">
     <header class="setup-top">
       <a class="back-link" href="../">목록</a>
       <div class="lobby-top-actions">
@@ -34,67 +33,80 @@
       <p class="lede">포털에 접속한 친구들과 같은 보드에서 배지 레이스!</p>
     </div>
 
-    <div class="setup-panel">
-      <h2>내 닉네임</h2>
-      <div class="nick-row">
-        <input id="nick-input" type="text" maxlength="12" placeholder="닉네임" autocomplete="off">
-        <button id="btn-nick-save" class="btn ghost" type="button">저장</button>
+    <div class="lobby-grid">
+      <div class="setup-panel">
+        <h2>내 닉네임</h2>
+        <div class="nick-row">
+          <input id="nick-input" type="text" maxlength="12" placeholder="닉네임" autocomplete="off">
+          <button id="btn-nick-save" class="btn ghost" type="button">저장</button>
+        </div>
+        <label class="field-label" for="poke-select">출발 포켓몬</label>
+        <select id="poke-select" aria-label="출발 포켓몬"></select>
       </div>
-      <label class="field-label" for="poke-select">출발 포켓몬</label>
-      <select id="poke-select" aria-label="출발 포켓몬"></select>
-    </div>
 
-    <div class="setup-panel">
-      <h2>온라인 플레이어</h2>
-      <div id="player-list" class="player-list"><p class="player-list-empty">접속자를 불러오는 중…</p></div>
-    </div>
-
-    <div class="setup-panel">
-      <h2>방 코드 (2~4명)</h2>
-      <div class="room-row">
-        <button id="btn-room-create" class="btn ghost" type="button">방 만들기</button>
-        <input id="room-code-input" type="text" maxlength="6" placeholder="코드 입력" autocomplete="off">
-        <button id="btn-room-join" class="btn ghost" type="button">입장</button>
+      <div class="setup-panel">
+        <h2>온라인 플레이어</h2>
+        <div id="player-list" class="player-list"><p class="player-list-empty">접속자를 불러오는 중…</p></div>
       </div>
-      <div id="room-box" class="room-box hidden">
-        <div class="room-code-value" id="room-code-value">------</div>
-        <div id="room-seats" class="room-seats"></div>
-        <div class="room-actions">
-          <label class="cpu-fill"><input type="checkbox" id="fill-cpu" checked> 빈자리 CPU</label>
-          <select id="target-seats" aria-label="목표 인원">
-            <option value="2">2인</option>
-            <option value="3" selected>3인</option>
-            <option value="4">4인</option>
-          </select>
-          <button id="btn-room-start" class="btn primary" type="button">게임 시작</button>
-          <button id="btn-room-leave" class="btn ghost" type="button">방 나가기</button>
+
+      <div class="setup-panel setup-panel-wide">
+        <h2>방 코드 (2~4명)</h2>
+        <div class="room-row">
+          <button id="btn-room-create" class="btn ghost" type="button">방 만들기</button>
+          <input id="room-code-input" type="text" maxlength="6" placeholder="코드 입력" autocomplete="off">
+          <button id="btn-room-join" class="btn ghost" type="button">입장</button>
+        </div>
+        <div id="room-box" class="room-box hidden">
+          <div class="room-code-value" id="room-code-value">------</div>
+          <div id="room-seats" class="room-seats"></div>
+          <div class="room-actions">
+            <label class="cpu-fill"><input type="checkbox" id="fill-cpu" checked> 빈자리 CPU</label>
+            <select id="target-seats" aria-label="목표 인원">
+              <option value="2">2인</option>
+              <option value="3" selected>3인</option>
+              <option value="4">4인</option>
+            </select>
+            <button id="btn-room-start" class="btn primary btn-inline" type="button">게임 시작</button>
+            <button id="btn-room-leave" class="btn ghost" type="button">방 나가기</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="setup-panel">
-      <h2>연습</h2>
-      <p class="stat-line">혼자일 때 CPU와 바로 플레이</p>
-      <button id="btn-cpu" class="btn primary" type="button">CPU 3인전</button>
+      <div class="setup-panel">
+        <h2>연습</h2>
+        <p class="stat-line">혼자일 때 CPU와 바로 플레이</p>
+        <button id="btn-cpu" class="btn primary" type="button">CPU 3인전</button>
+      </div>
     </div>
   </section>
 
-  <section id="screen-play" class="screen hidden" aria-label="보드">
+  <section id="screen-play" class="screen play-screen hidden" aria-label="보드">
     <header class="play-top">
       <button id="btn-quit" class="icon-btn" type="button">나가기</button>
       <div class="turn-chip" id="turn-chip">대기</div>
       <button id="btn-help-play" class="icon-btn" type="button" aria-label="설명">?</button>
     </header>
-    <div class="board-wrap">
-      <div id="board" class="board" aria-label="모험 보드"></div>
-      <div class="board-center">
-        <div id="dice-face" class="dice-face" aria-live="polite">?</div>
-        <button id="btn-roll" class="btn roll" type="button">주사위</button>
-        <p id="action-hint" class="action-hint">연결 중…</p>
+
+    <div class="play-layout">
+      <div class="play-main">
+        <div class="world-stage">
+          <canvas id="world-canvas" width="840" height="1020" aria-label="포켓몬 월드맵"></canvas>
+        </div>
+        <div class="dice-dock" aria-live="polite">
+          <div class="dice-pair" id="dice-pair">
+            <div class="die3d" id="die-a" data-face="1"><div class="die-cube"></div></div>
+            <div class="die3d" id="die-b" data-face="1"><div class="die-cube"></div></div>
+          </div>
+          <div class="dice-sum" id="dice-sum">?</div>
+          <button id="btn-roll" class="btn roll" type="button">주사위 굴리기</button>
+          <p id="action-hint" class="action-hint">연결 중…</p>
+        </div>
       </div>
+      <aside class="play-side">
+        <div id="player-rail" class="player-rail" aria-label="플레이어 현황"></div>
+        <div id="log-strip" class="log-strip" aria-live="polite"></div>
+      </aside>
     </div>
-    <div id="player-rail" class="player-rail" aria-label="플레이어 현황"></div>
-    <div id="log-strip" class="log-strip" aria-live="polite"></div>
   </section>
 
   <div id="overlay" class="overlay hidden" aria-hidden="true">
@@ -107,7 +119,7 @@
       <p class="help-lead">포털에 접속한 <strong>최대 4명</strong>이 모여 플레이하는 온라인 보드게임이에요.</p>
       <ul class="help-list">
         <li>접속자 목록에서 <strong>초대</strong>하거나, 방 코드로 입장</li>
-        <li>주사위로 이동해 체육관 배지 <strong>3개</strong>를 먼저 모으면 승리</li>
+        <li><strong>주사위 2개</strong>를 굴려 이동 · 체육관 배지 <strong>3개</strong> 선취 승리</li>
         <li>전투는 공격력·방어력·타입 상성·특기</li>
         <li>아이템·사건·상점·시합장이 변수를 만들어요</li>
       </ul>
@@ -115,6 +127,7 @@
     </div>
   </div>
 </div>
-<script src="game.js"></script>
+<script src="world.js?v=20260826bake"></script>
+<script src="game.js?v=20260826bake"></script>
 </body>
 </html>

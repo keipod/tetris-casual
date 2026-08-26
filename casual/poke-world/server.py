@@ -150,33 +150,46 @@ def push_match(state: dict[str, Any], events: list[dict[str, Any]] | None = None
 
 
 def run_cpu_if_needed(state: dict[str, Any]) -> None:
+    with lock:
+        if state.get("_cpuRunning"):
+            return
+        if state["phase"] == "ended":
+            return
+        if not str(state["turn"]).startswith(CPU_PREFIX):
+            return
+        state["_cpuRunning"] = True
+
     def loop() -> None:
-        while True:
+        try:
+            while True:
+                with lock:
+                    if state["phase"] == "ended":
+                        return
+                    mid = state["id"]
+                    if matches.get(mid) is not state:
+                        return
+                    turn = state["turn"]
+                    if not str(turn).startswith(CPU_PREFIX):
+                        return
+                    act = engine.cpu_choose(state, turn)
+                    if not act:
+                        return
+                    try:
+                        engine.apply_action(state, turn, act)
+                        events = engine.drain_events(state)
+                    except ValueError:
+                        return
+                push_match(state, events)
+                time.sleep(0.55)
+                with lock:
+                    if state["phase"] == "ended":
+                        return
+                    if str(state["turn"]).startswith(CPU_PREFIX):
+                        continue
+                    return
+        finally:
             with lock:
-                if state["phase"] == "ended":
-                    return
-                mid = state["id"]
-                if matches.get(mid) is not state:
-                    return
-                turn = state["turn"]
-                if not str(turn).startswith(CPU_PREFIX):
-                    return
-                act = engine.cpu_choose(state, turn)
-                if not act:
-                    return
-                try:
-                    engine.apply_action(state, turn, act)
-                    events = engine.drain_events(state)
-                except ValueError:
-                    return
-            push_match(state, events)
-            time.sleep(0.55)
-            with lock:
-                if state["phase"] == "ended":
-                    return
-                if str(state["turn"]).startswith(CPU_PREFIX):
-                    continue
-                return
+                state["_cpuRunning"] = False
 
     threading.Thread(target=loop, daemon=True).start()
 
@@ -229,15 +242,17 @@ def start_match_from_room(code: str, fill_cpu: bool = False) -> dict[str, Any] |
     return state
 
 
-def start_cpu_practice(host_id: str, seats: int = 3) -> dict[str, Any]:
+def start_cpu_practice(host_id: str, seats: int = 3, pokemon_id: str = "pikachu") -> dict[str, Any]:
     seats = max(2, min(4, seats))
     host = clients.get(host_id)
     nick = host.nick if host else nick_default()
+    if pokemon_id not in engine.POKE_BY_ID:
+        pokemon_id = "pikachu"
     specs = [
         {
             "id": host_id,
             "nick": nick,
-            "pokemonId": "pikachu",
+            "pokemonId": pokemon_id,
             "isCpu": False,
         }
     ]

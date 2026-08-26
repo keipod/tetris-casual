@@ -189,6 +189,11 @@ def _hurt(mon: dict[str, Any], n: int) -> None:
     mon["hp"] = max(0, mon["hp"] - n)
 
 
+def _hurt_field(mon: dict[str, Any], n: int) -> None:
+    """Overworld damage — never KO (family board)."""
+    mon["hp"] = max(1, mon["hp"] - n)
+
+
 def _give_item(player: dict[str, Any], item_id: str) -> bool:
     if item_id not in ITEMS or len(player["items"]) >= MAX_ITEMS:
         return False
@@ -309,6 +314,7 @@ def new_match(player_specs: list[dict[str, Any]], seed: int | None = None) -> di
         "order": order,
         "players": players,
         "lastDice": None,
+        "lastDiceParts": None,
         "awaitingRoll": True,
         "battle": None,
         "shopOffers": None,
@@ -342,6 +348,13 @@ def _check_win(state: dict[str, Any], player: dict[str, Any]) -> bool:
 def _advance_turn(state: dict[str, Any]) -> None:
     if state["phase"] == "ended":
         return
+    alive = _alive_players(state)
+    if len(alive) <= 1:
+        if alive:
+            _check_win(state, alive[0])
+        else:
+            state["phase"] = "ended"
+        return
     n = len(state["order"])
     for _ in range(n):
         idx = state["order"].index(state["turn"])
@@ -353,6 +366,12 @@ def _advance_turn(state: dict[str, Any]) -> None:
             p["skipped"] = False
             continue
         break
+    if _current(state).get("eliminated"):
+        # all remaining skipped somehow — crown survivor
+        alive = _alive_players(state)
+        if alive:
+            _check_win(state, alive[0])
+        return
     state["phase"] = "playing"
     state["awaitingRoll"] = True
     state["battle"] = None
@@ -367,6 +386,8 @@ def _advance_turn(state: dict[str, Any]) -> None:
 
 def _begin_battle(state: dict[str, Any], spec: dict[str, Any]) -> None:
     p = _current(state)
+    if p["mon"]["hp"] <= 0:
+        p["mon"]["hp"] = 1
     _reset_battle(p["mon"])
     _reset_battle(spec["foe"])
     if p["mon"]["ability"] == "intimidate":
@@ -500,12 +521,21 @@ def _start_gym(state: dict[str, Any], gym_index: int) -> None:
     _push_log(state, f"{gym['name']}의 도전! ({TYPE_KO[gym['badge']]} 배지)")
 
 
-def _apply_event(state: dict[str, Any], rng: random.Random) -> None:
+def _apply_event(state: dict[str, Any], rng: random.Random, *, depth: int = 0) -> None:
     p = _current(state)
+
+    def move_fwd() -> None:
+        p["pos"] = (p["pos"] + 3) % BOARD_SIZE
+        p["flags"]["tilePending"] = True
+
+    def move_back() -> None:
+        p["pos"] = (p["pos"] - 2 + BOARD_SIZE) % BOARD_SIZE
+        p["flags"]["tilePending"] = True
+
     events = [
         ("길에서 동전을 주웠어요! +5코인", lambda: p.__setitem__("coins", p["coins"] + 5)),
         ("나무열매를 먹었어요. HP +25", lambda: _heal(p["mon"], 25)),
-        ("돌부리에 걸려 삐었어요. HP -15", lambda: _hurt(p["mon"], 15)),
+        ("돌부리에 걸려 삐었어요. HP -15", lambda: _hurt_field(p["mon"], 15)),
         ("오박사가 사탕을 줬어요! 공격+2 방어+2", lambda: (p["mon"].__setitem__("atk", p["mon"]["atk"] + 2), p["mon"].__setitem__("def", p["mon"]["def"] + 2))),
         ("폭풍! 다음 이동 -2", lambda: p["flags"].__setitem__("slowNext", True)),
         ("기분 좋은 햇살. 다음 주사위 +1", lambda: p["flags"].__setitem__("boostDice", True)),
@@ -513,15 +543,23 @@ def _apply_event(state: dict[str, Any], rng: random.Random) -> None:
         ("자전거 대여비… -3코인", lambda: p.__setitem__("coins", max(0, p["coins"] - 3))),
         ("간호순이 치료해줬어요. HP 전부 회복", lambda: (p["mon"].__setitem__("hp", p["mon"]["maxHp"]), p["mon"].__setitem__("status", None))),
         ("길을 헤맸어요. 상태: 혼란", lambda: p["mon"].__setitem__("status", "confuse")),
-        ("지름길 발견! 앞으로 3칸", lambda: p.__setitem__("pos", (p["pos"] + 3) % BOARD_SIZE)),
-        ("공사 중… 뒤로 2칸", lambda: p.__setitem__("pos", (p["pos"] - 2 + BOARD_SIZE) % BOARD_SIZE)),
+        ("지름길 발견! 앞으로 3칸", move_fwd),
+        ("공사 중… 뒤로 2칸", move_back),
     ]
     text, fn = rng.choice(events)
     fn()
     _push_log(state, text)
+    if p["flags"].pop("tilePending", False):
+        _resolve_tile(state, rng, depth=depth + 1)
+        return
+    _advance_turn(state)
 
 
-def _resolve_tile(state: dict[str, Any], rng: random.Random) -> None:
+def _resolve_tile(state: dict[str, Any], rng: random.Random, *, depth: int = 0) -> None:
+    if depth > 2:
+        _push_log(state, "너무 바빠서 이번엔 여기까지!")
+        _advance_turn(state)
+        return
     p = _current(state)
     tile = BOARD[p["pos"]]
     _push_log(state, f"{p['nick']} → {tile['name']}")
@@ -549,8 +587,7 @@ def _resolve_tile(state: dict[str, Any], rng: random.Random) -> None:
         state["shopOffers"] = offers[:3]
         _push_log(state, "상점입니다. 살 물건을 고르거나 나가세요.")
     elif kind == "event":
-        _apply_event(state, rng)
-        _advance_turn(state)
+        _apply_event(state, rng, depth=depth)
     elif kind == "wild":
         if p["flags"].get("repel"):
             p["flags"]["repel"] = False
@@ -578,23 +615,30 @@ def _roll(state: dict[str, Any]) -> None:
         raise ValueError("지금은 주사위를 굴릴 수 없어요")
     p = _current(state)
     rng = _rng(state)
-    dice = rng.randint(1, 6)
+    d1 = rng.randint(1, 6)
+    d2 = rng.randint(1, 6)
+    dice = d1 + d2
     if p["flags"].get("boostDice"):
-        dice = min(6, dice + 1)
+        dice = min(12, dice + 1)
         p["flags"]["boostDice"] = False
     if p["flags"].get("slowNext"):
         dice = max(1, dice - 2)
         p["flags"]["slowNext"] = False
     state["lastDice"] = dice
+    state["lastDiceParts"] = [d1, d2]
     state["awaitingRoll"] = False
-    _push_log(state, f"{p['nick']}: 주사위 {dice}!")
-    _emit(state, {"type": "dice", "player": p["id"], "value": dice})
+    _push_log(state, f"{p['nick']}: 주사위 {d1}+{d2} = {dice}!")
+    _emit(state, {"type": "dice", "player": p["id"], "value": dice, "parts": [d1, d2]})
     frm = p["pos"]
     p["pos"] = (p["pos"] + dice) % BOARD_SIZE
     if frm + dice >= BOARD_SIZE:
-        _heal(p["mon"], START_HP_HEAL)
         p["coins"] += 2
-        _push_log(state, f"{p['nick']}이(가) 스타트 통과! HP 회복 · 코인 +2")
+        # 스타트 칸에 정확히 멈추면 타일 회복만, 통과만 하면 통과 회복
+        if p["pos"] != 0:
+            _heal(p["mon"], START_HP_HEAL)
+            _push_log(state, f"{p['nick']}이(가) 스타트 통과! HP 회복 · 코인 +2")
+        else:
+            _push_log(state, f"{p['nick']}이(가) 스타트로 돌아왔어요! 코인 +2")
     _resolve_tile(state, rng)
 
 
@@ -605,6 +649,10 @@ def _attack(state: dict[str, Any]) -> None:
     rng = _rng(state)
     _do_strike(state, p["mon"], state["battle"]["foe"], rng)
     if state["phase"] != "battle":
+        return
+    # 혼란 자해 등으로 내 HP가 먼저 0이면 상대 턴으로 넘어가지 않음
+    if p["mon"]["hp"] <= 0:
+        _finish_battle(state, False, rng)
         return
     if state["battle"]["foe"]["hp"] <= 0:
         _finish_battle(state, True, rng)
@@ -648,8 +696,11 @@ def _use_item(state: dict[str, Any], item_id: str) -> None:
         raise ValueError("자기 턴 시작에만 쓸 수 있어요")
 
     battle_only = {"x_attack", "x_defense", "smoke_ball", "type_charm", "dire_hit", "focus_band", "escape_rope"}
+    field_only = {"rare_candy", "coin_bag", "repel"}
     if item_id in battle_only and not in_battle:
         raise ValueError("전투 중에만 쓸 수 있어요")
+    if item_id in field_only and in_battle:
+        raise ValueError("전투 중에는 쓸 수 없어요")
 
     if item_id == "escape_rope":
         _flee(state)
@@ -730,6 +781,10 @@ def apply_action(state: dict[str, Any], player_id: str, action: dict[str, Any]) 
             raise ValueError("가방이 가득 찼어요")
         p["coins"] -= price
         _give_item(p, iid)
+        offers = list(state.get("shopOffers") or [])
+        if iid in offers:
+            offers.remove(iid)
+            state["shopOffers"] = offers
         _push_log(state, f"{ITEMS[iid]['name']} 구매 (−{price}코인)")
     elif typ == "shop_leave":
         if state["phase"] != "shop":
@@ -741,7 +796,11 @@ def apply_action(state: dict[str, Any], player_id: str, action: dict[str, Any]) 
         tid = str(action.get("targetId") or "")
         if tid not in (state.get("pendingDuel") or {}).get("candidates", []):
             raise ValueError("잘못된 상대")
-        target = state["players"][tid]
+        if tid == player_id:
+            raise ValueError("자기 자신과는 대결할 수 없어요")
+        target = state["players"].get(tid)
+        if not target or target.get("eliminated"):
+            raise ValueError("대결할 수 없는 상대예요")
         foe = _clone_mon(
             {
                 "name": target["mon"]["name"],
@@ -870,6 +929,7 @@ def view_for(state: dict[str, Any], viewer_id: str) -> dict[str, Any]:
         "turn": state["turn"],
         "awaitingRoll": state.get("awaitingRoll"),
         "lastDice": state.get("lastDice"),
+        "lastDiceParts": state.get("lastDiceParts"),
         "winnerId": state.get("winnerId"),
         "log": list(state.get("log") or [])[:12],
         "shopOffers": state.get("shopOffers"),
