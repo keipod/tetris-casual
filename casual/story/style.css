@@ -930,3 +930,104 @@ html, body {
   cursor: not-allowed;
   box-shadow: none;
 }
+
+.subhead {
+  margin: 16px 0 8px;
+  font-size: 14px;
+  font-family: "Jua", sans-serif;
+  color: var(--ink);
+}
+.cube-row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.cube-face {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: var(--shadow-soft);
+  background: #fff;
+}
+.cube-tips {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.cube-tips li { margin-bottom: 6px; }
+
+.shop-list { display: flex; flex-direction: column; gap: 8px; }
+.shop-detail { margin-top: 8px; }
+
+.equip-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.equip-slot {
+  background: #fff;
+  border: 2px solid #f1e4ff;
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.equip-slot em {
+  display: block;
+  font-style: normal;
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+.equip-slot strong { font-size: 12.5px; }
+
+.rival-list { display: flex; flex-direction: column; gap: 10px; }
+.rival-card {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 10px;
+  align-items: center;
+  background: #fff;
+  border: 2px solid #f1e4ff;
+  border-radius: 14px;
+  padding: 8px;
+}
+.rival-card img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f6ecff;
+}
+.rival-card strong { display: block; font-size: 13px; }
+.rival-card span { display: block; font-size: 12px; color: var(--ink-soft); }
+.rival-card em {
+  display: block;
+  margin-top: 2px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--pink-deep);
+}
+
+.hub-actions {
+  grid-template-columns: 1fr 1fr;
+}
+.screen-hub .hub-actions { max-height: none; }
+
+.scene-bg.bg-city { background: linear-gradient(180deg, #e8f4ff, #ffe9f2); }
+.scene-bg.bg-armory { background: linear-gradient(180deg, #efe6d8, #d8c4a8); }
+.scene-bg.bg-tailor { background: linear-gradient(180deg, #fdeeff, #eccbf7); }
+.scene-bg.bg-restaurant { background: linear-gradient(180deg, #fff5e4, #ffdca0); }
+.scene-bg.bg-itemshop { background: linear-gradient(180deg, #fff8d6, #ffe3a0); }
+.scene-bg.bg-church { background: linear-gradient(180deg, #eef2ff, #d4dcf7); }
+.scene-bg.bg-clinic { background: linear-gradient(180deg, #eafff6, #c9f3e0); }
+.scene-bg.bg-palace { background: linear-gradient(180deg, #f7e9ff, #e0c8f5); }
+.scene-bg.bg-cube { background: linear-gradient(180deg, #e8f0e4, #d0e0c8); }
+.scene-bg.bg-snow { background: linear-gradient(180deg, #eaf3ff, #d8e8f7); }
+.scene-bg.bg-spring_fair { background: linear-gradient(180deg, #ffeaf3, #ffd6e8); }

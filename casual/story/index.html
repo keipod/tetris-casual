@@ -17,7 +17,6 @@
 </head>
 <body>
 <div id="app">
-
   <header class="topbar">
     <a class="back-btn" href="../" aria-label="목록으로">목록</a>
     <h1 class="topbar-title">공주 육성</h1>
@@ -33,22 +32,20 @@
     </button>
   </header>
 
-  <!-- Title -->
   <section id="screen-title" class="screen screen-title">
     <div class="title-hero" aria-hidden="true">
       <img class="title-cover-img" alt="" src="assets/bg/castle.png">
       <div class="title-hero-shade"></div>
     </div>
     <div class="title-card">
-      <p class="eyebrow">Princess Maker inspired</p>
-      <h2 class="game-title">별빛 성의 아라<br><span class="sub">공주를 키우는 하루하루</span></h2>
-      <p class="game-desc">수업·알바·탐험·휴식·반려동물로 아라를 키워요.<br>가을 축제와 사건들이 운명을 갈라놓아요.</p>
+      <p class="eyebrow">Princess Maker inspired · Final</p>
+      <h2 class="game-title">별빛 성의 아라<br><span class="sub">10살부터 18살까지</span></h2>
+      <p class="game-desc">수업·알바·탐험·도시·장비·축제로 공주를 키워요.<br>큐브의 조언과 라이벌, 왕자와의 인연이 엔딩을 가릅니다.</p>
       <button id="btn-new" type="button" class="btn-primary">새 육성 시작</button>
       <button id="btn-continue" type="button" class="btn-secondary hidden">이어하기</button>
     </div>
   </section>
 
-  <!-- Hub -->
   <section id="screen-hub" class="screen screen-hub hidden">
     <div class="hub-hero">
       <img id="hub-bg" class="hub-bg" src="assets/bg/castle.png" alt="">
@@ -61,7 +58,7 @@
       <div class="hub-name-row">
         <strong id="hub-name">아라</strong>
         <span id="hub-age">10세</span>
-        <span id="hub-season" class="chip">봄</span>
+        <span id="hub-season" class="chip">3월</span>
       </div>
       <div class="hub-bars">
         <div class="bar"><span>금화</span><b id="hub-gold">0</b></div>
@@ -72,30 +69,27 @@
     </div>
     <div class="hub-actions">
       <button type="button" class="hub-btn" data-go="schedule">스케줄</button>
+      <button type="button" class="hub-btn" data-go="city">도시</button>
       <button type="button" class="hub-btn" data-go="stats">스탯</button>
+      <button type="button" class="hub-btn" data-go="cube">큐브</button>
       <button type="button" class="hub-btn" data-go="talk">대화</button>
+      <button type="button" class="hub-btn" data-go="bag">가방</button>
       <button type="button" class="hub-btn ghost" data-go="title">타이틀</button>
     </div>
   </section>
 
-  <!-- Stats -->
   <section id="screen-stats" class="screen screen-panel hidden">
     <div class="panel-card">
-      <div class="panel-head">
-        <h2>스탯</h2>
-        <button type="button" class="btn-text" data-go="hub">닫기</button>
-      </div>
+      <div class="panel-head"><h2>스탯</h2><button type="button" class="btn-text" data-go="hub">닫기</button></div>
       <div id="stats-grid" class="stats-grid"></div>
+      <h3 class="subhead">라이벌</h3>
+      <div id="rival-list" class="rival-list"></div>
     </div>
   </section>
 
-  <!-- Talk -->
   <section id="screen-talk" class="screen screen-panel hidden">
     <div class="panel-card">
-      <div class="panel-head">
-        <h2>대화</h2>
-        <button type="button" class="btn-text" data-go="hub">닫기</button>
-      </div>
+      <div class="panel-head"><h2>대화</h2><button type="button" class="btn-text" data-go="hub">닫기</button></div>
       <p class="panel-desc">아라와 짧게 마음을 나눠요.</p>
       <button id="btn-talk-chat" type="button" class="btn-primary">다정히 이야기하기</button>
       <button id="btn-talk-money" type="button" class="btn-secondary">용돈 주기 (20G)</button>
@@ -104,26 +98,61 @@
     </div>
   </section>
 
-  <!-- Schedule -->
+  <section id="screen-cube" class="screen screen-panel hidden">
+    <div class="panel-card">
+      <div class="panel-head"><h2>집사 큐브</h2><button type="button" class="btn-text" data-go="hub">닫기</button></div>
+      <div class="cube-row">
+        <img class="cube-face" src="assets/portraits/cube.png" alt="큐브" onerror="this.style.display='none'">
+        <div>
+          <p class="panel-desc">육성 조언을 전해 드려요.</p>
+          <ul id="cube-tips" class="cube-tips"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-city" class="screen screen-panel hidden">
+    <div class="panel-card">
+      <div class="panel-head"><h2>도시</h2><button type="button" class="btn-text" data-go="hub">닫기</button></div>
+      <p class="panel-desc">상점과 시설을 이용해 아라를 도와요.</p>
+      <div id="shop-list" class="shop-list"></div>
+      <div id="shop-detail" class="shop-detail hidden">
+        <div class="panel-head"><h3 id="shop-title">상점</h3><button type="button" class="btn-text" id="btn-shop-back">뒤로</button></div>
+        <p id="shop-desc" class="panel-desc"></p>
+        <div id="shop-items" class="act-list"></div>
+        <p id="shop-msg" class="talk-result"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-bag" class="screen screen-panel hidden">
+    <div class="panel-card">
+      <div class="panel-head"><h2>가방 · 장비</h2><button type="button" class="btn-text" data-go="hub">닫기</button></div>
+      <div id="equip-view" class="equip-view"></div>
+      <h3 class="subhead">소비 아이템</h3>
+      <div id="bag-list" class="act-list"></div>
+      <p id="bag-msg" class="talk-result"></p>
+    </div>
+  </section>
+
   <section id="screen-schedule" class="screen screen-panel hidden">
     <div class="panel-card schedule-card">
       <div class="panel-head">
-        <h2>스케줄 · <span id="sched-label">봄</span></h2>
+        <h2>스케줄 · <span id="sched-label">3월</span></h2>
         <button type="button" class="btn-text" data-go="hub">닫기</button>
       </div>
-      <p id="sched-hint" class="panel-desc">이번 계절 활동 3칸을 채워 주세요.</p>
+      <p id="sched-hint" class="panel-desc">이번 달 활동 3칸을 채워 주세요.</p>
       <div id="slot-row" class="slot-row"></div>
       <div id="fest-box" class="fest-box hidden">
-        <p class="fest-title">가을 축제 — 참가할 행사를 고르세요</p>
+        <p class="fest-title">10월 추수 축제 — 참가할 행사를 고르세요</p>
         <div id="fest-choices" class="fest-choices"></div>
       </div>
       <div id="cat-tabs" class="cat-tabs"></div>
       <div id="act-list" class="act-list"></div>
-      <button id="btn-run-month" type="button" class="btn-primary" disabled>계절 진행</button>
+      <button id="btn-run-month" type="button" class="btn-primary" disabled>이달 진행</button>
     </div>
   </section>
 
-  <!-- Event / result VN -->
   <section id="screen-event" class="screen screen-game hidden">
     <div id="scene-bg" class="scene-bg">
       <img id="scene-bg-img" class="scene-bg-img" alt="">
@@ -144,7 +173,6 @@
     </div>
   </section>
 
-  <!-- Ending -->
   <section id="screen-ending" class="screen screen-ending hidden">
     <div id="ending-bg" class="scene-bg">
       <img id="ending-bg-img" class="scene-bg-img" alt="">
