@@ -35,6 +35,24 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
+    def _proxy_allowed(self) -> bool:
+        host = (self.headers.get("Host") or "").split(":")[0].lower()
+        return (
+            host in ("localhost", "127.0.0.1", "::1")
+            or host.startswith("192.168.")
+            or host.startswith("10.")
+            or host.startswith("172.16.")
+            or host.endswith(".local")
+        )
+
+    def _deny_proxy(self) -> None:
+        body = json.dumps({"error": "airouter proxy is local-only"}).encode()
+        self.send_response(403)
+        self.send_header("Content-Type", "application/json")
+        self._cors()
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_OPTIONS(self) -> None:
         self.send_response(204)
         self._cors()
@@ -42,6 +60,9 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_POST(self) -> None:
         if self.path == "/api/airouter/v1/images/generations":
+            if not self._proxy_allowed():
+                self._deny_proxy()
+                return
             length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(length)
             req = urllib.request.Request(
@@ -83,6 +104,9 @@ class Handler(SimpleHTTPRequestHandler):
         if self._maybe_redirect_root():
             return
         if self.path.startswith("/api/airouter/v1/jobs/") and self.path.endswith("/artifact"):
+            if not self._proxy_allowed():
+                self._deny_proxy()
+                return
             url = f"{AIROUTER}{self.path.removeprefix('/api/airouter')}"
             req = urllib.request.Request(url, method="GET")
             try:
