@@ -4,6 +4,7 @@
 
   const NICK_KEY = "tcg_nick_v1";
   const SOUND_KEY = "tcg_sound_v1";
+  const STREAK_KEY = "tcg_win_streak_v1";
   const DEFAULT_WS_PORT = "48904";
 
   function artUrl(dex) {
@@ -57,6 +58,16 @@
   const actionBar = $("action-bar");
   const btnReady = $("btn-ready");
   const btnAttack = $("btn-attack");
+  const itemDock = $("item-dock");
+  const itemSlots = $("item-slots");
+  const oppItemCount = $("opp-item-count");
+  const shieldChip = $("shield-chip");
+  const bonusChip = $("bonus-chip");
+  const fieldModChip = $("field-mod-chip");
+  const overlayDiscover = $("overlay-discover");
+  const discoverOptions = $("discover-options");
+  const resultStreak = $("result-streak");
+  const resultStats = $("result-stats");
   const connChip = $("conn-chip");
   const connLabel = $("conn-label");
   const actionHint = $("action-hint");
@@ -111,9 +122,25 @@
     return !!(state && state.phase !== "ended" && !busy);
   }
 
+  function pendingDiscover() {
+    const pc = state && state.pendingChoice;
+    return !!(pc && pc.type === "discover_item" && pc.player === state.you && Array.isArray(pc.options));
+  }
+
   function sendAction(action) {
     if (!canAct()) return false;
+    if (pendingDiscover() && action.type !== "choose_discover") {
+      showToast("아이템을 먼저 고르세요");
+      return false;
+    }
     return send({ type: "action", action });
+  }
+
+  function getStreak() {
+    try { return parseInt(localStorage.getItem(STREAK_KEY) || "0", 10) || 0; } catch (e) { return 0; }
+  }
+  function setStreak(n) {
+    try { localStorage.setItem(STREAK_KEY, String(Math.max(0, n))); } catch (e) { /* ignore */ }
   }
 
   function sfx(name) {
@@ -235,8 +262,15 @@
       "not your turn": "지금은 상대 턴이에요.",
       "need active pokemon": "먼저 기본 포켓몬을 배치하세요.",
       "bench full": "벤치가 가득 찼어요.",
-      "cannot attack now": "공격은 턴당 1번! 공격하면 턴이 넘어가요",
+      "cannot attack now": "이번 턴 공격은 끝났어요 (마비·이미 공격)",
       "already retreated": "이번 턴에 이미 교체했어요.",
+      "already used item this turn": "아이템은 턴당 1번만 쓸 수 있어요",
+      "already shielded": "이미 연막이 걸려 있어요",
+      "item not found": "쓸 수 있는 아이템이 없어요",
+      "choose item first": "아이템을 먼저 고르세요",
+      "waiting for opponent choice": "상대가 아이템을 고르는 중이에요",
+      "deck empty": "덱이 비어 있어요",
+      "already full hp": "이미 체력이 가득해요",
       "이미 대전 중": "이미 다른 대전 중이에요.",
     };
     showToast(KO[raw] || raw || "오류가 발생했습니다");
@@ -365,6 +399,8 @@
     renderCenterStrip();
     renderOpp();
     renderMine();
+    renderItems();
+    renderDiscover();
     renderHand();
     renderActionBar();
     // Mid-drag remounts destroy the source card; never leave a stuck ghost.
@@ -425,7 +461,9 @@
     fighting: "격", darkness: "악", metal: "강", dragon: "용", colorless: "무",
   };
 
-  function buildCardEl(card) {
+  const EFFECT_LABEL = { drain: "흡혈", paralyze: "마비", recoil: "반동" };
+
+  function buildCardEl(card, status) {
     const el = document.createElement("div");
     if (!card || card.hidden) {
       el.className = "card card-back";
@@ -436,6 +474,8 @@
     el.dataset.uid = card.uid;
     el.dataset.type = card.type;
     el.dataset.stage = stage;
+    if (status && status.shielded) el.classList.add("status-shield");
+    if (status && status.paralyzed) el.classList.add("status-para");
 
     const frame = document.createElement("div");
     frame.className = "card-frame";
@@ -476,6 +516,18 @@
       stageTag.textContent = "진화";
       art.appendChild(stageTag);
     }
+    if (status && status.shielded) {
+      const st = document.createElement("span");
+      st.className = "card-status-tag shield";
+      st.textContent = "연막";
+      art.appendChild(st);
+    }
+    if (status && status.paralyzed) {
+      const st = document.createElement("span");
+      st.className = "card-status-tag para";
+      st.textContent = "마비";
+      art.appendChild(st);
+    }
 
     const atk = card.attack || (card.attacks && card.attacks[0]);
     const atkRow = document.createElement("div");
@@ -488,6 +540,14 @@
       ad.className = "card-atk-dmg";
       ad.textContent = atk.damage;
       atkRow.append(an, ad);
+      if (atk.effect && EFFECT_LABEL[atk.effect]) {
+        const ef = document.createElement("span");
+        ef.className = "card-effect-badge";
+        ef.dataset.effect = atk.effect;
+        ef.textContent = EFFECT_LABEL[atk.effect];
+        ef.title = EFFECT_LABEL[atk.effect];
+        atkRow.appendChild(ef);
+      }
     }
 
     if (card.weakness) {
@@ -531,7 +591,9 @@
     }
     oppActive.innerHTML = "";
     oppActive.dataset.drop = "attack";
-    const cardEl = opp.active ? buildCardEl(opp.active) : emptySlotEl();
+    const cardEl = opp.active
+      ? buildCardEl(opp.active, { shielded: !!opp.skipNextAttack, paralyzed: !!opp.paralyzed })
+      : emptySlotEl();
     if (opp.active) {
       cardEl.dataset.drop = "attack";
       if (isMyTurn() && you.canAttack && !busy) cardEl.classList.add("attack-target");
@@ -565,8 +627,12 @@
 
     myActive.innerHTML = "";
     myActive.dataset.drop = "active";
+    myActive.classList.toggle("shielded", !!(you && you.skipNextAttack));
     if (you.active) {
-      const el = buildCardEl(you.active);
+      const el = buildCardEl(you.active, {
+        shielded: !!you.skipNextAttack,
+        paralyzed: !!you.paralyzed,
+      });
       decorateOwnField(el, you.active, "active");
       if (you.canAttack) el.classList.add("can-attack");
       el.addEventListener("click", () => onOwnFieldClick(you.active, "active"));
@@ -614,6 +680,89 @@
     if (sel.mode === "evolve" && sel.handUid === card.uid) el.classList.add("selected");
   }
 
+  function renderDiscover() {
+    if (!overlayDiscover || !discoverOptions) return;
+    const choosing = pendingDiscover() && !busy;
+    overlayDiscover.classList.toggle("hidden", !choosing);
+    if (!choosing) {
+      discoverOptions.innerHTML = "";
+      return;
+    }
+    const opts = state.pendingChoice.options || [];
+    discoverOptions.innerHTML = "";
+    opts.forEach((o) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "discover-card";
+      btn.dataset.itemId = o.itemId;
+      btn.innerHTML = `<strong>${o.name}</strong><span>${o.desc || ""}</span>`;
+      btn.addEventListener("click", () => {
+        if (!canAct()) return;
+        sendAction({ type: "choose_discover", uid: o.uid });
+      });
+      discoverOptions.appendChild(btn);
+    });
+  }
+
+  function renderItems() {
+    if (!itemDock || !itemSlots) return;
+    const you = youSide();
+    const opp = state.players[oppId()];
+    const items = (you && you.items) || [];
+    const canUse = !!(you && you.canUseItem && !busy && !pendingDiscover());
+    itemSlots.innerHTML = "";
+
+    const hasMine = items.length > 0;
+    const oppCount = (opp && opp.itemCount) || 0;
+    const shielded = !!(you && you.skipNextAttack);
+    const bonus = (you && you.nextAttackBonus) || 0;
+    itemDock.hidden = !(hasMine || oppCount || shielded || bonus || (state.fieldModifier && state.fieldModifier.name) || state.phase === "playing");
+
+    items.forEach((it) => {
+      if (it.hidden) return;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "item-chip" + (canUse ? " usable" : "");
+      btn.dataset.itemId = it.itemId;
+      btn.title = it.desc || it.name;
+      btn.innerHTML = `<span class="item-chip-name">${it.name}</span>`;
+      btn.disabled = !canUse;
+      btn.addEventListener("click", () => {
+        if (!canAct() || !canUse) return;
+        sendAction({ type: "use_item", uid: it.uid });
+      });
+      itemSlots.appendChild(btn);
+    });
+
+    if (oppItemCount) {
+      if (oppCount > 0) {
+        oppItemCount.hidden = false;
+        oppItemCount.textContent = `상대 아이템 ${oppCount}`;
+      } else {
+        oppItemCount.hidden = true;
+      }
+    }
+    if (shieldChip) shieldChip.hidden = !shielded;
+    if (bonusChip) {
+      if (bonus > 0) {
+        bonusChip.hidden = false;
+        bonusChip.textContent = `다음 공격 +${bonus}`;
+      } else {
+        bonusChip.hidden = true;
+      }
+    }
+    if (fieldModChip) {
+      const mod = state.fieldModifier;
+      if (mod && mod.name) {
+        fieldModChip.hidden = false;
+        fieldModChip.textContent = mod.name;
+        fieldModChip.title = mod.desc || mod.name;
+      } else {
+        fieldModChip.hidden = true;
+      }
+    }
+  }
+
   function renderActionBar() {
     btnReady.hidden = true;
     btnAttack.hidden = true;
@@ -623,8 +772,15 @@
       return;
     }
     if (state.phase !== "playing") return;
+    if (pendingDiscover()) {
+      actionHint.textContent = "아이템 3장 중 하나를 고르세요";
+      return;
+    }
     if (!isMyTurn()) {
-      actionHint.textContent = "상대의 턴입니다";
+      const pc = state.pendingChoice;
+      actionHint.textContent = (pc && pc.player !== state.you)
+        ? "상대가 아이템을 고르는 중…"
+        : "상대의 턴입니다";
       return;
     }
     const you = youSide();
@@ -632,13 +788,16 @@
       actionHint.textContent = "진화시킬 포켓몬을 탭하세요";
       return;
     }
+    const itemHint = you.canUseItem ? " · 아이템 사용 가능" : "";
     if (you.canAttack) {
       btnAttack.hidden = false;
-      actionHint.textContent = "상대에게 드래그·탭으로 공격! · 벤치 탭하면 교체";
+      actionHint.textContent = "공격해도 턴이 안 끝나요 · 드래그/탭으로 공격 후 턴 종료" + itemHint;
+    } else if (you.attackedThisTurn) {
+      actionHint.textContent = "공격 완료 · 손패·아이템을 더 쓰거나 턴 종료" + itemHint;
     } else if (you.canRetreat) {
-      actionHint.textContent = "벤치를 탭하면 액티브와 교체 · 손패를 필드로";
+      actionHint.textContent = "벤치를 탭하면 교체 · 손패를 필드로" + itemHint;
     } else {
-      actionHint.textContent = "손패를 내거나 턴을 종료하세요";
+      actionHint.textContent = "손패를 내거나 턴을 종료하세요" + itemHint;
     }
   }
 
@@ -997,6 +1156,35 @@
       msg = win ? "프라이즈 카드를 모두 획득했습니다!" : "상대가 프라이즈 카드를 모두 획득했습니다.";
     }
     resultMsg.textContent = msg;
+    let streak = getStreak();
+    if (win) streak += 1;
+    else streak = 0;
+    setStreak(streak);
+    if (resultStreak) {
+      if (win && streak > 1) {
+        resultStreak.hidden = false;
+        resultStreak.textContent = `현재 ${streak}연승!`;
+      } else if (win) {
+        resultStreak.hidden = false;
+        resultStreak.textContent = "첫 승리! 연승을 이어가 보세요";
+      } else {
+        resultStreak.hidden = true;
+      }
+    }
+    if (resultStats) {
+      const st = (lastGameOverInfo && lastGameOverInfo.stats && lastGameOverInfo.stats[state.you])
+        || (youSide() && youSide().stats)
+        || {};
+      const dmg = st.damage || 0;
+      const kos = st.kos || 0;
+      const items = st.itemsUsed || 0;
+      if (dmg || kos || items) {
+        resultStats.hidden = false;
+        resultStats.textContent = `피해 ${dmg} · KO ${kos} · 아이템 ${items}`;
+      } else {
+        resultStats.hidden = true;
+      }
+    }
     overlayGameover.classList.remove("hidden");
   }
 

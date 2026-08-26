@@ -464,6 +464,223 @@ button { font-family: inherit; }
 }
 .btn-end-turn:disabled { opacity: 0.35; }
 
+/* ---------- Battle items ---------- */
+.item-dock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 8px 2px;
+  flex: 0 0 auto;
+}
+.item-dock-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-dim);
+  letter-spacing: 0.04em;
+}
+.item-slots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.item-chip {
+  appearance: none;
+  border: 1px solid rgba(160, 200, 230, 0.45);
+  background: linear-gradient(180deg, rgba(70, 100, 130, 0.55), rgba(30, 45, 60, 0.75));
+  color: #e8f4ff;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: default;
+  opacity: 0.55;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  touch-action: manipulation;
+}
+.item-chip.usable {
+  opacity: 1;
+  cursor: pointer;
+  border-color: rgba(190, 230, 255, 0.85);
+  box-shadow: 0 0 0 2px rgba(120, 190, 240, 0.35), 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: playable-pulse 1.3s ease-in-out infinite;
+}
+.item-chip.usable:active { transform: translateY(1px); }
+.item-chip:disabled { cursor: default; }
+.opp-item-count {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.shield-chip {
+  font-size: 11px;
+  font-weight: 700;
+  color: #d8f0ff;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(60, 120, 170, 0.45);
+  border: 1px solid rgba(160, 210, 255, 0.5);
+  animation: playable-pulse 1.4s ease-in-out infinite;
+}
+.bonus-chip {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffe8d0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(160, 70, 40, 0.5);
+  border: 1px solid rgba(255, 160, 100, 0.55);
+}
+.field-mod-chip {
+  font-size: 11px;
+  font-weight: 700;
+  color: #2c1c05;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #e8d5a8, #c4a056);
+  border: 1px solid rgba(80, 50, 20, 0.35);
+  max-width: 42vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card-effect-badge {
+  flex-shrink: 0;
+  font-size: clamp(5px, 1.1vw, 7px);
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 4px;
+  color: #fff8ec;
+  background: rgba(40, 24, 12, 0.75);
+  border: 1px solid rgba(255, 220, 160, 0.35);
+}
+.card-effect-badge[data-effect="drain"] { background: #6b2a4a; }
+.card-effect-badge[data-effect="paralyze"] { background: #6a5a18; color: #fff8c8; }
+.card-effect-badge[data-effect="recoil"] { background: #5a3020; }
+.card-status-tag {
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  z-index: 3;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: #fff;
+}
+.card-status-tag.shield { background: rgba(50, 120, 180, 0.9); }
+.card-status-tag.para { background: rgba(160, 140, 30, 0.92); color: #1a1400; }
+.card.status-shield { box-shadow: 0 0 0 2px rgba(100, 180, 255, 0.75), 0 0 16px rgba(80, 160, 230, 0.4); }
+.card.status-para { filter: saturate(0.75) brightness(1.05); }
+.result-stats {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.item-chip[data-item-id="full_restore"] {
+  border-color: rgba(160, 220, 200, 0.55);
+  background: linear-gradient(180deg, rgba(40, 120, 100, 0.55), rgba(20, 50, 44, 0.8));
+}
+.item-chip[data-item-id="potion"] {
+  border-color: rgba(120, 200, 140, 0.55);
+  background: linear-gradient(180deg, rgba(50, 110, 70, 0.6), rgba(24, 50, 34, 0.8));
+}
+.item-chip[data-item-id="x_attack"] {
+  border-color: rgba(240, 140, 100, 0.6);
+  background: linear-gradient(180deg, rgba(140, 60, 40, 0.6), rgba(60, 24, 16, 0.8));
+}
+.item-chip[data-item-id="poke_ball"] {
+  border-color: rgba(230, 180, 180, 0.55);
+  background: linear-gradient(180deg, rgba(150, 50, 50, 0.45), rgba(40, 30, 30, 0.8));
+}
+.item-chip[data-item-id="smoke"] {
+  border-color: rgba(160, 200, 230, 0.45);
+}
+
+.overlay-discover { z-index: 45; }
+.discover-panel {
+  width: min(440px, 92vw);
+  padding: 22px 18px 18px;
+  border-radius: 18px;
+  background: linear-gradient(165deg, #3a2a1c, #1a120c 70%);
+  border: 1px solid rgba(226, 176, 76, 0.35);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+.discover-title {
+  margin: 0 0 6px;
+  font-family: Fraunces, "Noto Sans KR", serif;
+  font-size: 1.45rem;
+  color: var(--gold);
+}
+.discover-sub {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.discover-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.discover-card {
+  flex: 1 1 110px;
+  max-width: 140px;
+  min-height: 96px;
+  padding: 12px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(226, 176, 76, 0.4);
+  background: rgba(20, 12, 8, 0.55);
+  color: var(--cream);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  font-family: "Noto Sans KR", sans-serif;
+  touch-action: manipulation;
+}
+.discover-card strong {
+  font-size: 15px;
+  color: var(--gold);
+}
+.discover-card span {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+.discover-card:hover,
+.discover-card:focus-visible {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(226, 176, 76, 0.35);
+}
+.discover-card[data-item-id="potion"] { border-color: rgba(120, 200, 140, 0.5); }
+.discover-card[data-item-id="x_attack"] { border-color: rgba(240, 140, 100, 0.55); }
+.discover-card[data-item-id="poke_ball"] { border-color: rgba(230, 150, 150, 0.5); }
+
+.streak-chip {
+  display: inline-block;
+  margin: 8px 0 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2c1c05;
+  background: linear-gradient(180deg, #f0c364, var(--gold-deep));
+}
+
+.active-slot.shielded {
+  box-shadow: 0 0 0 2px rgba(120, 190, 255, 0.7), 0 0 22px rgba(80, 160, 230, 0.45);
+  border-radius: 16px;
+}
+
 /* ---------- Cards (TCG foil plate) ---------- */
 .card {
   width: clamp(64px, 12vmin, 118px);

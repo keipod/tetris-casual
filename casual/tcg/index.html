@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@500;600;700&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260824b">
+<link rel="stylesheet" href="style.css?v=20260826b">
 <link rel="stylesheet" href="../assets/no-select.css">
 <script src="../assets/mobile-hardening.js"></script>
 </head>
@@ -133,6 +133,15 @@
         <div class="prize-track me" id="prize-me"></div>
       </div>
 
+      <div id="item-dock" class="item-dock" aria-label="아이템" hidden>
+        <div class="item-dock-label">아이템</div>
+        <div id="item-slots" class="item-slots"></div>
+        <div id="opp-item-count" class="opp-item-count" hidden></div>
+        <div id="shield-chip" class="shield-chip" hidden>연막 방어 중</div>
+        <div id="bonus-chip" class="bonus-chip" hidden></div>
+        <div id="field-mod-chip" class="field-mod-chip" hidden></div>
+      </div>
+
       <div class="my-zone">
         <div class="field-line my-line">
           <div class="active-slot" id="my-active"></div>
@@ -172,9 +181,19 @@
     <div class="overlay-panel">
       <h2 id="result-title" class="result-title">승리!</h2>
       <p id="result-msg">프라이즈 카드를 모두 획득했습니다</p>
+      <p id="result-streak" class="streak-chip" hidden></p>
+      <p id="result-stats" class="result-stats" hidden></p>
       <div class="overlay-actions">
         <button id="btn-result-lobby" class="btn gold" type="button">로비로</button>
       </div>
+    </div>
+  </div>
+
+  <div id="overlay-discover" class="overlay overlay-discover hidden" role="dialog" aria-modal="true" aria-labelledby="discover-title">
+    <div class="discover-panel">
+      <h2 id="discover-title" class="discover-title">아이템 발견!</h2>
+      <p class="discover-sub">하나를 골라 가방에 넣으세요</p>
+      <div id="discover-options" class="discover-options"></div>
     </div>
   </div>
 
@@ -244,7 +263,8 @@
                 <span class="bolt">→</span>
                 <span class="mini-card-face"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" alt=""></span>
               </div>
-              <p>내 액티브가 공격 가능하면 <strong>공격 버튼</strong> 또는 <strong>상대 탭</strong>으로 공격 (턴당 1회 · 공격하면 턴 종료)</p>
+              <p>내 액티브가 공격 가능하면 <strong>공격 버튼</strong>·<strong>상대에게 드래그</strong>·<strong>상대 탭</strong>으로 공격 (턴당 1회). <strong>공격해도 턴이 바로 끝나지 않아요</strong> — 손패·아이템을 더 쓴 뒤 <strong>턴 종료</strong>를 누르세요.</p>
+              <p>상대를 쓰러뜨리면 <strong>아이템 3장 중 1장</strong>을 고릅니다. 매치마다 <strong>필드 규칙</strong>(약점 과열·파워 서치·시작 보급)이 달라지고, 일부 기술은 흡혈·마비·반동 효과가 있어요.</p>
             </li>
             <li>
               <span class="step-num">4</span>
@@ -288,7 +308,7 @@
 
   <div class="toast-stack" id="toast-stack"></div>
 </div>
-<script src="fx.js?v=20260824b"></script>
-<script src="game.js?v=20260824b"></script>
+<script src="fx.js?v=20260826b"></script>
+<script src="game.js?v=20260826b"></script>
 </body>
 </html>

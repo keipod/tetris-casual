@@ -203,7 +203,11 @@
     h.refresh();
     banner("대전 시작!");
     h.sfx("draw");
-    await wait(200);
+    await wait(160);
+    if (ev.fieldModifier && ev.fieldModifier.name) {
+      banner(ev.fieldModifier.name);
+      await wait(220);
+    }
   }
 
   async function ev_draw(ev, state, h) {
@@ -228,7 +232,11 @@
     h.refresh();
     h.sfx("turn");
     banner(ev.player === state.you ? "내 턴!" : "상대 턴");
-    await wait(150);
+    await wait(120);
+    if (ev.matchPoint) {
+      banner("매치포인트!");
+      await wait(180);
+    }
   }
 
   async function ev_setup_active(ev, state, h) {
@@ -338,10 +346,80 @@
     }
     h.sfx("hit");
     if (toPt) floatDamage(toPt, ev.damage, ev.weakness);
+    if (ev.effect === "drain") banner("흡혈!");
+    else if (ev.effect === "paralyze") banner("마비!");
+    else if (ev.effect === "recoil") banner("반동!");
     await wait(260);
     if (targetEl) targetEl.classList.remove("anim-hit");
     if (atkCard) atkCard.classList.remove("anim-attack-lunge");
     patchHp(targetEl, findCardData(state, ev.targetUid));
+    if (ev.effect === "drain" || ev.effect === "recoil") {
+      const attackerSlot = document.getElementById(ev.player === state.you ? "my-active" : "opp-active");
+      const selfEl = attackerSlot ? attackerSlot.querySelector(".card") : null;
+      if (selfEl) patchHp(selfEl, findCardData(state, selfEl.dataset.uid));
+    }
+  }
+
+  async function ev_attack_blocked(ev, state, h) {
+    const attackerSlot = document.getElementById(ev.player === state.you ? "my-active" : "opp-active");
+    const atkCard = attackerSlot ? attackerSlot.querySelector(".card") : null;
+    const targetEl = h.getCardEl(ev.targetUid);
+    const fromPt = centerOf(atkCard || attackerSlot);
+    const toPt = centerOf(targetEl);
+    if (ev.attackName) banner(ev.attackName);
+    h.sfx("attack");
+    if (atkCard) {
+      atkCard.classList.add("anim-attack-prep");
+      await wait(140);
+      atkCard.classList.remove("anim-attack-prep");
+    }
+    if (fromPt && toPt) await flyProjectile(fromPt, toPt, "#9ec9e8");
+    banner("연막!");
+    h.sfx("attach");
+    if (targetEl) {
+      targetEl.classList.add("anim-evolve");
+      await wait(220);
+      targetEl.classList.remove("anim-evolve");
+    } else {
+      await wait(160);
+    }
+    h.refresh();
+  }
+
+  async function ev_use_item(ev, state, h) {
+    h.refresh();
+    banner(ev.itemName || "아이템");
+    h.sfx("attach");
+    await wait(180);
+  }
+
+  async function ev_item_drop(ev, state, h) {
+    h.refresh();
+    if (ev.player === state.you) {
+      banner((ev.itemName || "아이템") + " 획득!");
+      h.sfx("draw");
+    }
+    await wait(150);
+  }
+
+  async function ev_discover_offer(ev, state, h) {
+    h.refresh();
+    banner("아이템 발견!");
+    h.sfx("turn");
+    await wait(200);
+  }
+
+  async function ev_discover_pick(ev, state, h) {
+    h.refresh();
+    banner((ev.itemName || "아이템") + " 선택!");
+    h.sfx("draw");
+    await wait(180);
+  }
+
+  async function ev_paralyze_skip(ev, state, h) {
+    h.refresh();
+    if (ev.player === state.you) banner("마비로 공격 불가!");
+    await wait(120);
   }
 
   async function ev_knock_out(ev, state, h) {
@@ -395,6 +473,12 @@
     evolve: ev_evolve,
     retreat: ev_retreat,
     attack: ev_attack,
+    attack_blocked: ev_attack_blocked,
+    use_item: ev_use_item,
+    item_drop: ev_item_drop,
+    discover_offer: ev_discover_offer,
+    discover_pick: ev_discover_pick,
+    paralyze_skip: ev_paralyze_skip,
     knock_out: ev_knock_out,
     promote: ev_promote,
     turn_end: ev_turn_end,

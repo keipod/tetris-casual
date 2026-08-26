@@ -24,6 +24,59 @@ def load_catalog() -> dict[str, Any]:
 
 CATALOG = load_catalog()
 
+# Battle items (separate from Pokémon hand). KO → discover pick.
+ITEMS: dict[str, dict[str, str]] = {
+    "smoke": {
+        "id": "smoke",
+        "name": "연막",
+        "desc": "상대의 다음 공격을 1회 무효화",
+    },
+    "potion": {
+        "id": "potion",
+        "name": "상처약",
+        "desc": "내 액티브 HP 30 회복",
+    },
+    "x_attack": {
+        "id": "x_attack",
+        "name": "플러스파워",
+        "desc": "다음 공격 데미지 +15",
+    },
+    "poke_ball": {
+        "id": "poke_ball",
+        "name": "몬스터볼",
+        "desc": "덱에서 카드 1장 드로우",
+    },
+    "full_restore": {
+        "id": "full_restore",
+        "name": "회복약",
+        "desc": "액티브 HP 40 회복 + 마비 해제",
+    },
+}
+ITEM_DROP_POOL = ["smoke", "potion", "x_attack", "poke_ball", "full_restore"]
+
+# Marvel Snap-style per-match field rules
+FIELD_MODIFIERS: dict[str, dict[str, str]] = {
+    "hot_weakness": {"id": "hot_weakness", "name": "약점 과열", "desc": "약점 추가 데미지 +25"},
+    "power_surge": {"id": "power_surge", "name": "파워 서치", "desc": "모든 공격 데미지 +5"},
+    "starter_kit": {"id": "starter_kit", "name": "시작 보급", "desc": "각자 랜덤 아이템 1개로 시작"},
+}
+
+# Overlay special effects onto attack ids (catalog stays untouched).
+ATTACK_EFFECTS: dict[str, str] = {
+    "bite": "drain",
+    "lick": "paralyze",
+    "nuzzle": "paralyze",
+    "spark": "paralyze",
+    "ember": "recoil",
+    "flame": "recoil",
+    "firemane": "drain",
+    "submission": "recoil",
+    "bone": "drain",
+    "wrap": "paralyze",
+    "confusion": "paralyze",
+    "headbutt": "recoil",
+}
+
 
 def _uid() -> str:
     return uuid.uuid4().hex[:10]
@@ -71,8 +124,13 @@ def _new_instance(card_id: str) -> dict[str, Any]:
 def _primary_attack(card: dict[str, Any]) -> dict[str, Any]:
     attacks = card.get("attacks") or []
     if not attacks:
-        return {"id": "strike", "name": "공격", "damage": 20}
-    return attacks[0]
+        atk: dict[str, Any] = {"id": "strike", "name": "공격", "damage": 20}
+    else:
+        atk = dict(attacks[0])
+    eff = ATTACK_EFFECTS.get(atk.get("id") or "")
+    if eff:
+        atk["effect"] = eff
+    return atk
 
 
 def _public_card(inst: dict[str, Any] | None, hide: bool = False) -> dict[str, Any] | None:
@@ -112,14 +170,21 @@ def _player_state(deck: list[str]) -> dict[str, Any]:
         "bench": [],
         "prize": 0,
         "discard": [],
+        "items": [],
+        "skipNextAttack": False,
+        "nextAttackBonus": 0,
+        "paralyzed": False,
         "retreatedThisTurn": False,
         "attackedThisTurn": False,
+        "itemUsedThisTurn": False,
+        "stats": {"damage": 0, "kos": 0, "itemsUsed": 0},
     }
 
 
 def new_match(p0: str, p1: str, seed: int | None = None) -> dict[str, Any]:
     rng = random.Random(seed)
     d0, d1 = build_deck(rng), build_deck(rng)
+    mod_id = rng.choice(list(FIELD_MODIFIERS.keys()))
     state = {
         "id": _uid(),
         "phase": "setup",
@@ -131,9 +196,18 @@ def new_match(p0: str, p1: str, seed: int | None = None) -> dict[str, Any]:
         "winner": None,
         "events": [],
         "setupReady": {p0: False, p1: False},
+        "pendingChoice": None,
+        "fieldModifier": dict(FIELD_MODIFIERS[mod_id]),
         "rng": rng,
     }
-    _emit(state, {"type": "match_start", "order": [p0, p1]})
+    _emit(
+        state,
+        {
+            "type": "match_start",
+            "order": [p0, p1],
+            "fieldModifier": dict(FIELD_MODIFIERS[mod_id]),
+        },
+    )
     return state
 
 
@@ -167,6 +241,12 @@ def start_turn(state: dict[str, Any], pid: str) -> None:
     pl = state["players"][pid]
     pl["retreatedThisTurn"] = False
     pl["attackedThisTurn"] = False
+    pl["itemUsedThisTurn"] = False
+    # Paralyze: skip attack this turn, then clear.
+    if pl.get("paralyzed"):
+        pl["attackedThisTurn"] = True
+        pl["paralyzed"] = False
+        _emit(state, {"type": "paralyze_skip", "player": pid})
     for inst in ([pl["active"]] if pl["active"] else []) + pl["bench"] + pl["hand"]:
         if inst:
             inst["justPlayed"] = False
@@ -176,6 +256,11 @@ def start_turn(state: dict[str, Any], pid: str) -> None:
         pl["hand"].append(card)
         _emit(state, {"type": "draw", "player": pid, "cardId": cid, "uid": card["uid"]})
     state["turn"] = pid
+    clutch = [
+        p
+        for p in state["order"]
+        if state["players"][p]["prize"] >= PRIZE_TO_WIN - 1
+    ]
     _emit(
         state,
         {
@@ -183,6 +268,8 @@ def start_turn(state: dict[str, Any], pid: str) -> None:
             "player": pid,
             "turnCount": state["turnCount"],
             "canAttack": _can_attack_now(state, pid),
+            "matchPoint": bool(clutch),
+            "matchPointPlayers": clutch,
         },
     )
 
@@ -190,6 +277,25 @@ def start_turn(state: dict[str, Any], pid: str) -> None:
 def begin_play(state: dict[str, Any]) -> None:
     state["phase"] = "playing"
     state["turnCount"] = 0
+    mod = (state.get("fieldModifier") or {}).get("id")
+    if mod == "starter_kit":
+        rng: random.Random = state.get("rng") or random.Random()
+        for pid in state["order"]:
+            iid = rng.choice(ITEM_DROP_POOL)
+            drop = {"uid": _uid(), "itemId": iid}
+            state["players"][pid].setdefault("items", []).append(drop)
+            meta = ITEMS[iid]
+            _emit(
+                state,
+                {
+                    "type": "item_drop",
+                    "player": pid,
+                    "uid": drop["uid"],
+                    "itemId": iid,
+                    "itemName": meta["name"],
+                    "reason": "starter_kit",
+                },
+            )
     start_turn(state, state["order"][0])
 
 
@@ -216,6 +322,16 @@ def view_for(state: dict[str, Any], viewer: str) -> dict[str, Any]:
     def side(pid: str) -> dict[str, Any]:
         pl = state["players"][pid]
         hide_hand = pid != viewer
+        items_pub = [
+            {
+                "uid": it["uid"],
+                "itemId": it["itemId"],
+                "name": ITEMS[it["itemId"]]["name"],
+                "desc": ITEMS[it["itemId"]]["desc"],
+            }
+            for it in pl.get("items", [])
+            if it["itemId"] in ITEMS
+        ]
         return {
             "id": pid,
             "prize": pl["prize"],
@@ -224,9 +340,23 @@ def view_for(state: dict[str, Any], viewer: str) -> dict[str, Any]:
             "hand": [_public_card(c) for c in pl["hand"]] if not hide_hand else [{"hidden": True} for _ in pl["hand"]],
             "active": _public_card(pl["active"]),
             "bench": [_public_card(c) for c in pl["bench"]],
+            "items": items_pub if pid == viewer else [{"hidden": True} for _ in items_pub],
+            "itemCount": len(pl.get("items", [])),
+            "skipNextAttack": bool(pl.get("skipNextAttack")),
+            "nextAttackBonus": int(pl.get("nextAttackBonus") or 0),
+            "paralyzed": bool(pl.get("paralyzed")),
             "retreatedThisTurn": pl["retreatedThisTurn"],
             "attackedThisTurn": pl["attackedThisTurn"],
+            "itemUsedThisTurn": bool(pl.get("itemUsedThisTurn")),
+            "stats": dict(pl.get("stats") or {"damage": 0, "kos": 0, "itemsUsed": 0}),
             "canAttack": _can_attack_now(state, pid) if pid == viewer else False,
+            "canUseItem": (
+                pid == viewer
+                and state["phase"] == "playing"
+                and state["turn"] == pid
+                and not pl.get("itemUsedThisTurn")
+                and bool(pl.get("items"))
+            ),
             "canRetreat": (
                 pid == viewer
                 and state["phase"] == "playing"
@@ -249,6 +379,9 @@ def view_for(state: dict[str, Any], viewer: str) -> dict[str, Any]:
         "players": {pid: side(pid) for pid in state["order"]},
         "order": list(state["order"]),
         "catalog": {cid: _card_public(cid) for cid in CATALOG["cards"]},
+        "items": {iid: dict(meta) for iid, meta in ITEMS.items()},
+        "pendingChoice": _public_pending(state, viewer),
+        "fieldModifier": dict(state["fieldModifier"]) if state.get("fieldModifier") else None,
     }
 
 
@@ -272,6 +405,18 @@ def apply_action(state: dict[str, Any], pid: str, action: dict[str, Any]) -> Non
     if state["phase"] == "ended":
         raise ValueError("match ended")
     typ = action.get("type")
+
+    # Discover choice blocks all other actions.
+    pc = state.get("pendingChoice")
+    if pc:
+        if typ != "choose_discover":
+            if pid == pc["player"]:
+                raise ValueError("choose item first")
+            raise ValueError("waiting for opponent choice")
+        if pid != pc["player"]:
+            raise ValueError("waiting for opponent choice")
+        _choose_discover(state, pid, action.get("uid"))
+        return
 
     if state["phase"] == "setup":
         if typ == "setup_active":
@@ -298,6 +443,10 @@ def apply_action(state: dict[str, Any], pid: str, action: dict[str, Any]) -> Non
         _retreat(state, pid, action["benchUid"])
     elif typ == "attack":
         _attack(state, pid, action.get("attackId"))
+    elif typ == "use_item":
+        _use_item(state, pid, action.get("uid") or action.get("itemId"))
+    elif typ == "choose_discover":
+        raise ValueError("no pending choice")
     elif typ == "end_turn":
         _end_turn(state, pid)
     else:
@@ -398,6 +547,133 @@ def _evolve(state: dict[str, Any], pid: str, hand_uid: str, target_uid: str) -> 
     )
 
 
+def _use_item(state: dict[str, Any], pid: str, uid_or_id: str | None) -> None:
+    pl = state["players"][pid]
+    if not uid_or_id:
+        raise ValueError("item required")
+    if pl.get("itemUsedThisTurn"):
+        raise ValueError("already used item this turn")
+    found = None
+    for i, it in enumerate(pl.get("items", [])):
+        if it["uid"] == uid_or_id or it["itemId"] == uid_or_id:
+            found = (i, it)
+            break
+    if not found:
+        raise ValueError("item not found")
+    idx, it = found
+    item_id = it["itemId"]
+    meta = ITEMS.get(item_id)
+    if not meta:
+        raise ValueError("unknown item")
+
+    if item_id == "smoke":
+        if pl.get("skipNextAttack"):
+            raise ValueError("already shielded")
+        pl["skipNextAttack"] = True
+    elif item_id == "potion":
+        if not pl.get("active"):
+            raise ValueError("need active pokemon")
+        before = pl["active"]["damage"]
+        pl["active"]["damage"] = max(0, before - 30)
+        healed = before - pl["active"]["damage"]
+        if healed <= 0:
+            raise ValueError("already full hp")
+    elif item_id == "x_attack":
+        pl["nextAttackBonus"] = int(pl.get("nextAttackBonus") or 0) + 15
+    elif item_id == "poke_ball":
+        if not pl["deck"]:
+            raise ValueError("deck empty")
+        cid = pl["deck"].pop(0)
+        card = _new_instance(cid)
+        pl["hand"].append(card)
+        _emit(state, {"type": "draw", "player": pid, "cardId": cid, "uid": card["uid"]})
+    elif item_id == "full_restore":
+        if not pl.get("active"):
+            raise ValueError("need active pokemon")
+        before = pl["active"]["damage"]
+        was_para = bool(pl.get("paralyzed"))
+        pl["active"]["damage"] = max(0, before - 40)
+        pl["paralyzed"] = False
+        if before <= 0 and not was_para:
+            raise ValueError("already full hp")
+    else:
+        raise ValueError("unknown item")
+
+    pl["items"].pop(idx)
+    pl["itemUsedThisTurn"] = True
+    pl.setdefault("stats", {"damage": 0, "kos": 0, "itemsUsed": 0})
+    pl["stats"]["itemsUsed"] = int(pl["stats"].get("itemsUsed") or 0) + 1
+    _emit(
+        state,
+        {
+            "type": "use_item",
+            "player": pid,
+            "uid": it["uid"],
+            "itemId": item_id,
+            "itemName": meta["name"],
+        },
+    )
+
+
+def _offer_discover(state: dict[str, Any], attacker: str) -> None:
+    if state["phase"] != "playing":
+        return
+    rng: random.Random = state.get("rng") or random.Random()
+    pool = list(ITEM_DROP_POOL)
+    rng.shuffle(pool)
+    picks = pool[: min(3, len(pool))]
+    options = [{"uid": _uid(), "itemId": iid} for iid in picks]
+    state["pendingChoice"] = {
+        "player": attacker,
+        "type": "discover_item",
+        "options": options,
+    }
+    pub = []
+    for o in options:
+        meta = ITEMS[o["itemId"]]
+        pub.append(
+            {
+                "uid": o["uid"],
+                "itemId": o["itemId"],
+                "name": meta["name"],
+                "desc": meta["desc"],
+            }
+        )
+    _emit(state, {"type": "discover_offer", "player": attacker, "options": pub})
+
+
+def _choose_discover(state: dict[str, Any], pid: str, uid: str | None) -> None:
+    pc = state.get("pendingChoice")
+    if not pc or pc.get("type") != "discover_item":
+        raise ValueError("no pending choice")
+    if pc["player"] != pid:
+        raise ValueError("waiting for opponent choice")
+    if not uid:
+        raise ValueError("item required")
+    chosen = None
+    for o in pc["options"]:
+        if o["uid"] == uid:
+            chosen = o
+            break
+    if not chosen:
+        raise ValueError("item not found")
+    meta = ITEMS[chosen["itemId"]]
+    state["players"][pid].setdefault("items", []).append(
+        {"uid": chosen["uid"], "itemId": chosen["itemId"]}
+    )
+    state["pendingChoice"] = None
+    _emit(
+        state,
+        {
+            "type": "discover_pick",
+            "player": pid,
+            "uid": chosen["uid"],
+            "itemId": chosen["itemId"],
+            "itemName": meta["name"],
+        },
+    )
+
+
 def _retreat(state: dict[str, Any], pid: str, bench_uid: str) -> None:
     pl = state["players"][pid]
     if pl["retreatedThisTurn"]:
@@ -426,16 +702,59 @@ def _attack(state: dict[str, Any], pid: str, attack_id: str | None = None) -> No
     meta = CATALOG["cards"][pl["active"]["cardId"]]
     atk = _primary_attack(meta)
     if attack_id and atk["id"] != attack_id:
-        # Only one attack per card; ignore stale client ids by using primary
         atk = _primary_attack(meta)
+
+    # Smoke shield: defender skips the incoming attack once (turn does NOT auto-end).
+    if opp.get("skipNextAttack"):
+        opp["skipNextAttack"] = False
+        pl["attackedThisTurn"] = True
+        pl["nextAttackBonus"] = 0
+        _emit(
+            state,
+            {
+                "type": "attack_blocked",
+                "player": pid,
+                "defender": opp_id,
+                "attackId": atk["id"],
+                "attackName": atk["name"],
+                "reason": "smoke",
+                "attackerType": meta["type"],
+                "targetUid": opp["active"]["uid"],
+            },
+        )
+        return
+
     dmg = int(atk["damage"])
+    bonus = int(pl.get("nextAttackBonus") or 0)
+    if bonus:
+        dmg += bonus
+        pl["nextAttackBonus"] = 0
+    mod_id = (state.get("fieldModifier") or {}).get("id")
+    if mod_id == "power_surge":
+        dmg += 5
     weak = False
     opp_meta = CATALOG["cards"][opp["active"]["cardId"]]
     if opp_meta.get("weakness") and opp_meta["weakness"] == meta["type"]:
-        dmg += WEAKNESS_BONUS
+        weak_bonus = 25 if mod_id == "hot_weakness" else WEAKNESS_BONUS
+        dmg += weak_bonus
         weak = True
+    effect = atk.get("effect")
     opp["active"]["damage"] += dmg
     pl["attackedThisTurn"] = True
+    pl.setdefault("stats", {"damage": 0, "kos": 0, "itemsUsed": 0})
+    pl["stats"]["damage"] = int(pl["stats"].get("damage") or 0) + dmg
+
+    if effect == "drain":
+        heal = max(1, dmg // 2)
+        pl["active"]["damage"] = max(0, pl["active"]["damage"] - heal)
+    elif effect == "paralyze":
+        opp["paralyzed"] = True
+    elif effect == "recoil":
+        # Soft recoil: never KO yourself.
+        room = meta["hp"] - pl["active"]["damage"] - 1
+        take = min(10, max(0, room))
+        pl["active"]["damage"] += take
+
     _emit(
         state,
         {
@@ -445,14 +764,15 @@ def _attack(state: dict[str, Any], pid: str, attack_id: str | None = None) -> No
             "attackName": atk["name"],
             "damage": dmg,
             "weakness": weak,
+            "effect": effect,
             "attackerType": meta["type"],
             "targetUid": opp["active"]["uid"],
+            "bonus": bonus,
         },
     )
     if opp["active"]["damage"] >= opp_meta["hp"]:
         _knock_out(state, pid, opp_id)
-    else:
-        _end_turn(state, pid)
+    # Hearthstone-style: attacker keeps the turn after attack/KO.
 
 
 def _knock_out(state: dict[str, Any], attacker: str, defender: str) -> None:
@@ -463,6 +783,8 @@ def _knock_out(state: dict[str, Any], attacker: str, defender: str) -> None:
     dpl["discard"].append(ko)
     dpl["active"] = None
     apl["prize"] += prize
+    apl.setdefault("stats", {"damage": 0, "kos": 0, "itemsUsed": 0})
+    apl["stats"]["kos"] = int(apl["stats"].get("kos") or 0) + 1
     _emit(
         state,
         {
@@ -478,17 +800,18 @@ def _knock_out(state: dict[str, Any], attacker: str, defender: str) -> None:
     if apl["prize"] >= PRIZE_TO_WIN:
         state["phase"] = "ended"
         state["winner"] = attacker
-        _emit(state, {"type": "game_over", "winner": attacker})
+        state["pendingChoice"] = None
+        _emit(state, {"type": "game_over", "winner": attacker, "stats": _match_stats(state)})
         return
     if not dpl["bench"]:
         state["phase"] = "ended"
         state["winner"] = attacker
-        _emit(state, {"type": "game_over", "winner": attacker, "reason": "no_bench"})
+        state["pendingChoice"] = None
+        _emit(state, {"type": "game_over", "winner": attacker, "reason": "no_bench", "stats": _match_stats(state)})
         return
-    # Defender chooses first bench — auto promote front for v1
     dpl["active"] = dpl["bench"].pop(0)
     _emit(state, {"type": "promote", "player": defender, "uid": dpl["active"]["uid"]})
-    _end_turn(state, attacker)
+    _offer_discover(state, attacker)
 
 
 def _end_turn(state: dict[str, Any], pid: str) -> None:
@@ -508,7 +831,7 @@ def forfeit(state: dict[str, Any], pid: str) -> None:
         return
     state["phase"] = "ended"
     state["winner"] = _other(state, pid)
-    _emit(state, {"type": "game_over", "winner": state["winner"], "reason": "forfeit", "by": pid})
+    _emit(state, {"type": "game_over", "winner": state["winner"], "reason": "forfeit", "by": pid, "stats": _match_stats(state)})
 
 
 def cpu_choose(state: dict[str, Any], pid: str) -> dict[str, Any] | None:
@@ -517,6 +840,13 @@ def cpu_choose(state: dict[str, Any], pid: str) -> dict[str, Any] | None:
         return None
     pl = state["players"][pid]
     rng: random.Random = state.get("rng") or random.Random()
+
+    pc = state.get("pendingChoice")
+    if pc and pc.get("player") == pid and pc.get("type") == "discover_item":
+        opt = rng.choice(pc["options"])
+        return {"type": "choose_discover", "uid": opt["uid"]}
+    if pc:
+        return None
 
     if state["phase"] == "setup":
         if not pl["active"]:
@@ -563,9 +893,29 @@ def cpu_choose(state: dict[str, Any], pid: str) -> dict[str, Any] | None:
             )
             return {"type": "retreat", "benchUid": best["uid"]}
 
+    # Use smoke when threatened (low HP) or sometimes just to be cheeky.
+    if (
+        pl.get("items")
+        and not pl.get("itemUsedThisTurn")
+        and not pl.get("skipNextAttack")
+    ):
+        smoke = next((it for it in pl["items"] if it["itemId"] == "smoke"), None)
+        if smoke:
+            use_chance = 0.55
+            if pl["active"]:
+                meta = CATALOG["cards"][pl["active"]["cardId"]]
+                cur_hp = meta["hp"] - pl["active"]["damage"]
+                if cur_hp <= meta["hp"] * 0.45:
+                    use_chance = 0.85
+            if rng.random() < use_chance:
+                return {"type": "use_item", "uid": smoke["uid"]}
+
+    # Already attacked this turn → end (keeps turn tension for humans, tidy for CPU).
+    if pl.get("attackedThisTurn"):
+        return {"type": "end_turn"}
+
     if pl["active"] and _can_attack_now(state, pid):
-        # Occasionally pass without attacking (15%) to feel less ruthless
-        if rng.random() < 0.15:
+        if rng.random() < 0.12:
             return {"type": "end_turn"}
         atk = _primary_attack(CATALOG["cards"][pl["active"]["cardId"]])
         return {"type": "attack", "attackId": atk["id"]}
