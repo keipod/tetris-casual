@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1c0f2b">
+  <title>사격장</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../assets/no-select.css">
+  <script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">사격장</h1>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button id="btn-pause" class="icon-btn" type="button" aria-label="일시정지">
+        <svg class="ico-pause" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="6" y="5" width="4" height="14" rx="1.4" fill="currentColor"/>
+          <rect x="14" y="5" width="4" height="14" rx="1.4" fill="currentColor"/>
+        </svg>
+        <svg class="ico-play" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 5.5v13l11-6.5L8 5.5z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="stat-bar">
+    <span class="chip"><span class="chip-label">점수</span><span id="score">0</span></span>
+    <span class="chip"><span class="chip-label">라운드</span><span id="round">1</span></span>
+    <button id="ammo-chip" class="chip ammo-chip" type="button" aria-label="탄약 재장전">
+      <span class="chip-label">탄약</span>
+      <span id="ammo" class="ammo-dots" aria-hidden="true"></span>
+      <span id="ammo-note" class="ammo-note" role="status"></span>
+    </button>
+    <div class="time-wrap">
+      <span class="chip-label">남은시간</span>
+      <div class="timebar" role="progressbar" aria-label="남은 시간"><div id="time-fill"></div></div>
+    </div>
+  </div>
+
+  <main class="stage">
+    <canvas id="game" width="640" height="400"></canvas>
+  </main>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">게임 설명서</h2>
+      <p class="help-lead">노점의 총으로 움직이는 과녁을 맞춰 <strong>목표 점수</strong>를 넘기세요!</p>
+
+      <section class="help-ex">
+        <div class="help-badge">🎯 조작</div>
+        <p class="help-note">화면을 탭하거나 클릭하면 그 자리에 발사! 데스크톱은 조준선에 맞춰 스페이스바로도 쏠 수 있어요.</p>
+      </section>
+
+      <section class="help-ex help-ex-ok">
+        <div class="help-badge">🦆 점수</div>
+        <p class="help-note">오리 +10 · 병 +2 (유리가 깨져요) · 풍선 +1 · 황금 오리 +50! <strong>10연속 명중</strong>마다 +100 보너스가 들어와요.</p>
+      </section>
+
+      <section class="help-ex">
+        <div class="help-badge">🔁 재장전</div>
+        <p class="help-note">탄약은 8발. 바닥나면 1.2초 자동 재장전, <strong>탄약 칸을 탭</strong>하거나 R키로 미리 장전할 수도 있어요.</p>
+      </section>
+
+      <section class="help-ex help-ex-bad">
+        <div class="help-badge">⏱ 라운드</div>
+        <p class="help-note">45초 안에 목표 점수(200 → 350 → 550…)를 넘기면 클리어! 라운드마다 과녁이 빨라져요. 시간이 다 되면 게임 오버.</p>
+      </section>
+
+      <p class="help-tip">멀리 있는 작은 오리일수록 빠르게 달려요. 황금 오리를 노려보세요!</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

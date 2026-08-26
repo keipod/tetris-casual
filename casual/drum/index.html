@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a0f0a">
+<title>드럼 비트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <div class="score-bar">
+      <span class="chip"><span class="chip-label">점수</span><span id="hud-score">0</span></span>
+      <span class="chip"><span class="chip-label">콤보</span><span id="hud-combo">0</span></span>
+      <span class="chip"><span class="chip-label">베스트</span><span id="hud-best">0</span></span>
+    </div>
+    <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+      <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+        <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <main class="stage">
+    <canvas id="game-canvas"></canvas>
+    <div id="judge-popup" class="judge-popup" aria-hidden="true"></div>
+    <div id="countdown" class="countdown hidden"></div>
+    <div id="pad-row" class="pad-row" aria-label="드럼 패드">
+      <button type="button" class="pad" data-lane="0"><span class="pad-name">킥</span><span class="pad-key">Z</span></button>
+      <button type="button" class="pad" data-lane="1"><span class="pad-name">스네어</span><span class="pad-key">X</span></button>
+      <button type="button" class="pad" data-lane="2"><span class="pad-name">하이햇</span><span class="pad-key">C</span></button>
+      <button type="button" class="pad" data-lane="3"><span class="pad-name">탐</span><span class="pad-key">V</span></button>
+    </div>
+
+    <div id="start-overlay" class="overlay">
+      <div class="overlay-card">
+        <h2>드럼 비트</h2>
+        <p>노트가 히트라인에 닿는 순간 패드를 쳐요.</p>
+        <ul class="help-list">
+          <li>키보드 <b>Z · X · C · V</b> 또는 아래 패드</li>
+          <li>퍼펙트·굿으로 콤보, 미스는 콤보만 끊김</li>
+          <li><b>Esc</b> · 탭 전환 시 일시정지</li>
+        </ul>
+        <div id="song-list" class="song-list" role="listbox" aria-label="난이도 선택"></div>
+        <p class="best-line">이 난이도 베스트 <strong id="start-best">0</strong></p>
+        <button id="btn-start" class="btn" type="button">연주 시작</button>
+      </div>
+    </div>
+
+    <div id="pause-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <h2>일시정지</h2>
+        <p>탭을 나갔거나 Esc로 멈췄어요.<br>비트는 다시 시작할 때 이어서 맞춰요.</p>
+        <button id="btn-resume" class="btn" type="button">이어서 연주</button>
+      </div>
+    </div>
+
+    <div id="result-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <h2>연주 끝!</h2>
+        <div class="result-rank" id="result-rank">S</div>
+        <div class="result-stats">
+          <div class="stat"><span class="stat-label">점수</span><span id="result-score">0</span></div>
+          <div class="stat"><span class="stat-label">최고 콤보</span><span id="result-combo">0</span></div>
+          <div class="stat"><span class="stat-label">정확도</span><span id="result-acc">0%</span></div>
+        </div>
+        <p class="best-line"><span id="result-new-best" class="new-best hidden">신기록!</span>베스트 <strong id="result-best">0</strong></p>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn" type="button">한 번 더</button>
+          <button id="btn-song-select" class="btn btn-secondary" type="button">난이도 고르기</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="hint">킥 · 스네어 · 하이햇 · 탐 — 히트라인에 닿을 때 탭 · Esc 일시정지</footer>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

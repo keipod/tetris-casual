@@ -1,0 +1,40 @@
+.sky {
+  flex: 1;
+  width: min(96vw, 440px);
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(20, 50, 80, 0.5), rgba(8, 18, 30, 0.35));
+  min-height: 240px;
+}
+.word {
+  position: absolute;
+  font-family: var(--font);
+  font-size: clamp(18px, 5vw, 24px);
+  color: var(--cream);
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.word.active { outline: 2px solid var(--gold); color: var(--gold); }
+.input-row {
+  display: flex;
+  gap: 8px;
+  width: min(96vw, 440px);
+  margin-top: 12px;
+}
+#type-input {
+  flex: 1;
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.25);
+  color: var(--text);
+  font-size: 18px;
+  padding: 0 14px;
+  font-family: var(--body-font);
+}
+#type-input:focus { outline: 2px solid var(--mint); }
