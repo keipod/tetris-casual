@@ -499,6 +499,7 @@ class Handler(SimpleHTTPRequestHandler):
         read_ws_frames(client)
 
     def _origin_allowed(self) -> bool:
+        """Allow same-host hub→game port (e.g. :48888 page → game /ws)."""
         origin = self.headers.get("Origin")
         if not origin:
             return True
@@ -508,7 +509,15 @@ class Handler(SimpleHTTPRequestHandler):
         allowed = os.environ.get("WS_ALLOWED_ORIGINS", "").strip()
         if allowed:
             return any(origin_host == o.strip() or origin_host.endswith("." + o.strip()) for o in allowed.split(",") if o.strip())
-        return origin_host == self.headers.get("Host", "")
+        host = self.headers.get("Host", "")
+        if origin_host == host:
+            return True
+        origin_name = origin_host.rsplit(":", 1)[0].lower().strip("[]")
+        host_name = host.rsplit(":", 1)[0].lower().strip("[]")
+        if origin_name and origin_name == host_name:
+            return True
+        local = {"localhost", "127.0.0.1", "::1", "0.0.0.0"}
+        return origin_name in local and host_name in local
 
 
 def main() -> None:
