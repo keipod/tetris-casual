@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b1a2b">
+<title>벽돌깨기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body data-mh-fs-pos="bl">
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../" aria-label="목록으로">목록</a>
+    <h1 class="title">벽돌깨기</h1>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button" aria-label="게임 설명서" title="설명서">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/>
+          <path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button id="btn-pause" class="icon-btn" type="button" aria-label="일시정지" title="일시정지">
+        <svg class="ico-pause" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+        </svg>
+        <svg class="ico-play" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 5l11 7-11 7V5z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="stat-bar">
+    <span class="chip"><span class="chip-label">점수</span><span id="score">0</span></span>
+    <span class="chip"><span class="chip-label">최고</span><span id="best">–</span></span>
+    <span class="chip"><span class="chip-label">레벨</span><span id="level">1</span></span>
+    <span class="chip"><span class="chip-label">목숨</span><span id="lives" class="lives"></span></span>
+  </div>
+
+  <main class="stage">
+    <div id="canvas-wrap">
+      <canvas id="game" width="400" height="600" aria-label="벽돌깨기 게임 화면"></canvas>
+    </div>
+  </main>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card" id="overlay-card"></div>
+  </div>
+
+  <div id="help-overlay" class="overlay help-overlay" hidden>
+    <div class="overlay-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <h2 id="help-title">게임 설명서</h2>
+      <p class="help-lead">패들을 움직여 공을 튕겨내고 <strong>모든 벽돌</strong>을 부수세요!</p>
+
+      <section class="help-ex">
+        <div class="help-badge">🕹️ 조작</div>
+        <p class="help-note">캔버스 어디든 드래그하거나 마우스를 움직여 패들을 조작해요. ←/→ 방향키도 돼요. 탭 또는 스페이스로 공을 발사!</p>
+      </section>
+
+      <section class="help-ex help-ex-ok">
+        <div class="help-badge">🎁 파워업</div>
+        <p class="help-note"><span class="pu-line"><em>🟢 멀티볼</em> — 공이 2개 더 늘어나요 (최대 3개)</span>
+        <span class="pu-line"><em>🔵 패들 확대</em> — 10초 동안 패들이 길어져요</span>
+        <span class="pu-line"><em>🟡 슬로우</em> — 6초 동안 공이 느려져요</span>
+        <span class="pu-line"><em>💥 관통</em> — 8초 동안 벽돌을 뚫고 지나가요</span></p>
+      </section>
+
+      <section class="help-ex help-ex-bad">
+        <div class="help-badge">❤️ 목숨과 벽돌</div>
+        <p class="help-note">공을 모두 잃으면 목숨이 하나 줄어요. 위쪽의 진한 벽돌은 두 번 맞혀야 부서져요!</p>
+      </section>
+
+      <p class="help-tip">오른쪽 위 ⏸ 버튼이나 P 키로 일시정지할 수 있어요.</p>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

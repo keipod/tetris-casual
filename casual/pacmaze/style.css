@@ -1,0 +1,24 @@
+#maze {
+  width: min(94vw, 400px);
+  height: auto;
+  border-radius: 10px;
+  background: #050b14;
+  display: block;
+  touch-action: none;
+}
+.dpad {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.dpad .mid { display: flex; gap: 4px; }
+.dpad button {
+  width: 52px; height: 44px;
+  border: none; border-radius: 10px;
+  background: var(--panel-light);
+  color: var(--cream);
+  font-size: 16px;
+  cursor: pointer;
+}

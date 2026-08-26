@@ -1,0 +1,31 @@
+#game {
+  width: min(94vw, 360px);
+  height: auto;
+  max-height: calc(100dvh - 220px);
+  border-radius: 12px;
+  background: #050a12;
+  display: block;
+  touch-action: none;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.4);
+}
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  width: min(94vw, 360px);
+}
+.controls button {
+  flex: 1;
+  min-height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: var(--panel-light);
+  color: var(--cream);
+  font-family: var(--font);
+  font-size: 18px;
+  cursor: pointer;
+}
+.controls .fire {
+  background: linear-gradient(180deg, var(--coral), var(--coral-deep));
+  color: #fff;
+}

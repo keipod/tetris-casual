@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0c1828">
+<title>미로 팩</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/school-shell.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../assets/no-select.css">
+<script src="../assets/mobile-hardening.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <a class="back-btn" href="../">목록</a>
+    <h1 class="title">미로 팩</h1>
+    <div class="top-actions">
+      <button id="btn-help" class="icon-btn" type="button">?</button>
+      <button id="btn-sound" class="icon-btn" type="button" aria-label="소리">
+        <svg class="ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10v4h4l5 4V6L7 10H3z" fill="currentColor"/><path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button id="btn-new" class="icon-btn" type="button">↻</button>
+    </div>
+  </header>
+  <div class="stat-bar">
+    <span class="chip"><span class="chip-label">점수</span><span id="score">0</span></span>
+    <span class="chip"><span class="chip-label">생명</span><span id="lives">3</span></span>
+    <span class="chip"><span class="chip-label">최고</span><span id="best">0</span></span>
+  </div>
+  <main class="stage">
+    <canvas id="maze" width="399" height="441" aria-label="미로"></canvas>
+    <div class="dpad" aria-label="방향">
+      <button type="button" data-dir="up">▲</button>
+      <div class="mid">
+        <button type="button" data-dir="left">◀</button>
+        <button type="button" data-dir="down">▼</button>
+        <button type="button" data-dir="right">▶</button>
+      </div>
+    </div>
+  </main>
+  <div id="overlay" class="overlay" hidden><div class="overlay-card" id="overlay-card"></div></div>
+  <div id="help-overlay" class="overlay" hidden>
+    <div class="overlay-card help-card">
+      <h2>게임 설명서</h2>
+      <p class="help-lead">점을 모두 먹고 <strong>유령</strong>을 피하세요!</p>
+      <section class="help-ex"><div class="help-badge">조작</div><p class="help-note">스와이프, 화살표/WASD, 또는 하단 방향 버튼으로 움직입니다.</p></section>
+      <button type="button" class="retry" id="btn-help-close">알겠어요</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/sfx-bank.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
