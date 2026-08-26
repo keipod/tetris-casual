@@ -33,6 +33,25 @@
     { "id": "minesweeper", "port": 48917, "entry": "/casual/minesweeper/", "name": "지뢰찾기" },
     { "id": "flappy", "port": 48918, "entry": "/casual/flappy/", "name": "플래피 대시" },
     { "id": "cookie-clicker", "port": 48919, "entry": "/casual/cookie-clicker/", "name": "쿠키 클리커" },
-    { "id": "slope", "port": 48920, "entry": "/casual/slope/", "name": "슬로프 러너" }
+    { "id": "slope", "port": 48920, "entry": "/casual/slope/", "name": "슬로프 러너" },
+    { "id": "hangman", "port": 48921, "entry": "/casual/hangman/", "name": "행맨" },
+    { "id": "wordle", "port": 48922, "entry": "/casual/wordle/", "name": "워들" },
+    { "id": "breakout", "port": 48923, "entry": "/casual/breakout/", "name": "벽돌깨기" },
+    { "id": "doodle-jump", "port": 48924, "entry": "/casual/doodle-jump/", "name": "두들 점프" },
+    { "id": "simon", "port": 48925, "entry": "/casual/simon/", "name": "시몬 메모리" },
+    { "id": "othello", "port": 48926, "entry": "/casual/othello/", "name": "오셀로" },
+    { "id": "gomoku", "port": 48927, "entry": "/casual/gomoku/", "name": "오목" },
+    { "id": "whack-a-mole", "port": 48928, "entry": "/casual/whack-a-mole/", "name": "두더지잡기" },
+    { "id": "air-hockey", "port": 48929, "entry": "/casual/air-hockey/", "name": "에어하키" },
+    { "id": "pacmaze", "port": 48930, "entry": "/casual/pacmaze/", "name": "미로 팩" },
+    { "id": "typing", "port": 48931, "entry": "/casual/typing/", "name": "타이핑 러시" },
+    { "id": "sudoku", "port": 48932, "entry": "/casual/sudoku/", "name": "스도쿠" },
+    { "id": "invaders", "port": 48933, "entry": "/casual/invaders/", "name": "인베이더" },
+    { "id": "drum", "port": 48934, "entry": "/casual/drum/", "name": "드럼 비트" },
+    { "id": "ddr", "port": 48935, "entry": "/casual/ddr/", "name": "댄스 스텝" },
+    { "id": "midnight-campus", "port": 48936, "entry": "/casual/midnight-campus/", "name": "미드나잇 캠퍼스" },
+    { "id": "shooting-range", "port": 48937, "entry": "/casual/shooting-range/", "name": "사격장" },
+    { "id": "rambo", "port": 48938, "entry": "/casual/rambo/", "name": "람보 히어로" },
+    { "id": "poke-world", "port": 48939, "entry": "/casual/poke-world/", "name": "포켓몬월드", "script": "casual/poke-world/server.py" }
   ]
 }
