@@ -1,0 +1,33 @@
+{
+  "bgm": {
+    "title": "assets/bgm/title.mp3",
+    "hub": "assets/bgm/hub.mp3",
+    "festival": "assets/bgm/festival.mp3",
+    "adventure": "assets/bgm/adventure.mp3",
+    "ending": "assets/bgm/ending.mp3"
+  },
+  "video": {
+    "title_loop": "assets/video/title_loop.mp4",
+    "ending_rise": "assets/video/ending_rise.mp4"
+  },
+  "images": [
+    "assets/bg/birthday.png",
+    "assets/bg/diet_kitchen.png",
+    "assets/bg/ending_gate.png",
+    "assets/bg/errantry_camp.png",
+    "assets/bg/harbor.png",
+    "assets/bg/market.png",
+    "assets/bg/observatory.png",
+    "assets/bg/study_hall.png",
+    "assets/portraits/ara_teen.png",
+    "assets/portraits/father.png",
+    "assets/portraits/merchant.png",
+    "assets/portraits/teacher.png",
+    "assets/ui/book_icon.png",
+    "assets/ui/cake_party_icon.png",
+    "assets/ui/diet_icon.png",
+    "assets/ui/gold_icon.png",
+    "assets/ui/heart_icon.png",
+    "assets/ui/helm_icon.png"
+  ]
+}

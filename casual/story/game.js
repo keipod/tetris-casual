@@ -5,6 +5,7 @@
   var Data = window.PMData;
   var Eng = window.PMEngine;
   var Ev = window.PMEvents;
+  var Media = window.PMMedia;
   if (!Data || !Eng || !Ev) { console.error("PM modules missing"); return; }
 
   var state = null;
@@ -16,7 +17,8 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var screens = {
-    title: $("screen-title"), hub: $("screen-hub"), stats: $("screen-stats"),
+    title: $("screen-title"), create: $("screen-create"), hub: $("screen-hub"),
+    profile: $("screen-profile"), stats: $("screen-stats"),
     talk: $("screen-talk"), cube: $("screen-cube"), city: $("screen-city"),
     bag: $("screen-bag"), schedule: $("screen-schedule"), event: $("screen-event"),
     ending: $("screen-ending")
@@ -39,9 +41,26 @@
     soundOn = !soundOn;
     $("btn-sound").setAttribute("aria-pressed", soundOn ? "true" : "false");
     if (typeof CasualSfx !== "undefined" && CasualSfx.setEnabled) CasualSfx.setEnabled(soundOn);
+    if (Media && Media.setEnabled) Media.setEnabled(soundOn);
     try { localStorage.setItem(SOUND_KEY, soundOn ? "1" : "0"); } catch (_) {}
     if (soundOn) sfx("toggle");
   });
+  if (Media && Media.setEnabled) Media.setEnabled(soundOn);
+
+  function playTitleMedia() {
+    var v = $("title-video");
+    if (v) {
+      v.style.display = "";
+      var p = v.play();
+      if (p && p.catch) p.catch(function () { v.style.display = "none"; });
+    }
+    if (Media) Media.play("title");
+  }
+
+  function stopTitleMedia() {
+    var v = $("title-video");
+    if (v) try { v.pause(); } catch (_) {}
+  }
 
   var toastTimer = null;
   function toast(msg) {
@@ -65,12 +84,33 @@
   }
 
   function startNew() {
-    state = Data.defaultState();
+    show("create");
+    var sel = $("create-bday");
+    if (sel && !sel.options.length) {
+      Data.MONTHS.forEach(function (m, i) {
+        var o = document.createElement("option");
+        o.value = String(i);
+        o.textContent = m;
+        if (i === 2) o.selected = true;
+        sel.appendChild(o);
+      });
+    }
+    if (Media) Media.play("title");
+  }
+
+  function confirmCreate() {
+    var name = ($("create-name").value || "아라").trim().slice(0, 8) || "아라";
+    var blood = $("create-blood").value || "O";
+    var bday = parseInt($("create-bday").value, 10);
+    if (isNaN(bday)) bday = 2;
+    state = Data.defaultState({ name: name, blood: blood, birthdayMonth: bday });
     state.slots = [null, null, null];
     persist();
+    stopTitleMedia();
     show("hub");
     renderHub();
-    toast("아라의 육성이 시작됐어요! (10→18세)");
+    if (Media) Media.play("hub");
+    toast(name + "의 육성이 시작됐어요! (10→18세)");
   }
 
   function continueGame() {
@@ -78,8 +118,10 @@
     if (!saved) return;
     state = saved;
     if (!state.slots) state.slots = [null, null, null];
+    stopTitleMedia();
     show("hub");
     renderHub();
+    if (Media) Media.play("hub");
   }
 
   function monthBg() {
@@ -105,16 +147,20 @@
     if (state.delinquent) st.push("장난기");
     if (state.runaway) st.push("가출중");
     if (state.inLove) st.push("연모");
+    if (state.engaged) st.push("약혼");
+    if (state.yearFlags && state.yearFlags.war) st.push("전쟁기운");
+    if (state.yearFlags && state.yearFlags.harvest) st.push("풍년");
     if (Eng.isFestivalMonth(state)) st.push("추수 축제");
     $("hub-status").textContent = st.length ? st.join(" · ") : "컨디션 좋음 · 전투력 " + Eng.combatPower(state);
     $("hub-bg").src = Data.BG[monthBg()] || Data.BG.castle;
+    $("hub-portrait").src = (state.age >= 14 && Data.PORTRAIT.araTeen) ? Data.PORTRAIT.araTeen : Data.PORTRAIT.ara;
   }
 
   function renderStats() {
     var keys = [
       "stamina", "strength", "intelligence", "refinement", "charisma", "morality", "faith", "sensitivity",
-      "stress", "sin", "weight", "sword", "art", "dance", "cooking", "magic",
-      "repFight", "repArt", "repSocial", "repScholar", "bond", "prince", "puppy", "kitten", "gold"
+      "stress", "sin", "weight", "height", "sword", "fist", "art", "dance", "cooking", "magic", "poetry", "science",
+      "repFight", "repArt", "repSocial", "repScholar", "bond", "prince", "cubeLove", "puppy", "kitten", "gold"
     ];
     var grid = $("stats-grid");
     grid.innerHTML = "";
@@ -146,6 +192,8 @@
   function renderCube() {
     var ul = $("cube-tips");
     ul.innerHTML = "";
+    $("cube-love").textContent = "큐브 신뢰 " + (state.cubeLove || 0);
+    $("cube-msg").textContent = "";
     Eng.cubeAdvice(state).forEach(function (t) {
       var li = document.createElement("li");
       li.textContent = t;
@@ -244,13 +292,30 @@
   function renderBag() {
     var eq = $("equip-view");
     var slots = [
-      ["weapon", "무기"], ["armor", "갑옷"], ["dress", "옷"]
+      ["weapon", "무기"], ["armor", "갑옷"], ["helm", "투구"], ["dress", "옷"]
     ];
-    eq.innerHTML = slots.map(function (pair) {
+    eq.innerHTML = "";
+    slots.forEach(function (pair) {
       var id = state.equip[pair[0]];
       var it = id ? Data.ITEMS[id] : null;
-      return '<div class="equip-slot"><em>' + pair[1] + "</em><strong>" + (it ? it.name : "없음") + "</strong></div>";
-    }).join("");
+      var div = document.createElement("div");
+      div.className = "equip-slot";
+      div.innerHTML = "<em>" + pair[1] + "</em><strong>" + (it ? it.name : "없음") + "</strong>";
+      if (it) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn-text";
+        btn.textContent = "해제";
+        btn.addEventListener("click", function () {
+          var r = Eng.unequip(state, pair[0]);
+          $("bag-msg").textContent = r.msg;
+          if (r.ok) { persist(); renderBag(); renderHub(); toast(r.msg); }
+          sfx("click");
+        });
+        div.appendChild(btn);
+      }
+      eq.appendChild(div);
+    });
 
     var bag = $("bag-list");
     bag.innerHTML = "";
@@ -265,14 +330,66 @@
       var b = document.createElement("button");
       b.type = "button";
       b.className = "act-btn";
-      b.innerHTML = "<strong>" + it.name + "</strong><span>" + it.desc + " · 탭하여 사용</span>";
+      var action = it.slot === "consumable" ? "탭하여 사용" : "탭하여 재장착";
+      b.innerHTML = "<strong>" + it.name + "</strong><span>" + it.desc + " · " + action + "</span>";
       b.addEventListener("click", function () {
-        var r = Eng.useConsumable(state, idx);
-        $("bag-msg").textContent = r.msg;
-        if (r.ok) { persist(); renderBag(); renderHub(); }
+        if (it.slot === "consumable") {
+          var r = Eng.useConsumable(state, idx);
+          $("bag-msg").textContent = r.msg;
+          if (r.ok) { persist(); renderBag(); renderHub(); }
+        } else {
+          state.inventory.splice(idx, 1);
+          var prev = state.equip[it.slot];
+          if (prev) state.inventory.push(prev);
+          state.equip[it.slot] = id;
+          $("bag-msg").textContent = it.name + "을(를) 장착했어요.";
+          persist();
+          renderBag();
+          renderHub();
+          toast($("bag-msg").textContent);
+        }
         sfx("click");
       });
       bag.appendChild(b);
+    });
+  }
+
+  function renderProfile() {
+    var blood = Eng.bloodLabel(state);
+    var diet = Eng.dietLabel(state);
+    var portrait = state.age >= 14 && Data.PORTRAIT.araTeen ? Data.PORTRAIT.araTeen : Data.PORTRAIT.ara;
+    $("hub-portrait").src = portrait;
+    $("profile-summary").innerHTML = [
+      ["이름", state.name],
+      ["나이", state.age + "세"],
+      ["키", (state.height || 130) + "cm"],
+      ["체중", (state.weight || 40) + "kg"],
+      ["혈액형", blood],
+      ["식단", diet],
+      ["생일", Data.MONTHS[state.birthdayMonth != null ? state.birthdayMonth : 2]],
+      ["큐브 신뢰", String(state.cubeLove || 0)],
+      ["원정 완수", String(state.errantryWins || 0)],
+      ["전투력", String(Eng.combatPower(state))]
+    ].map(function (row) {
+      return '<div class="profile-chip"><em>' + row[0] + "</em><strong>" + row[1] + "</strong></div>";
+    }).join("");
+
+    var list = $("diet-list");
+    list.innerHTML = "";
+    $("profile-msg").textContent = "";
+    Object.keys(Data.DIETS).forEach(function (id) {
+      var d = Data.DIETS[id];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "act-btn" + (state.diet === id ? " on" : "");
+      b.innerHTML = "<strong>" + d.name + " · " + d.cost + "G/월</strong><span>" + d.desc + "</span>";
+      b.addEventListener("click", function () {
+        var r = Eng.setDiet(state, id);
+        $("profile-msg").textContent = r.msg;
+        if (r.ok) { persist(); renderProfile(); toast(r.msg); }
+        sfx("click");
+      });
+      list.appendChild(b);
     });
   }
 
@@ -328,7 +445,9 @@
       b.type = "button";
       b.className = "act-btn";
       var cost = a.cost ? a.cost + "G" : (a.gold ? "수입" : "무료");
-      var rank = state.jobRanks[a.id] ? " · 숙련 " + state.jobRanks[a.id] : "";
+      var rank = "";
+      if (a.cat === "work" && state.jobRanks[a.id]) rank = " · 알바 숙련 " + state.jobRanks[a.id];
+      if (a.cat === "study" && state.classRanks && state.classRanks[a.id]) rank = " · 수업 숙련 " + state.classRanks[a.id];
       b.innerHTML = "<strong>" + a.name + "</strong><span>" + a.desc + "</span><em>" + cost + " · 스트레스 " + a.stress + rank + "</em>";
       b.addEventListener("click", function () {
         if (a.cost && state.gold < a.cost) { toast("금화가 부족해요"); return; }
@@ -375,9 +494,18 @@
     }
     state.slots.forEach(function (id) {
       if (!id) return;
-      var res = Eng.resolveActivity(state, id);
       var act = Data.ACTIVITIES[id];
-      queue.push({ type: "activity", bg: act ? act.bg : "castle", res: res, vig: Ev.vignetteFor(id, state, res) });
+      if (act && act.cat === "adventure" && Media) Media.play("adventure");
+      var res = Eng.resolveActivity(state, id);
+      if (!res.ok) {
+        queue.push({ type: "note", bg: "fireplace", vig: { speaker: "알림", portrait: Data.PORTRAIT.ara, text: res.msg || "활동을 할 수 없어요." } });
+        return;
+      }
+      if (res.needsErrantry && res.errantry) {
+        queue.push({ type: "errantry", bg: res.bg || "camp", session: res.errantry, res: res });
+        return;
+      }
+      queue.push({ type: "activity", bg: res.bg || (act ? act.bg : "castle"), res: res, vig: Ev.vignetteFor(id, state, res) });
     });
     Eng.updateAilments(state).forEach(function (n) {
       queue.push({ type: "note", bg: "fireplace", vig: { speaker: "알림", portrait: Data.PORTRAIT.ara, text: n } });
@@ -387,6 +515,7 @@
 
   function enqueueFestival() {
     queue = [];
+    if (Media) Media.play("festival");
     queue.push({ type: "story", event: Ev.festivalIntro(state.festPick) });
     var res = Eng.resolveFestival(state, state.festPick);
     queue.push({
@@ -411,20 +540,104 @@
   function finishMonthFlow() {
     state.slots = [null, null, null];
     var adv = Eng.advanceMonth(state);
+    if (adv.notes && adv.notes.length) toast(adv.notes[0]);
+
+    var vignettes = [];
+    if (adv.birthdayParty) {
+      vignettes.push({
+        type: "note", bg: "birthday",
+        vig: {
+          speaker: adv.fatherCake ? "큐브" : "아버지",
+          portrait: adv.fatherCake ? Data.PORTRAIT.cube : (Data.PORTRAIT.father || Data.PORTRAIT.ara),
+          text: adv.fatherCake
+            ? "생일 축하해요, " + state.name + "! 케이크와 차를 준비했어요."
+            : state.name + "의 생일을 축하해요. 올해에도 건강하게 자라 주렴."
+        }
+      });
+    }
+    if (adv.yearEvent === "war") {
+      vignettes.push({
+        type: "note", bg: "festival",
+        vig: {
+          speaker: "기사", portrait: Data.PORTRAIT.bear,
+          text: "국경에 소식이 분주해요. 올해는 무예와 원정이 특히 중요하답니다."
+        }
+      });
+    }
+    if (adv.yearEvent === "harvest") {
+      vignettes.push({
+        type: "note", bg: "farm",
+        vig: {
+          speaker: "상인", portrait: Data.PORTRAIT.merchant || Data.PORTRAIT.ria,
+          text: "풍년이에요! 장터가 활기차고, 일손도 넉넉히 찾는다오."
+        }
+      });
+    }
+    if (adv.engagement) {
+      vignettes.push({
+        type: "note", bg: "ballroom",
+        vig: {
+          speaker: "왕자", portrait: Data.PORTRAIT.prince,
+          text: state.name + "… 언젠가 손을 잡고 싶다고, 진지하게 전해 왔어요. 약혼의 이야기가 시작됐어요."
+        }
+      });
+    }
+
+    if (vignettes.length) {
+      queue = vignettes;
+      show("event");
+      playNextBirthdayThenHub(adv);
+      return;
+    }
     if (adv.birthday) toast(state.age + "살이 되었어요! 연금 +" + adv.pension + "G");
     persist();
     if (Eng.isGameOver(state)) { endGame(); return; }
     show("hub");
     renderHub();
+    if (Media) Media.play("hub");
+  }
+
+  function playNextBirthdayThenHub(adv) {
+    if (!queue.length) {
+      if (adv.birthday) toast(state.age + "살이 되었어요! 연금 +" + adv.pension + "G");
+      persist();
+      if (Eng.isGameOver(state)) { endGame(); return; }
+      show("hub");
+      renderHub();
+      if (Media) Media.play("hub");
+      return;
+    }
+    var item = queue.shift();
+    setScene(item.bg || "birthday");
+    $("portrait-img").src = item.vig.portrait;
+    $("speaker-name").textContent = item.vig.speaker;
+    $("choices").innerHTML = "";
+    typeText(item.vig.text, function () {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "choice-btn";
+      btn.textContent = "다음";
+      btn.addEventListener("click", function () {
+        sfx("click");
+        playNextBirthdayThenHub(adv);
+      });
+      $("choices").appendChild(btn);
+    });
   }
 
   function endGame() {
     var ending = Eng.pickEnding(state);
     show("ending");
+    if (Media) Media.play("ending");
+    var ev = $("ending-video");
+    if (ev) {
+      var p = ev.play();
+      if (p && p.catch) p.catch(function () {});
+    }
     $("ending-title").textContent = ending.title;
     $("ending-text").textContent = ending.text;
-    $("ending-bg-img").src = Data.BG[ending.bg] || Data.BG.castle;
-    $("ending-bg-img").hidden = false;
+    $("ending-bg-img").src = Data.BG[ending.bg] || Data.BG.ending_gate || Data.BG.castle;
+    $("ending-bg-img").hidden = !!ev;
     var flags = $("ending-flags");
     flags.innerHTML = "";
     [state.age + "세", "금화 " + state.gold, "유대 " + state.bond, "전투력 " + Eng.combatPower(state), "왕자호감 " + state.prince]
@@ -482,6 +695,7 @@
     var item = queue.shift();
     $("choices").innerHTML = "";
     if (item.type === "story") { playStoryEvent(item.event, playNext); return; }
+    if (item.type === "errantry") { playErrantry(item); return; }
 
     setScene(item.bg || "castle");
     var vig = item.vig;
@@ -503,6 +717,59 @@
       });
       $("choices").appendChild(btn);
     });
+  }
+
+  function playErrantry(item) {
+    var session = item.session;
+    if (Media) Media.play("adventure");
+    setScene(session.bg || item.bg || "camp");
+    $("portrait-img").src = Data.PORTRAIT.ara;
+    $("speaker-name").textContent = session.zoneName || "원정";
+
+    function showStep(intro) {
+      $("choices").innerHTML = "";
+      var prompt = Eng.errantryPrompt(session);
+      typeText(intro || prompt, function () {
+        [
+          ["fight", "싸운다"],
+          ["talk", "말한다"],
+          ["search", "찾는다"],
+          ["flee", "도망친다"]
+        ].forEach(function (pair) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "choice-btn";
+          b.textContent = pair[1];
+          b.addEventListener("click", function () {
+            sfx("click");
+            var r = Eng.playErrantryStep(state, session, pair[0]);
+            if (!r.ok) { toast(r.msg || "실패"); return; }
+            persist();
+            $("choices").innerHTML = "";
+            typeText(r.line, function () {
+              if (r.done) {
+                var n = document.createElement("button");
+                n.type = "button";
+                n.className = "choice-btn";
+                n.textContent = r.cleared ? "원정 완료" : "귀환";
+                n.addEventListener("click", function () {
+                  sfx(r.cleared ? "success" : "click");
+                  toast(r.cleared ? "원정 성공!" : "원정 중단");
+                  playNext();
+                });
+                $("choices").appendChild(n);
+              } else {
+                showStep(r.prompt);
+              }
+            });
+          });
+          $("choices").appendChild(b);
+        });
+      });
+    }
+
+    var open = (item.res && item.res.lines && item.res.lines[0]) || (session.zoneName + " 원정을 시작해요.");
+    showStep(open + " " + Eng.errantryPrompt(session));
   }
 
   function playStoryEvent(ev, done) {
@@ -547,21 +814,45 @@
 
   $("btn-new").addEventListener("click", function () {
     if (typeof CasualSfx !== "undefined" && CasualSfx.unlock) try { CasualSfx.unlock(); } catch (_) {}
+    if (Media && Media.unlock) Media.unlock();
     sfx("click");
     Eng.clearSave();
     startNew();
   });
-  $("btn-continue").addEventListener("click", function () { sfx("click"); continueGame(); });
+  $("btn-create-go").addEventListener("click", function () {
+    sfx("click");
+    confirmCreate();
+  });
+  $("btn-continue").addEventListener("click", function () {
+    if (typeof CasualSfx !== "undefined" && CasualSfx.unlock) try { CasualSfx.unlock(); } catch (_) {}
+    if (Media && Media.unlock) Media.unlock();
+    sfx("click");
+    continueGame();
+  });
   $("btn-run-month").addEventListener("click", function () { sfx("click"); runMonth(); });
-  $("btn-ending-title").addEventListener("click", function () { sfx("click"); show("title"); refreshContinue(); });
+  $("btn-ending-title").addEventListener("click", function () {
+    sfx("click");
+    var ev = $("ending-video");
+    if (ev) try { ev.pause(); } catch (_) {}
+    show("title");
+    playTitleMedia();
+    refreshContinue();
+  });
   $("btn-shop-back").addEventListener("click", function () { sfx("click"); renderCity(); });
 
   document.querySelectorAll("[data-go]").forEach(function (el) {
     el.addEventListener("click", function () {
       var go = el.getAttribute("data-go");
       sfx("click");
-      if (go === "title") { persist(); show("title"); refreshContinue(); return; }
-      if (go === "hub") { show("hub"); renderHub(); return; }
+      if (go === "title") {
+        persist();
+        show("title");
+        playTitleMedia();
+        refreshContinue();
+        return;
+      }
+      if (go === "hub") { show("hub"); renderHub(); if (Media) Media.play("hub"); return; }
+      if (go === "profile") { show("profile"); renderProfile(); return; }
       if (go === "stats") { show("stats"); renderStats(); return; }
       if (go === "talk") { show("talk"); $("talk-result").textContent = ""; return; }
       if (go === "cube") { show("cube"); renderCube(); return; }
@@ -574,6 +865,7 @@
   $("btn-talk-chat").addEventListener("click", function () {
     state.bond = Eng.clamp(state.bond + 2, 0, 999);
     state.stress = Eng.clamp(state.stress - 3, 0, 100);
+    state.cubeLove = Eng.clamp((state.cubeLove || 0) + 1, 0, 999);
     $("talk-result").textContent = "아라가 환하게 웃어요. 유대 +2, 스트레스 −3";
     persist(); sfx("click");
   });
@@ -590,6 +882,17 @@
     sfx("click");
   });
 
+  function cubeAct(fn) {
+    var r = fn(state);
+    $("cube-msg").textContent = r.msg;
+    if (r.ok) { persist(); renderCube(); renderHub(); toast(r.msg); }
+    sfx("click");
+  }
+  $("btn-cube-tea").addEventListener("click", function () { cubeAct(Eng.cubeTea); });
+  $("btn-cube-gift").addEventListener("click", function () { cubeAct(Eng.cubeGift); });
+  $("btn-cube-praise").addEventListener("click", function () { cubeAct(Eng.cubePraise); });
+
   refreshContinue();
   show("title");
+  playTitleMedia();
 })();

@@ -18,6 +18,13 @@
 - 알바 숙련 랭크, 탐험 확장, 엔딩 다수
 - airouter t2i로 상점·궁·NPC·아이콘 리소스 bake
 
+### Media Rich / Gap fill
+- 캐릭터 생성(혈액형·생일), 식단, 투구 슬롯, 다구간 원정(errantry)
+- airouter **AceStep BGM** 5곡(title/hub/festival/adventure/ending)
+- airouter **i2v** 타이틀·엔딩 루프 영상
+- t2i 추가 BG/초상/UI 아이콘 (`tools/generate_rich_assets.py`)
+
 ## Consequences
 - 세이브 키 `princess_maker_v2` (v1 자동 마이그레이션)
 - 플레이 길이 증가(8년×12개월×3칸) — 의도된 PM2 밀도로 유지
+- 미디어 파일은 `casual/story/assets/{bgm,video,bg,portraits,ui}/` 에 동봉

@@ -19,7 +19,9 @@ window.PMEvents = (function () {
       pool.push({ speaker: "로즈", portrait: P.rivalRose, text: "\"흥, 나도 여기서 일해 본 적 있어. 네가 더 잘하면… 인정해 줄게.\"" });
     }
     if (actId.indexOf("adv_") === 0) {
-      if (result && result.combat && result.combat.win) {
+      if (result && result.needsErrantry) {
+        pool.push({ speaker: "아라", portrait: P.ara, text: "원정의 길이 열려요. 싸울지, 말할지, 찾을지… 선택이 모험을 만들어요." });
+      } else if (result && result.combat && result.combat.win) {
         pool.push({ speaker: "아라", portrait: P.ara, text: "심장이 두근거려요. 두려웠지만, 끝까지 검을 놓지 않았어요." });
       } else {
         pool.push({ speaker: "아라", portrait: P.ara, text: "오늘은 물러나는 것도 용기예요. 다음에 다시 도전할래요." });
@@ -47,15 +49,75 @@ window.PMEvents = (function () {
     var candidates = [];
 
     candidates.push({
-      id: "daily_market", title: "마을의 장날", bg: "fountain",
+      id: "daily_market", title: "마을의 장날", bg: "market",
       steps: [
         { speaker: "아라", portrait: P.ara, text: "장터에 파스텔 천막이 늘어서 있어요. 고소한 빵 냄새가 길을 안내해요." },
         {
-          speaker: "상인", portrait: P.ria, text: "\"예쁜 리본 하나 어때요? 아니면 몽실이 간식?\"",
+          speaker: "상인", portrait: P.merchant || P.ria, text: "\"예쁜 리본 하나 어때요? 아니면 몽실이 간식?\"",
           choices: [
             { label: "리본을 사요 (15G)", needGold: 15, effects: { gold: -15, charisma: 2, refinement: 1 }, nextNote: "리본이 햇살에 반짝여요." },
             { label: "간식을 사요 (10G)", needGold: 10, effects: { gold: -10, puppy: 5, kitten: 5 }, nextNote: "두 친구가 동시에 달려와요!" },
             { label: "그냥 구경만 해요", effects: { sensitivity: 1 }, nextNote: "구경만으로도 마음이 풍성해져요." }
+          ]
+        }
+      ]
+    });
+
+    candidates.push({
+      id: "father_letter", title: "아버지의 편지", bg: "parlor",
+      steps: [
+        { speaker: "아버지", portrait: P.father || P.cube, text: "책상 위에 짧은 편지가 놓여 있어요. \"오늘도 무리하지 말렴.\"" },
+        {
+          speaker: "아라", portrait: P.ara, text: "잉크 냄새가 따뜻해요. 어떻게 답할까요?",
+          choices: [
+            { label: "감사 편지를 써요", effects: { bond: 4, morality: 1, stress: -3 }, nextNote: "답장이 서랍에 소중히 남겨져요." },
+            { label: "차를 준비해 기다려요", effects: { bond: 3, cooking: 1, cubeLove: 1 }, nextNote: "아버지가 미소로 문을 열어요." },
+            { label: "하루 일정을 자랑해요", effects: { bond: 2, charisma: 1 }, nextNote: "아버지가 귀를 기울여 들어요." }
+          ]
+        }
+      ]
+    });
+
+    candidates.push({
+      id: "teacher_quiz", title: "선생님의 쪽지 시험", bg: "study",
+      steps: [
+        { speaker: "선생님", portrait: P.teacher || P.ria, text: "\"오늘은 짧은 쪽지 시험이야. 긴장하지 마.\"" },
+        {
+          speaker: "아라", portrait: P.ara, text: "깃펜을 꼭 쥐어요.",
+          choices: [
+            { label: "문학 문제에 집중", effects: { intelligence: 3, poetry: 2, repScholar: 2, stress: 3 }, nextNote: "문장이 또렷하게 떠올라요." },
+            { label: "과학 관찰 기록", effects: { science: 3, intelligence: 2, magic: 1, stress: 3 }, nextNote: "별 스케치가 답안지를 채워요." },
+            { label: "친구와 나눠 풀어요", effects: { morality: -1, stress: -2, sin: 1 }, nextNote: "마음은 편하지만 살짝 찔려요…" }
+          ]
+        }
+      ]
+    });
+
+    candidates.push({
+      id: "harbor_rumor", title: "항구의 소문", bg: "harbor",
+      steps: [
+        { speaker: "선원", portrait: P.merchant || P.bear, text: "\"먼 바다에서 빛나는 상자를 봤다는 소문이 있어.\"" },
+        {
+          speaker: "아라", portrait: P.ara, text: "파도 소리가 호기심을 밀어 올려요.",
+          choices: [
+            { label: "지도 조각을 사요 (25G)", needGold: 25, effects: { gold: -25, intelligence: 2, repFight: 1 }, nextNote: "지도에 X 표시가 반짝여요." },
+            { label: "소문만 듣고 돌아와요", effects: { sensitivity: 2, stress: -2 }, nextNote: "바닷바람이 머리를 식혀 줘요." },
+            { label: "원정 준비를 점검해요", effects: { stamina: 1, sword: 1, stress: 2 }, nextNote: "배낭 끈을 단단히 조여요." }
+          ]
+        }
+      ]
+    });
+
+    candidates.push({
+      id: "star_night", title: "관측 돔의 밤", bg: "observatory",
+      steps: [
+        { speaker: "큐브", portrait: P.cube, text: "\"오늘은 유성이 지나는 밤입니다. 망원경을 준비해 두었습니다.\"" },
+        {
+          speaker: "아라", portrait: P.ara, text: "별이 눈처럼 흘러가요.",
+          choices: [
+            { label: "별을 기록해요", effects: { science: 3, intelligence: 2, magic: 1, stress: -2 }, nextNote: "노트에 궤적이 남아요." },
+            { label: "소원을 빌어요", effects: { faith: 2, sensitivity: 2, stress: -4 }, nextNote: "마음이 한결 맑아져요." },
+            { label: "아버지와 함께 봐요", effects: { bond: 3, cubeLove: 1, stress: -3 }, nextNote: "고요한 침묵이 포근해요." }
           ]
         }
       ]
@@ -228,6 +290,57 @@ window.PMEvents = (function () {
             choices: [
               { label: "행진의 주인공", effects: { charisma: 3, puppy: 4, kitten: 4, repSocial: 2 }, nextNote: "오늘따라 꼬리도 깃발 같아요." },
               { label: "조용히 스케치", effects: { art: 3, sensitivity: 2, repArt: 2 }, nextNote: "스케치북에 발자국이 남아요." }
+            ]
+          }
+        ]
+      });
+    }
+
+    if (state.yearFlags && state.yearFlags.war) {
+      candidates.push({
+        id: "war_year", title: "성벽의 경보", bg: "festival",
+        steps: [
+          { speaker: "기사", portrait: P.bear, text: "\"훈련 강화다. 왕국을 지키는 건 검만이 아니야.\"" },
+          {
+            speaker: "아라", portrait: P.ara, text: "북소리가 멀리서 울려요.",
+            choices: [
+              { label: "방패 훈련을 받아요", effects: { strength: 3, sword: 2, stamina: 1, stress: 5, repFight: 3 }, nextNote: "어깨가 묵직하지만 든든해요." },
+              { label: "보급 물자를 정리해요", effects: { intelligence: 2, cooking: 1, morality: 2, stress: 3 }, nextNote: "창고가 질서 있게 정리돼요." },
+              { label: "부상자 간호를 배워요", effects: { faith: 2, cooking: 2, morality: 2, stress: 4 }, nextNote: "따뜻한 손길이 상처를 달래요." }
+            ]
+          }
+        ]
+      });
+    }
+
+    if (state.yearFlags && state.yearFlags.harvest) {
+      candidates.push({
+        id: "harvest_year", title: "풍년의 장터", bg: "farm",
+        steps: [
+          { speaker: "상인", portrait: P.merchant || P.ria, text: "\"밀가루가 넘쳐! 일손 좀 도와주겠나?\"" },
+          {
+            speaker: "아라", portrait: P.ara, text: "곡식 냄새가 달콤해요.",
+            choices: [
+              { label: "수확을 도와요", effects: { stamina: 2, strength: 1, gold: 20, stress: 4 }, nextNote: "바구니에 밀이 가득해요." },
+              { label: "축제를 준비해요", effects: { cooking: 2, charisma: 2, repSocial: 2, stress: 3 }, nextNote: "깃발과 파이 냄새가 어울려요." },
+              { label: "나누어 주어요", effects: { morality: 3, faith: 2, gold: -10, stress: -2 }, nextNote: "아이들의 웃음이 돌아와요." }
+            ]
+          }
+        ]
+      });
+    }
+
+    if (state.engaged) {
+      candidates.push({
+        id: "engaged_tea", title: "약혼의 오후", bg: "garden",
+        steps: [
+          { speaker: "왕자", portrait: P.prince, text: "\"약혼 반지는 아직이지만… 오늘은 차라도 함께 하자.\"" },
+          {
+            speaker: "아라", portrait: P.ara, text: "볼이 따뜻해져요.",
+            choices: [
+              { label: "다정히 받아들여요", effects: { prince: 4, charisma: 2, refinement: 1, stress: -2 }, nextNote: "약속의 공기가 달콤해요." },
+              { label: "천천히 가자고 해요", effects: { prince: 2, morality: 2, bond: 1 }, nextNote: "왕자가 이해한다는 듯 웃어요." },
+              { label: "큐브에게도 자랑해요", effects: { prince: 2, cubeLove: 2, bond: 2 }, nextNote: "큐브가 살짝 눈시울을 붉혀요." }
             ]
           }
         ]

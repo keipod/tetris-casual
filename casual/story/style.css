@@ -904,6 +904,7 @@ html, body {
   color: inherit;
 }
 .act-btn.picked { border-color: var(--pink); background: #fff5fa; }
+.act-btn.on { border-color: var(--pink); background: #fff5fa; box-shadow: inset 0 0 0 1px rgba(232, 120, 160, 0.25); }
 .act-btn strong { display: block; font-size: 13.5px; margin-bottom: 2px; }
 .act-btn span { display: block; font-size: 12px; color: var(--ink-soft); line-height: 1.4; }
 .act-btn em {
@@ -959,7 +960,13 @@ html, body {
   line-height: 1.55;
   color: var(--ink-soft);
 }
-.cube-tips li { margin-bottom: 6px; }
+.cube-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.cube-actions .btn-secondary { flex: 1 1 30%; min-width: 90px; }
 
 .shop-list { display: flex; flex-direction: column; gap: 8px; }
 .shop-detail { margin-top: 8px; }
@@ -984,7 +991,8 @@ html, body {
   color: var(--ink-soft);
   font-weight: 700;
 }
-.equip-slot strong { font-size: 12.5px; }
+.equip-slot strong { font-size: 12.5px; display: block; margin-bottom: 4px; }
+.equip-slot .btn-text { font-size: 11px; }
 
 .rival-list { display: flex; flex-direction: column; gap: 10px; }
 .rival-card {
@@ -1031,3 +1039,62 @@ html, body {
 .scene-bg.bg-cube { background: linear-gradient(180deg, #e8f0e4, #d0e0c8); }
 .scene-bg.bg-snow { background: linear-gradient(180deg, #eaf3ff, #d8e8f7); }
 .scene-bg.bg-spring_fair { background: linear-gradient(180deg, #ffeaf3, #ffd6e8); }
+
+.title-cover-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.title-cover-img { z-index: 0; }
+.title-hero:has(video[src]:not([src=""])) .title-cover-img { opacity: 0; }
+.ending-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.field input,
+.field select {
+  border: 2px solid #f1e4ff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+.profile-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.profile-chip {
+  background: #fff;
+  border: 2px solid #f1e4ff;
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.profile-chip em {
+  display: block;
+  font-style: normal;
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+.profile-chip strong { font-size: 13px; }
+.equip-view { grid-template-columns: 1fr 1fr; }

@@ -34,15 +34,36 @@
 
   <section id="screen-title" class="screen screen-title">
     <div class="title-hero" aria-hidden="true">
+      <video id="title-video" class="title-cover-video" muted loop playsinline poster="assets/bg/castle.png" src="assets/video/title_loop.mp4"></video>
       <img class="title-cover-img" alt="" src="assets/bg/castle.png">
       <div class="title-hero-shade"></div>
     </div>
     <div class="title-card">
-      <p class="eyebrow">Princess Maker inspired · Final</p>
+      <p class="eyebrow">Princess Maker inspired · Media Rich</p>
       <h2 class="game-title">별빛 성의 아라<br><span class="sub">10살부터 18살까지</span></h2>
-      <p class="game-desc">수업·알바·탐험·도시·장비·축제로 공주를 키워요.<br>큐브의 조언과 라이벌, 왕자와의 인연이 엔딩을 가릅니다.</p>
+      <p class="game-desc">수업·알바·원정·도시·식단·축제로 공주를 키워요.<br>BGM과 영상이 함께하는 육성 이야기.</p>
       <button id="btn-new" type="button" class="btn-primary">새 육성 시작</button>
       <button id="btn-continue" type="button" class="btn-secondary hidden">이어하기</button>
+    </div>
+  </section>
+
+  <section id="screen-create" class="screen screen-panel hidden">
+    <div class="panel-card">
+      <div class="panel-head"><h2>캐릭터 생성</h2><button type="button" class="btn-text" data-go="title">닫기</button></div>
+      <p class="panel-desc">이름·혈액형·생일을 정하면 육성이 시작돼요.</p>
+      <label class="field"><span>이름</span><input id="create-name" type="text" maxlength="8" value="아라" autocomplete="off"></label>
+      <label class="field"><span>혈액형</span>
+        <select id="create-blood">
+          <option value="O">O형</option>
+          <option value="A">A형</option>
+          <option value="B">B형</option>
+          <option value="AB">AB형</option>
+        </select>
+      </label>
+      <label class="field"><span>생일 (월)</span>
+        <select id="create-bday"></select>
+      </label>
+      <button id="btn-create-go" type="button" class="btn-primary">육성 시작</button>
     </div>
   </section>
 
@@ -70,11 +91,23 @@
     <div class="hub-actions">
       <button type="button" class="hub-btn" data-go="schedule">스케줄</button>
       <button type="button" class="hub-btn" data-go="city">도시</button>
+      <button type="button" class="hub-btn" data-go="profile">프로필</button>
       <button type="button" class="hub-btn" data-go="stats">스탯</button>
       <button type="button" class="hub-btn" data-go="cube">큐브</button>
       <button type="button" class="hub-btn" data-go="talk">대화</button>
       <button type="button" class="hub-btn" data-go="bag">가방</button>
       <button type="button" class="hub-btn ghost" data-go="title">타이틀</button>
+    </div>
+  </section>
+
+  <section id="screen-profile" class="screen screen-panel hidden">
+    <div class="panel-card">
+      <div class="panel-head"><h2>프로필 · 식단</h2><button type="button" class="btn-text" data-go="hub">닫기</button></div>
+      <div id="profile-summary" class="profile-summary"></div>
+      <h3 class="subhead">이번 달 식단</h3>
+      <p class="panel-desc">매월 말에 식비가 빠져요. 체중·체력에 영향을 줍니다.</p>
+      <div id="diet-list" class="act-list"></div>
+      <p id="profile-msg" class="talk-result"></p>
     </div>
   </section>
 
@@ -104,8 +137,15 @@
       <div class="cube-row">
         <img class="cube-face" src="assets/portraits/cube.png" alt="큐브" onerror="this.style.display='none'">
         <div>
-          <p class="panel-desc">육성 조언을 전해 드려요.</p>
+          <p class="panel-desc">육성 조언을 전해 드려요. 차와 대화로 신뢰도 쌓을 수 있어요.</p>
+          <p id="cube-love" class="talk-result" style="margin-top:0"></p>
           <ul id="cube-tips" class="cube-tips"></ul>
+          <div class="cube-actions">
+            <button id="btn-cube-tea" type="button" class="btn-secondary">차 마시기</button>
+            <button id="btn-cube-gift" type="button" class="btn-secondary">선물 (25G)</button>
+            <button id="btn-cube-praise" type="button" class="btn-secondary">칭찬하기</button>
+          </div>
+          <p id="cube-msg" class="talk-result"></p>
         </div>
       </div>
     </div>
@@ -175,6 +215,7 @@
 
   <section id="screen-ending" class="screen screen-ending hidden">
     <div id="ending-bg" class="scene-bg">
+      <video id="ending-video" class="ending-video" muted loop playsinline poster="assets/bg/ballroom.png" src="assets/video/ending_rise.mp4"></video>
       <img id="ending-bg-img" class="scene-bg-img" alt="">
       <div class="scene-veil" aria-hidden="true"></div>
     </div>
@@ -193,6 +234,7 @@
 <script src="data.js"></script>
 <script src="engine.js"></script>
 <script src="events.js"></script>
+<script src="bgm.js"></script>
 <script src="game.js"></script>
 </body>
 </html>
