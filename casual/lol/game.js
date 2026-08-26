@@ -362,15 +362,7 @@
    * 5. SOUND — shared CasualSfx bank with spatial + rate gating
    * ==================================================================== */
   const LS_SOUND = "lol_sound";
-  const storage = (() => {
-    try {
-      localStorage.setItem("__l", "1");
-      localStorage.removeItem("__l");
-      return localStorage;
-    } catch (_) {
-      return { getItem: () => null, setItem: () => {} };
-    }
-  })();
+  const storage = window.CasualSafeStorage.get();
   let soundOn = storage.getItem(LS_SOUND) !== "0";
 
   const SFX = (() => {
@@ -444,10 +436,12 @@
   let paused = false;
   let lastTs = 0;
   let pendingAttackMove = false;
+  const kbKeys = new Set();
+  const KB_ARROWS = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]);
 
   const cam = { x: 0, y: 0 };
   const view = { w: 100, h: BAL.VIEW_H, scale: 1, cssW: 1, cssH: 1 };
-  const mouse = { sx: 0, sy: 0 };
+  const mouse = { sx: 0, sy: 0, active: false };
   let shakeT = 0;
   let shakeMag = 0;
 
@@ -459,6 +453,31 @@
       x: cam.x + mouse.sx / view.scale,
       y: cam.y + mouse.sy / view.scale,
     };
+  }
+
+  function kbAxis() {
+    let x = 0, y = 0;
+    if (kbKeys.has("ArrowLeft")) x -= 1;
+    if (kbKeys.has("ArrowRight")) x += 1;
+    if (kbKeys.has("ArrowUp")) y -= 1;
+    if (kbKeys.has("ArrowDown")) y += 1;
+    return { x, y };
+  }
+
+  function mouseAimActive() {
+    return (
+      mouse.active && kbKeys.size === 0 &&
+      mouse.sx >= 0 && mouse.sy >= 0 &&
+      mouse.sx <= view.cssW && mouse.sy <= view.cssH
+    );
+  }
+
+  function aimPointFor(c) {
+    if (mouseAimActive()) {
+      const w = cursorWorld();
+      return { x: w.x, y: w.y };
+    }
+    return { x: c.x + Math.cos(c.facing) * 120, y: c.y + Math.sin(c.facing) * 120 };
   }
 
   function shake(mag) {
@@ -1066,6 +1085,18 @@
       }
       if (p >= 1) u.dash = null;
       return;
+    }
+
+    if (u.isPlayer) {
+      const ax = kbAxis();
+      if (ax.x || ax.y) {
+        const l = Math.hypot(ax.x, ax.y);
+        const dx = ax.x / l, dy = ax.y / l;
+        u.attackTarget = null;
+        u.moveGoal = null;
+        stepToward(u, u.x + dx * 120, u.y + dy * 120, effSpeed(u) * dt);
+        return;
+      }
     }
 
     if (u.attackTarget && !isValidTarget(u.attackTarget)) u.attackTarget = null;
@@ -1958,6 +1989,7 @@
       const r = canvas.getBoundingClientRect();
       mouse.sx = e.clientX - r.left;
       mouse.sy = e.clientY - r.top;
+      mouse.active = true;
     });
 
     window.addEventListener("keydown", (e) => {
@@ -1966,19 +1998,30 @@
         else if (pendingAttackMove) cancelAttackMove();
         return;
       }
+      if (KB_ARROWS.has(e.code)) {
+        e.preventDefault();
+        if (!helpOpen && playing && world && !world.over) kbKeys.add(e.code);
+        return;
+      }
       if (helpOpen || !playing || !world || world.over) return;
       const pl = world.player;
       if (e.code === "KeyQ" || e.code === "KeyW" || e.code === "KeyE" || e.code === "KeyR") {
         if (e.repeat) return;
         const key = e.code.slice(3).toLowerCase();
-        const cw = cursorWorld();
-        tryCast(pl, key, cw.x, cw.y);
+        const ap = aimPointFor(pl);
+        tryCast(pl, key, ap.x, ap.y);
       } else if (e.code === "KeyS") {
         stopOrder();
       } else if (e.code === "KeyA") {
         pendingAttackMove = true;
         canvas.classList.add("aim-attack");
       }
+    });
+    window.addEventListener("keyup", (e) => {
+      kbKeys.delete(e.code);
+    });
+    window.addEventListener("blur", () => {
+      kbKeys.clear();
     });
 
     btnSound.addEventListener("click", () => {
