@@ -22,6 +22,8 @@ async function loadBattle3D() {
 
 const LS = "catch2_save_v1";
 const LS_SOUND = "catch2_sound";
+/** Bump when world layout changes so old coords don't leave players in the void. */
+const MAP_VERSION = 5;
 
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -35,19 +37,21 @@ const storage = (() => {
   }
 })();
 
-function emptySave(spawnX = Math.floor(MAP_W / 2), spawnY = Math.floor(MAP_H * 0.72)) {
+function emptySave(spawnX = Math.floor(MAP_W * 0.50), spawnY = Math.floor(MAP_H * 0.82)) {
   return {
     gender: null,
     party: [],
     box: [],
     balls: 10,
     fireballs: 0,
+    smokes: 0,
     money: 120,
     px: spawnX,
     py: spawnY,
     facing: "down",
     patchCooldown: {}, // patchId -> steps remaining
     collectedBalls: {}, // ballId -> true (legacy; dynamic loot no longer permanent)
+    mapVersion: MAP_VERSION,
   };
 }
 
@@ -64,6 +68,8 @@ function loadSave() {
       collectedBalls: raw.collectedBalls || {},
       money: typeof raw.money === "number" ? raw.money : 120,
       fireballs: typeof raw.fireballs === "number" ? raw.fireballs : 0,
+      smokes: typeof raw.smokes === "number" ? raw.smokes : 0,
+      mapVersion: typeof raw.mapVersion === "number" ? raw.mapVersion : 0,
     };
   } catch {
     return emptySave();
@@ -84,6 +90,7 @@ const app = {
   patchMeta: [],
   buildings: [],
   npcs: [],
+  landmarks: [],
   ballPickups: [],
   fieldLoot: [],
   wilds: [],
@@ -154,10 +161,19 @@ async function loadStaticAssets() {
     ["houseBlue", "assets/tiles/house-blue.png", false],
     ["houseInn", "assets/tiles/house-inn.png", false],
     ["shopBuilding", "assets/tiles/shop-building.png", false],
+    ["sea", "assets/tiles/sea.png", false],
+    ["sand", "assets/tiles/sand.png", false],
+    ["dock", "assets/tiles/dock.png", false],
+    ["mountain", "assets/tiles/mountain.png", false],
+    ["cave", "assets/tiles/cave.png", true],
+    ["well", "assets/tiles/well.png", true],
+    ["lumberMill", "assets/tiles/lumber-mill.png", true],
+    ["campfire", "assets/tiles/campfire.png", true],
     ["shopkeep", "assets/characters/shopkeep.png", true],
     ["pokeball", "assets/ui/pokeball.png", false],
     ["coin", "assets/ui/coin.png", true],
     ["fireball", "assets/ui/fireball.png", true],
+    ["smoke", "assets/ui/smoke.png", true],
     ["meadow", "assets/battle/meadow.png", false],
     // Photoreal-face trainers: already alpha-processed — do NOT punchBlack (destroys dark hair)
     ["maleOw", "assets/characters/male-overworld.png", false],
@@ -249,6 +265,7 @@ function drawField(now = performance.now()) {
     camSmooth: app.cam,
     buildings: app.buildings,
     npcs: app.npcs,
+    landmarks: app.landmarks,
     bubbleNpc,
     ballPickups: app.ballPickups,
     fieldLoot: app.fieldLoot,
@@ -321,7 +338,7 @@ function onTileArrived(tileX, tileY) {
   tickPatchCooldowns();
   const tile = app.map[tileY][tileX];
 
-  // Collect field loot (ball / coin / fireball)
+  // Collect field loot (ball / coin / fireball / smoke)
   const li = app.fieldLoot.findIndex((b) => b.x === tileX && b.y === tileY);
   if (li >= 0) {
     const item = app.fieldLoot[li];
@@ -347,6 +364,12 @@ function onTileArrived(tileX, tileY) {
       AudioFx.pickup();
       vibrate(14);
       showFieldToast(`파이어볼 ×${item.n || 1}! (보유 ${app.save.fireballs})`);
+    } else if (item.kind === "smoke") {
+      app.save.smokes = (app.save.smokes || 0) + (item.n || 1);
+      saveGame(app.save);
+      AudioFx.pickup();
+      vibrate(14);
+      showFieldToast(`연막 ×${item.n || 1}! (보유 ${app.save.smokes})`);
     }
   }
 
@@ -552,6 +575,7 @@ async function beginBattle() {
     log: `야생의 ${app.wildInfo.ko}이(가) 나타났다!`,
     phase: "command",
     balls: app.save.balls,
+    wildSkipTurns: 0,
   };
   let Battle3D;
   try {
@@ -668,10 +692,12 @@ function renderBattleUi() {
   } else if (b.phase === "bag") {
     const hasBalls = app.save.balls > 0;
     const hasFire = (app.save.fireballs || 0) > 0;
+    const hasSmoke = (app.save.smokes || 0) > 0;
     menus.innerHTML = `
       <div class="stack">
         <button class="btn primary" type="button" id="use-ball" ${hasBalls ? "" : "disabled aria-disabled=\"true\""}>몬스터볼 ×${app.save.balls}</button>
         <button class="btn" type="button" id="use-fireball" ${hasFire ? "" : "disabled aria-disabled=\"true\""}>파이어볼 ×${app.save.fireballs || 0}</button>
+        <button class="btn" type="button" id="use-smoke" ${hasSmoke ? "" : "disabled aria-disabled=\"true\""}>연막 ×${app.save.smokes || 0}</button>
         <button class="btn ghost" type="button" id="bag-back">뒤로</button>
       </div>`;
     const useBallBtn = document.getElementById("use-ball");
@@ -683,6 +709,11 @@ function renderBattleUi() {
     useFireBtn.onclick = () => {
       if ((app.save.fireballs || 0) <= 0 || useFireBtn.disabled) return;
       useFireball();
+    };
+    const useSmokeBtn = document.getElementById("use-smoke");
+    useSmokeBtn.onclick = () => {
+      if ((app.save.smokes || 0) <= 0 || useSmokeBtn.disabled) return;
+      useSmoke();
     };
     document.getElementById("bag-back").onclick = () => { b.phase = "command"; renderBattleUi(); };
   } else if (b.phase === "switch") {
@@ -768,6 +799,18 @@ async function playerMove(idx) {
 async function wildTurn() {
   const b = app.battle;
   if (!b || b.wild.hp <= 0) return;
+  if ((b.wildSkipTurns || 0) > 0) {
+    b.wildSkipTurns -= 1;
+    b.phase = "anim";
+    b.log = `연막에 가려 야생 ${b.wild.ko}는 움직이지 못했다!`;
+    renderBattleUi();
+    AudioFx.notEffective();
+    vibrate(10);
+    await wait(700);
+    b.phase = "command";
+    renderBattleUi();
+    return;
+  }
   b.phase = "anim";
   renderBattleUi();
   const move = b.wild.moves[Math.floor(Math.random() * b.wild.moves.length)];
@@ -986,6 +1029,33 @@ async function useFireball() {
     await onWildFainted();
     return;
   }
+  await wildTurn();
+}
+
+/** Smoke bomb: skip the wild Pokémon's next attack. */
+async function useSmoke() {
+  const b = app.battle;
+  if ((app.save.smokes || 0) <= 0) {
+    b.log = "연막이 없다!";
+    b.phase = "command";
+    renderBattleUi();
+    return;
+  }
+  app.save.smokes -= 1;
+  saveGame(app.save);
+  b.wildSkipTurns = (b.wildSkipTurns || 0) + 1;
+  b.phase = "anim";
+  b.log = "연막을 뿌렸다!";
+  renderBattleUi();
+  AudioFx.ui();
+  vibrate([8, 20, 8]);
+  app.battle3d && (app.battle3d.flash = Math.max(app.battle3d.flash || 0, 0.45));
+  app.battle3d && (app.battle3d.flashColor = 0xb0b8c8);
+  syncBattleFlash();
+  await wait(550);
+  b.log = "연막! 상대는 다음 공격이 막힌다!";
+  renderBattleUi();
+  await wait(450);
   await wildTurn();
 }
 
@@ -1408,7 +1478,7 @@ function openParty() {
   ).join("") || "<p>파티가 비어 있어요.</p>";
   showPanel(`
     <h2 class="hero-title">파티</h2>
-    <p class="stat-line">볼 <strong>${app.save.balls}</strong> · 파이어볼 <strong>${app.save.fireballs || 0}</strong> · 소지금 <strong class="money">${app.save.money}원</strong></p>
+    <p class="stat-line">볼 <strong>${app.save.balls}</strong> · 파이어볼 <strong>${app.save.fireballs || 0}</strong> · 연막 <strong>${app.save.smokes || 0}</strong> · 소지금 <strong class="money">${app.save.money}원</strong></p>
     <p class="hint-inline">카드를 누르면 도감을 볼 수 있어요</p>
     <div class="card-grid">${list}</div>
     <button class="btn primary" type="button" id="ok" style="margin-top:10px;width:100%">닫기</button>
@@ -1479,7 +1549,7 @@ function openHelp() {
         <img src="assets/battle/meadow.png" alt="초원 맵">
         <div>
           <h3>1. 마을·초원을 탐험해요</h3>
-          <p>화면 <strong>밖</strong> 방향키(아래·옆)로 이동 · 맵에 보이는 야생 포켓몬에게 다가가 만나요. 길에 있는 <strong>몬스터볼</strong>을 주워요. 店에서 강화!</p>
+          <p>화면 <strong>밖</strong> 방향키(아래·옆)로 이동 · 맵에 보이는 야생 포켓몬에게 다가가 만나요. 길에 있는 <strong>몬스터볼·연막</strong>을 주워요. 店에서 강화!</p>
           <div class="help-keys">
             <span>방향 키패드</span><span>WASD</span><span>화살표</span>
           </div>
@@ -1503,7 +1573,7 @@ function openHelp() {
     <div class="help-duo" aria-label="전투 모드 설명">
       <figure>
         <img src="assets/battle/meadow.png" alt="배틀 화면">
-        <figcaption>배틀<br>싸운다 · 볼 던지기 · 교체</figcaption>
+        <figcaption>배틀<br>싸운다 · 볼 · 연막 · 교체</figcaption>
       </figure>
       <figure>
         <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="피카츄 카드 예시">
@@ -1769,6 +1839,7 @@ async function main() {
   app.patchMeta = built.patchMeta || [];
   app.buildings = built.buildings || [];
   app.npcs = built.npcs || [];
+  app.landmarks = built.landmarks || [];
   app.fieldLoot = built.fieldLoot || built.ballPickups || [];
   app.ballPickups = app.fieldLoot.filter((p) => p.kind === "ball");
   app.lootCtrl = {
@@ -1782,6 +1853,13 @@ async function main() {
   };
   app.spawnX = built.spawnX;
   app.spawnY = built.spawnY;
+  if (app.save.mapVersion !== MAP_VERSION) {
+    app.save.px = app.spawnX;
+    app.save.py = app.spawnY;
+    app.save.facing = "down";
+    app.save.mapVersion = MAP_VERSION;
+    saveGame(app.save);
+  }
   app.player = createPlayerState(app.save, app.spawnX, app.spawnY, app.map);
   syncSavePos();
   await loadStaticAssets();
@@ -1805,6 +1883,7 @@ async function main() {
     mapSize: () => ({ w: MAP_W, h: MAP_H }),
     buildings: () => app.buildings,
     npcs: () => app.npcs,
+    landmarks: () => app.landmarks,
     balls: () => app.ballPickups,
     loot: () => app.fieldLoot,
     wilds: () => app.wilds,
