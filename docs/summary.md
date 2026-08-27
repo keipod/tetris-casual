@@ -1,3 +1,5 @@
+• casual/evony1: Evony Age I MMORTS scaffold (WS+SQLite, TOWN/CITY/MAP, hub card)
+• docs/superpowers/specs/2026-08-27-evony1-design.md: Age I full-clone design
 • casual/story: Princess Maker 2–inspired raising sim Phase 1 (schedule/stats/events/festival/pets)
 • docs/adr/2026-08-26-princess-maker-story.md: gap analysis and phased plan
 • casual/story: PM2 final loop (10→18, shops/equip/Cube/rivals, airouter assets)

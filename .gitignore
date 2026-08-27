@@ -39,3 +39,5 @@ casual/catch2/assets/characters/_work/
 .sisyphus/
 __pycache__/
 *.pyc
+casual/evony1/evony1.sqlite
+casual/evony1/evony1.sqlite-*

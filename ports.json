@@ -383,6 +383,13 @@
       "entry": "/casual/poker/",
       "name": "포커 대전",
       "script": "casual/poker/server.py"
+    },
+    {
+      "id": "evony1",
+      "port": 48951,
+      "entry": "/casual/evony1/",
+      "name": "Evony Age I",
+      "script": "casual/evony1/server.py"
     }
   ]
 }

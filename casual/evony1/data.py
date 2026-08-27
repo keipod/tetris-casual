@@ -1,0 +1,372 @@
+"""Evony Age I static game data (buildings, fields, troops, research)."""
+
+from __future__ import annotations
+
+from typing import Any
+
+# Early-game times are short (seconds); higher levels scale up (1× formulas).
+
+BUILDINGS: dict[str, dict[str, Any]] = {
+    "town_hall": {
+        "name": "Town Hall",
+        "max_level": 10,
+        "base_cost": {"food": 200, "wood": 500, "stone": 1000, "iron": 0},
+        "base_time": 60,
+        "prereq": {},
+    },
+    "cottage": {
+        "name": "Cottage",
+        "max_level": 10,
+        "base_cost": {"food": 80, "wood": 150, "stone": 0, "iron": 0},
+        "base_time": 30,
+        "prereq": {"town_hall": 1},
+        "pop_cap_per_level": 100,
+    },
+    "barracks": {
+        "name": "Barracks",
+        "max_level": 10,
+        "base_cost": {"food": 120, "wood": 400, "stone": 200, "iron": 50},
+        "base_time": 45,
+        "prereq": {"town_hall": 1},
+    },
+    "academy": {
+        "name": "Academy",
+        "max_level": 10,
+        "base_cost": {"food": 100, "wood": 300, "stone": 400, "iron": 80},
+        "base_time": 50,
+        "prereq": {"town_hall": 2},
+    },
+    "rally_spot": {
+        "name": "Rally Spot",
+        "max_level": 10,
+        "base_cost": {"food": 80, "wood": 250, "stone": 100, "iron": 0},
+        "base_time": 40,
+        "prereq": {"town_hall": 1},
+    },
+    "beacon_tower": {
+        "name": "Beacon Tower",
+        "max_level": 10,
+        "base_cost": {"food": 60, "wood": 200, "stone": 300, "iron": 40},
+        "base_time": 40,
+        "prereq": {"town_hall": 2},
+    },
+    "forge": {
+        "name": "Forge",
+        "max_level": 10,
+        "base_cost": {"food": 100, "wood": 250, "stone": 200, "iron": 150},
+        "base_time": 45,
+        "prereq": {"town_hall": 2},
+    },
+    "workshop": {
+        "name": "Workshop",
+        "max_level": 10,
+        "base_cost": {"food": 150, "wood": 400, "stone": 300, "iron": 200},
+        "base_time": 55,
+        "prereq": {"town_hall": 3, "forge": 1},
+    },
+    "stable": {
+        "name": "Stable",
+        "max_level": 10,
+        "base_cost": {"food": 200, "wood": 350, "stone": 150, "iron": 100},
+        "base_time": 50,
+        "prereq": {"town_hall": 2, "barracks": 1},
+    },
+    "relief_station": {
+        "name": "Relief Station",
+        "max_level": 10,
+        "base_cost": {"food": 150, "wood": 400, "stone": 200, "iron": 50},
+        "base_time": 45,
+        "prereq": {"town_hall": 2},
+    },
+    "marketplace": {
+        "name": "Marketplace",
+        "max_level": 10,
+        "base_cost": {"food": 100, "wood": 300, "stone": 200, "iron": 50},
+        "base_time": 40,
+        "prereq": {"town_hall": 2},
+    },
+    "embassy": {
+        "name": "Embassy",
+        "max_level": 10,
+        "base_cost": {"food": 120, "wood": 350, "stone": 250, "iron": 80},
+        "base_time": 50,
+        "prereq": {"town_hall": 3},
+    },
+    "feasting_hall": {
+        "name": "Feasting Hall",
+        "max_level": 10,
+        "base_cost": {"food": 200, "wood": 400, "stone": 300, "iron": 100},
+        "base_time": 55,
+        "prereq": {"town_hall": 3},
+    },
+    "inn": {
+        "name": "Inn",
+        "max_level": 10,
+        "base_cost": {"food": 150, "wood": 350, "stone": 200, "iron": 50},
+        "base_time": 45,
+        "prereq": {"town_hall": 2},
+    },
+    "wall": {
+        "name": "Wall",
+        "max_level": 10,
+        "base_cost": {"food": 200, "wood": 500, "stone": 800, "iron": 100},
+        "base_time": 70,
+        "prereq": {"town_hall": 1},
+    },
+}
+
+FIELDS: dict[str, dict[str, Any]] = {
+    "farm": {
+        "name": "Farm",
+        "resource": "food",
+        "prod_per_level": 100,  # per hour
+        "base_cost": {"food": 50, "wood": 150, "stone": 0, "iron": 0},
+        "base_time": 20,
+        "max_level": 10,
+    },
+    "sawmill": {
+        "name": "Sawmill",
+        "resource": "wood",
+        "prod_per_level": 100,
+        "base_cost": {"food": 50, "wood": 80, "stone": 100, "iron": 0},
+        "base_time": 20,
+        "max_level": 10,
+    },
+    "quarry": {
+        "name": "Quarry",
+        "resource": "stone",
+        "prod_per_level": 100,
+        "base_cost": {"food": 50, "wood": 150, "stone": 40, "iron": 0},
+        "base_time": 25,
+        "max_level": 10,
+    },
+    "ironmine": {
+        "name": "Iron Mine",
+        "resource": "iron",
+        "prod_per_level": 100,
+        "base_cost": {"food": 50, "wood": 150, "stone": 100, "iron": 20},
+        "base_time": 30,
+        "max_level": 10,
+    },
+}
+
+TROOPS: dict[str, dict[str, Any]] = {
+    "worker": {
+        "name": "Worker",
+        "atk": 1,
+        "def": 1,
+        "hp": 10,
+        "speed": 8,
+        "carry": 200,
+        "food_upkeep": 0,
+        "cost": {"food": 50, "wood": 0, "gold": 0},
+        "time": 8,
+        "pop": 1,
+        "building": "town_hall",
+        "building_level": 1,
+    },
+    "warrior": {
+        "name": "Warrior",
+        "atk": 15,
+        "def": 10,
+        "hp": 50,
+        "speed": 8,
+        "carry": 20,
+        "food_upkeep": 2,
+        "cost": {"food": 30, "wood": 0, "gold": 0},
+        "time": 12,
+        "pop": 1,
+        "building": "barracks",
+        "building_level": 1,
+    },
+    "scout": {
+        "name": "Scout",
+        "atk": 5,
+        "def": 5,
+        "hp": 20,
+        "speed": 16,
+        "carry": 5,
+        "food_upkeep": 1,
+        "cost": {"food": 40, "wood": 20, "gold": 0},
+        "time": 15,
+        "pop": 1,
+        "building": "barracks",
+        "building_level": 2,
+    },
+    "pikeman": {
+        "name": "Pikeman",
+        "atk": 25,
+        "def": 20,
+        "hp": 70,
+        "speed": 7,
+        "carry": 25,
+        "food_upkeep": 3,
+        "cost": {"food": 50, "wood": 30, "gold": 0},
+        "time": 20,
+        "pop": 1,
+        "building": "barracks",
+        "building_level": 3,
+    },
+    "swordsman": {
+        "name": "Swordsman",
+        "atk": 35,
+        "def": 30,
+        "hp": 100,
+        "speed": 8,
+        "carry": 30,
+        "food_upkeep": 4,
+        "cost": {"food": 60, "wood": 40, "iron": 20},
+        "time": 30,
+        "pop": 1,
+        "building": "barracks",
+        "building_level": 4,
+        "research": "iron_working",
+    },
+    "archer": {
+        "name": "Archer",
+        "atk": 40,
+        "def": 15,
+        "hp": 60,
+        "speed": 9,
+        "carry": 25,
+        "food_upkeep": 3,
+        "cost": {"food": 50, "wood": 60, "iron": 10},
+        "time": 28,
+        "pop": 1,
+        "building": "barracks",
+        "building_level": 4,
+        "research": "archery",
+    },
+    "cavalry": {
+        "name": "Cavalry",
+        "atk": 55,
+        "def": 35,
+        "hp": 120,
+        "speed": 14,
+        "carry": 50,
+        "food_upkeep": 6,
+        "cost": {"food": 100, "wood": 40, "iron": 30},
+        "time": 45,
+        "pop": 2,
+        "building": "stable",
+        "building_level": 1,
+        "research": "horseback_riding",
+    },
+    "cataphract": {
+        "name": "Cataphract",
+        "atk": 80,
+        "def": 60,
+        "hp": 200,
+        "speed": 12,
+        "carry": 60,
+        "food_upkeep": 9,
+        "cost": {"food": 150, "wood": 60, "iron": 80},
+        "time": 70,
+        "pop": 3,
+        "building": "stable",
+        "building_level": 5,
+    },
+    "transporter": {
+        "name": "Transporter",
+        "atk": 5,
+        "def": 10,
+        "hp": 40,
+        "speed": 10,
+        "carry": 5000,
+        "food_upkeep": 4,
+        "cost": {"food": 80, "wood": 100, "iron": 20},
+        "time": 35,
+        "pop": 2,
+        "building": "workshop",
+        "building_level": 1,
+    },
+    "ballista": {
+        "name": "Ballista",
+        "atk": 90,
+        "def": 20,
+        "hp": 80,
+        "speed": 5,
+        "carry": 15,
+        "food_upkeep": 8,
+        "cost": {"food": 200, "wood": 250, "iron": 100},
+        "time": 90,
+        "pop": 4,
+        "building": "workshop",
+        "building_level": 3,
+    },
+    "battering_ram": {
+        "name": "Battering Ram",
+        "atk": 50,
+        "def": 40,
+        "hp": 250,
+        "speed": 4,
+        "carry": 10,
+        "food_upkeep": 10,
+        "cost": {"food": 300, "wood": 400, "iron": 150},
+        "time": 120,
+        "pop": 5,
+        "building": "workshop",
+        "building_level": 5,
+    },
+    "catapult": {
+        "name": "Catapult",
+        "atk": 120,
+        "def": 25,
+        "hp": 100,
+        "speed": 4,
+        "carry": 20,
+        "food_upkeep": 12,
+        "cost": {"food": 400, "wood": 500, "iron": 200},
+        "time": 150,
+        "pop": 5,
+        "building": "workshop",
+        "building_level": 7,
+    },
+}
+
+RESEARCH: dict[str, dict[str, Any]] = {
+    "agriculture": {"name": "Agriculture", "max_level": 10, "base_time": 40, "base_cost": {"food": 100, "wood": 100, "gold": 50}, "boost": "food"},
+    "lumbering": {"name": "Lumbering", "max_level": 10, "base_time": 40, "base_cost": {"food": 100, "wood": 100, "gold": 50}, "boost": "wood"},
+    "masonry": {"name": "Masonry", "max_level": 10, "base_time": 40, "base_cost": {"food": 100, "stone": 100, "gold": 50}, "boost": "stone"},
+    "mining": {"name": "Mining", "max_level": 10, "base_time": 45, "base_cost": {"food": 100, "iron": 80, "gold": 50}, "boost": "iron"},
+    "metal_casting": {"name": "Metal Casting", "max_level": 10, "base_time": 50, "base_cost": {"iron": 120, "gold": 80}, "boost": "atk"},
+    "informatics": {"name": "Informatics", "max_level": 10, "base_time": 60, "base_cost": {"gold": 150, "wood": 100}, "boost": "scout"},
+    "military_science": {"name": "Military Science", "max_level": 10, "base_time": 55, "base_cost": {"food": 150, "iron": 100, "gold": 100}, "boost": "atk"},
+    "military_tradition": {"name": "Military Tradition", "max_level": 10, "base_time": 55, "base_cost": {"food": 150, "iron": 100, "gold": 100}, "boost": "def"},
+    "iron_working": {"name": "Iron Working", "max_level": 10, "base_time": 50, "base_cost": {"iron": 150, "gold": 80}, "unlock": "swordsman"},
+    "archery": {"name": "Archery", "max_level": 10, "base_time": 50, "base_cost": {"wood": 150, "gold": 80}, "unlock": "archer"},
+    "horseback_riding": {"name": "Horseback Riding", "max_level": 10, "base_time": 55, "base_cost": {"food": 200, "gold": 100}, "unlock": "cavalry"},
+    "logistics": {"name": "Logistics", "max_level": 10, "base_time": 45, "base_cost": {"wood": 120, "gold": 60}, "boost": "speed"},
+    "compass": {"name": "Compass", "max_level": 10, "base_time": 45, "base_cost": {"gold": 100, "iron": 50}, "boost": "speed"},
+    "construction": {"name": "Construction", "max_level": 10, "base_time": 50, "base_cost": {"wood": 150, "stone": 150, "gold": 80}, "boost": "build_speed"},
+    "stockpile": {"name": "Stockpile", "max_level": 10, "base_time": 40, "base_cost": {"wood": 100, "stone": 100}, "boost": "storage"},
+    "medicine": {"name": "Medicine", "max_level": 10, "base_time": 50, "base_cost": {"food": 200, "gold": 100}, "boost": "heal"},
+    "engineering": {"name": "Engineering", "max_level": 10, "base_time": 60, "base_cost": {"wood": 200, "iron": 150, "gold": 120}, "boost": "siege"},
+    "machinery": {"name": "Machinery", "max_level": 10, "base_time": 60, "base_cost": {"wood": 250, "iron": 200, "gold": 150}, "boost": "siege"},
+}
+
+MAP_SIZE = 80
+BEGINNER_PROTECT_SECS = 7 * 24 * 3600
+STARTER_RES = {"gold": 5000, "food": 10000, "wood": 10000, "stone": 10000, "iron": 10000}
+
+QUESTS = [
+    {"id": "q_build_cottage", "title": "Expand Housing", "desc": "Upgrade or build a Cottage to level 2.", "check": "cottage_level", "target": 2, "reward": {"gold": 500, "food": 500}},
+    {"id": "q_build_farm", "title": "Feed the City", "desc": "Own a Farm of level 2.", "check": "farm_level", "target": 2, "reward": {"food": 1000, "wood": 300}},
+    {"id": "q_train_warrior", "title": "Raise Arms", "desc": "Train 10 Warriors.", "check": "warrior_count", "target": 10, "reward": {"gold": 300, "iron": 200}},
+    {"id": "q_attack_npc", "title": "First Blood", "desc": "Defeat a Barbarian Camp.", "check": "npc_wins", "target": 1, "reward": {"gold": 1000, "honor": 50}},
+]
+
+
+def level_cost(base: dict[str, int], level: int) -> dict[str, int]:
+    """Cost to reach `level` (building currently level-1 → upgrade to level)."""
+    mult = 1.6 ** max(0, level - 1)
+    return {k: int(v * mult) for k, v in base.items()}
+
+
+def level_time(base_time: int, level: int) -> int:
+    return int(base_time * (1.5 ** max(0, level - 1)))
+
+
+def field_slots_for_th(town_hall_level: int) -> int:
+    """Max fields of each type allowed by Town Hall level."""
+    return max(1, int(town_hall_level))

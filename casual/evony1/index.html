@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#2a1f14">
+<meta name="mp-ws-port" content="48951">
+<title>Evony Age I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Noto+Sans+KR:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/no-select.css">
+<link rel="stylesheet" href="style.css">
+<script src="../assets/mobile-hardening.js"></script>
+<script src="../assets/safe-storage.js"></script>
+</head>
+<body>
+<div id="app">
+
+  <section id="screen-lobby" class="screen lobby">
+    <a class="back-link" href="../">← Hub</a>
+    <header class="lobby-hero">
+      <p class="eyebrow">MMORTS · Age I</p>
+      <h1>EVONY</h1>
+      <p class="sub" data-i18n="lobby_sub">Choose a server and raise your empire</p>
+    </header>
+    <div class="server-list">
+      <button type="button" class="server-card" id="btn-server1" data-server="1">
+        <span class="server-name">Server 1</span>
+        <span class="server-meta" data-i18n="server_open">Open · Classic Age I</span>
+      </button>
+    </div>
+    <label class="nick-row">
+      <span data-i18n="nick">Lord name</span>
+      <input id="nick-input" type="text" maxlength="16" autocomplete="off">
+    </label>
+    <div class="lobby-tools">
+      <button type="button" id="btn-lang" class="btn ghost">EN / KO</button>
+    </div>
+  </section>
+
+  <section id="screen-game" class="screen game" hidden>
+    <header class="topbar">
+      <a class="back-link" href="../">Hub</a>
+      <div class="ticker" id="ticker">Welcome to Evony Age I</div>
+      <nav class="view-tabs" role="tablist">
+        <button type="button" class="tab active" data-view="town">TOWN</button>
+        <button type="button" class="tab" data-view="city">CITY</button>
+        <button type="button" class="tab" data-view="map">MAP</button>
+      </nav>
+      <div class="clock-wrap">
+        <span class="logo-mark">EVONY</span>
+        <time id="server-clock">--:--:--</time>
+      </div>
+    </header>
+
+    <div class="main-row">
+      <div class="canvas-wrap">
+        <canvas id="stage" width="720" height="480" aria-label="Game view"></canvas>
+        <div class="canvas-hint" id="canvas-hint"></div>
+      </div>
+      <aside class="sidebar parchment">
+        <div class="portrait-block">
+          <div class="portrait" aria-hidden="true">👑</div>
+          <div>
+            <p class="title-line" id="lord-title">Civilian</p>
+            <p class="nick-line" id="lord-nick">—</p>
+          </div>
+        </div>
+        <p class="city-line"><span id="city-name">City</span> <span id="city-coord">(0,0)</span></p>
+        <ul class="res-list" id="res-list"></ul>
+        <div class="side-actions">
+          <button type="button" class="btn" id="btn-quests" data-i18n="quests">Quests</button>
+          <button type="button" class="btn" id="btn-reports" data-i18n="reports">Reports</button>
+          <button type="button" class="btn" id="btn-wheel" data-i18n="wheel">Fortune</button>
+          <button type="button" class="btn danger" id="btn-reset" data-i18n="reset">Reset</button>
+        </div>
+        <p class="status-msg" id="status-msg"></p>
+      </aside>
+    </div>
+
+    <footer class="bottombar parchment">
+      <div class="queues" id="queues"></div>
+      <div class="icon-row">
+        <button type="button" class="icon-btn" data-panel="build" title="Build">🏗️</button>
+        <button type="button" class="icon-btn" data-panel="troops" title="Troops">⚔️</button>
+        <button type="button" class="icon-btn" data-panel="research" title="Research">📜</button>
+        <button type="button" class="icon-btn" data-panel="mail" title="Mail">✉️</button>
+      </div>
+      <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" maxlength="200" placeholder="World chat…" autocomplete="off">
+        <button type="submit" class="btn">Send</button>
+      </form>
+      <ul class="chat-log" id="chat-log"></ul>
+    </footer>
+  </section>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card parchment">
+      <h2 id="modal-title">Panel</h2>
+      <div id="modal-body"></div>
+      <button type="button" class="btn" id="modal-close">Close</button>
+    </div>
+  </div>
+</div>
+<script src="i18n.js"></script>
+<script src="render.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
